@@ -7,6 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1605410118B83A4800C200C6 /* PositionDisplayCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605410018B83A4800C200C6 /* PositionDisplayCell.m */; };
+		1605410918B843C000C200C6 /* HGPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605410818B843C000C200C6 /* HGPosition.m */; };
+		1605411318B8FD5700C200C6 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605411218B8FD5700C200C6 /* SettingsViewController.m */; };
+		1605411618B8FFF700C200C6 /* UIColor+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605411518B8FFF700C200C6 /* UIColor+Mercury.m */; };
+		1605411A18B91DE900C200C6 /* PositionSummaryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605411918B91DE900C200C6 /* PositionSummaryCell.m */; };
+		1605411D18B922C100C200C6 /* YahooAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605411C18B922C100C200C6 /* YahooAPIClient.m */; };
+		1605412018B92D0A00C200C6 /* MercuryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605411F18B92D0A00C200C6 /* MercuryData.m */; };
+		1605412318B93D9A00C200C6 /* PositionDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605412218B93D9A00C200C6 /* PositionDetailViewController.m */; };
+		1605412618B9630000C200C6 /* NSDateFormatter+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605412518B9630000C200C6 /* NSDateFormatter+Mercury.m */; };
+		1605412918B96A6000C200C6 /* HGHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605412818B96A6000C200C6 /* HGHistory.m */; };
+		1605412F18B981DD00C200C6 /* NSArray+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605412E18B981DD00C200C6 /* NSArray+Mercury.m */; };
+		1605413218B9965800C200C6 /* PositionChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605413118B9965800C200C6 /* PositionChartViewController.m */; };
+		1605413518B99C5500C200C6 /* UITabBarController+AutoRotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605413418B99C5500C200C6 /* UITabBarController+AutoRotation.m */; };
+		1605413818B99CAB00C200C6 /* UINavigationController+AutoRotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605413718B99CAB00C200C6 /* UINavigationController+AutoRotation.m */; };
 		169A0D9F18B82ABD00E42D1A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169A0D9E18B82ABD00E42D1A /* Foundation.framework */; };
 		169A0DA118B82ABD00E42D1A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169A0DA018B82ABD00E42D1A /* CoreGraphics.framework */; };
 		169A0DA318B82ABD00E42D1A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169A0DA218B82ABD00E42D1A /* UIKit.framework */; };
@@ -19,6 +33,9 @@
 		169A0DBA18B82ABE00E42D1A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169A0DA218B82ABD00E42D1A /* UIKit.framework */; };
 		169A0DC218B82ABE00E42D1A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 169A0DC018B82ABE00E42D1A /* InfoPlist.strings */; };
 		169A0DC418B82ABE00E42D1A /* MercuryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 169A0DC318B82ABE00E42D1A /* MercuryTests.m */; };
+		169A0DCF18B82DBA00E42D1A /* PositionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 169A0DCE18B82DBA00E42D1A /* PositionsViewController.m */; };
+		62F5EDAA2D6B47D7AB50AF79 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 290F2EA80FAD4BA6878CC57A /* libPods.a */; };
+		C6736770D1B24F91851CF9C7 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 290F2EA80FAD4BA6878CC57A /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +49,35 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		160540FF18B83A4800C200C6 /* PositionDisplayCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PositionDisplayCell.h; sourceTree = "<group>"; };
+		1605410018B83A4800C200C6 /* PositionDisplayCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PositionDisplayCell.m; sourceTree = "<group>"; };
+		1605410718B843C000C200C6 /* HGPosition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HGPosition.h; sourceTree = "<group>"; };
+		1605410818B843C000C200C6 /* HGPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HGPosition.m; sourceTree = "<group>"; };
+		1605410A18B8452C00C200C6 /* Mercury.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mercury.h; sourceTree = "<group>"; };
+		1605411118B8FD5700C200C6 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		1605411218B8FD5700C200C6 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		1605411418B8FFF700C200C6 /* UIColor+Mercury.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Mercury.h"; sourceTree = "<group>"; };
+		1605411518B8FFF700C200C6 /* UIColor+Mercury.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Mercury.m"; sourceTree = "<group>"; };
+		1605411818B91DE900C200C6 /* PositionSummaryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PositionSummaryCell.h; sourceTree = "<group>"; };
+		1605411918B91DE900C200C6 /* PositionSummaryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PositionSummaryCell.m; sourceTree = "<group>"; };
+		1605411B18B922C100C200C6 /* YahooAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YahooAPIClient.h; sourceTree = "<group>"; };
+		1605411C18B922C100C200C6 /* YahooAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YahooAPIClient.m; sourceTree = "<group>"; };
+		1605411E18B92D0A00C200C6 /* MercuryData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MercuryData.h; sourceTree = "<group>"; };
+		1605411F18B92D0A00C200C6 /* MercuryData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MercuryData.m; sourceTree = "<group>"; };
+		1605412118B93D9A00C200C6 /* PositionDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PositionDetailViewController.h; sourceTree = "<group>"; };
+		1605412218B93D9A00C200C6 /* PositionDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PositionDetailViewController.m; sourceTree = "<group>"; };
+		1605412418B9630000C200C6 /* NSDateFormatter+Mercury.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDateFormatter+Mercury.h"; sourceTree = "<group>"; };
+		1605412518B9630000C200C6 /* NSDateFormatter+Mercury.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDateFormatter+Mercury.m"; sourceTree = "<group>"; };
+		1605412718B96A6000C200C6 /* HGHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HGHistory.h; sourceTree = "<group>"; };
+		1605412818B96A6000C200C6 /* HGHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HGHistory.m; sourceTree = "<group>"; };
+		1605412D18B981DD00C200C6 /* NSArray+Mercury.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Mercury.h"; sourceTree = "<group>"; };
+		1605412E18B981DD00C200C6 /* NSArray+Mercury.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Mercury.m"; sourceTree = "<group>"; };
+		1605413018B9965800C200C6 /* PositionChartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PositionChartViewController.h; sourceTree = "<group>"; };
+		1605413118B9965800C200C6 /* PositionChartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PositionChartViewController.m; sourceTree = "<group>"; };
+		1605413318B99C5500C200C6 /* UITabBarController+AutoRotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITabBarController+AutoRotation.h"; sourceTree = "<group>"; };
+		1605413418B99C5500C200C6 /* UITabBarController+AutoRotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITabBarController+AutoRotation.m"; sourceTree = "<group>"; };
+		1605413618B99CAB00C200C6 /* UINavigationController+AutoRotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+AutoRotation.h"; sourceTree = "<group>"; };
+		1605413718B99CAB00C200C6 /* UINavigationController+AutoRotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+AutoRotation.m"; sourceTree = "<group>"; };
 		169A0D9B18B82ABD00E42D1A /* Mercury.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mercury.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		169A0D9E18B82ABD00E42D1A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		169A0DA018B82ABD00E42D1A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -48,6 +94,11 @@
 		169A0DBF18B82ABE00E42D1A /* MercuryTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MercuryTests-Info.plist"; sourceTree = "<group>"; };
 		169A0DC118B82ABE00E42D1A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		169A0DC318B82ABE00E42D1A /* MercuryTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MercuryTests.m; sourceTree = "<group>"; };
+		169A0DCD18B82DBA00E42D1A /* PositionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PositionsViewController.h; sourceTree = "<group>"; };
+		169A0DCE18B82DBA00E42D1A /* PositionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PositionsViewController.m; sourceTree = "<group>"; };
+		169A0DD018B82E9A00E42D1A /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		290F2EA80FAD4BA6878CC57A /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CDE19C2F9074FD4B20E637F /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +109,7 @@
 				169A0DA118B82ABD00E42D1A /* CoreGraphics.framework in Frameworks */,
 				169A0DA318B82ABD00E42D1A /* UIKit.framework in Frameworks */,
 				169A0D9F18B82ABD00E42D1A /* Foundation.framework in Frameworks */,
+				C6736770D1B24F91851CF9C7 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,12 +120,89 @@
 				169A0DB818B82ABE00E42D1A /* XCTest.framework in Frameworks */,
 				169A0DBA18B82ABE00E42D1A /* UIKit.framework in Frameworks */,
 				169A0DB918B82ABE00E42D1A /* Foundation.framework in Frameworks */,
+				62F5EDAA2D6B47D7AB50AF79 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1605410218B8431E00C200C6 /* Model + Data */ = {
+			isa = PBXGroup;
+			children = (
+				1605410718B843C000C200C6 /* HGPosition.h */,
+				1605410818B843C000C200C6 /* HGPosition.m */,
+				1605412718B96A6000C200C6 /* HGHistory.h */,
+				1605412818B96A6000C200C6 /* HGHistory.m */,
+			);
+			name = "Model + Data";
+			sourceTree = "<group>";
+		};
+		1605410318B8432D00C200C6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				160540FF18B83A4800C200C6 /* PositionDisplayCell.h */,
+				1605410018B83A4800C200C6 /* PositionDisplayCell.m */,
+				1605411818B91DE900C200C6 /* PositionSummaryCell.h */,
+				1605411918B91DE900C200C6 /* PositionSummaryCell.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		1605410418B8433400C200C6 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				169A0DCD18B82DBA00E42D1A /* PositionsViewController.h */,
+				169A0DCE18B82DBA00E42D1A /* PositionsViewController.m */,
+				1605411118B8FD5700C200C6 /* SettingsViewController.h */,
+				1605411218B8FD5700C200C6 /* SettingsViewController.m */,
+				1605412118B93D9A00C200C6 /* PositionDetailViewController.h */,
+				1605412218B93D9A00C200C6 /* PositionDetailViewController.m */,
+				1605413018B9965800C200C6 /* PositionChartViewController.h */,
+				1605413118B9965800C200C6 /* PositionChartViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		1605410518B8433D00C200C6 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				169A0DD018B82E9A00E42D1A /* Constants.h */,
+				1605410A18B8452C00C200C6 /* Mercury.h */,
+			);
+			name = Constants;
+			sourceTree = "<group>";
+		};
+		1605410618B8434C00C200C6 /* Singletons */ = {
+			isa = PBXGroup;
+			children = (
+				169A0DAD18B82ABE00E42D1A /* AppDelegate.h */,
+				169A0DAE18B82ABE00E42D1A /* AppDelegate.m */,
+				1605411B18B922C100C200C6 /* YahooAPIClient.h */,
+				1605411C18B922C100C200C6 /* YahooAPIClient.m */,
+				1605411E18B92D0A00C200C6 /* MercuryData.h */,
+				1605411F18B92D0A00C200C6 /* MercuryData.m */,
+			);
+			name = Singletons;
+			sourceTree = "<group>";
+		};
+		1605411718B9000000C200C6 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				1605411418B8FFF700C200C6 /* UIColor+Mercury.h */,
+				1605411518B8FFF700C200C6 /* UIColor+Mercury.m */,
+				1605412418B9630000C200C6 /* NSDateFormatter+Mercury.h */,
+				1605412518B9630000C200C6 /* NSDateFormatter+Mercury.m */,
+				1605412D18B981DD00C200C6 /* NSArray+Mercury.h */,
+				1605412E18B981DD00C200C6 /* NSArray+Mercury.m */,
+				1605413318B99C5500C200C6 /* UITabBarController+AutoRotation.h */,
+				1605413418B99C5500C200C6 /* UITabBarController+AutoRotation.m */,
+				1605413618B99CAB00C200C6 /* UINavigationController+AutoRotation.h */,
+				1605413718B99CAB00C200C6 /* UINavigationController+AutoRotation.m */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
 		169A0D9218B82ABD00E42D1A = {
 			isa = PBXGroup;
 			children = (
@@ -81,6 +210,7 @@
 				169A0DBD18B82ABE00E42D1A /* MercuryTests */,
 				169A0D9D18B82ABD00E42D1A /* Frameworks */,
 				169A0D9C18B82ABD00E42D1A /* Products */,
+				9CDE19C2F9074FD4B20E637F /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -100,6 +230,7 @@
 				169A0DA018B82ABD00E42D1A /* CoreGraphics.framework */,
 				169A0DA218B82ABD00E42D1A /* UIKit.framework */,
 				169A0DB718B82ABE00E42D1A /* XCTest.framework */,
+				290F2EA80FAD4BA6878CC57A /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -107,8 +238,12 @@
 		169A0DA418B82ABE00E42D1A /* Mercury */ = {
 			isa = PBXGroup;
 			children = (
-				169A0DAD18B82ABE00E42D1A /* AppDelegate.h */,
-				169A0DAE18B82ABE00E42D1A /* AppDelegate.m */,
+				1605410518B8433D00C200C6 /* Constants */,
+				1605410618B8434C00C200C6 /* Singletons */,
+				1605410418B8433400C200C6 /* Controllers */,
+				1605410218B8431E00C200C6 /* Model + Data */,
+				1605410318B8432D00C200C6 /* Views */,
+				1605411718B9000000C200C6 /* Helpers */,
 				169A0DB018B82ABE00E42D1A /* Images.xcassets */,
 				169A0DA518B82ABE00E42D1A /* Supporting Files */,
 			);
@@ -151,9 +286,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 169A0DC718B82ABE00E42D1A /* Build configuration list for PBXNativeTarget "Mercury" */;
 			buildPhases = (
+				CC43C7B2A27D4AB78006DF06 /* Check Pods Manifest.lock */,
 				169A0D9718B82ABD00E42D1A /* Sources */,
 				169A0D9818B82ABD00E42D1A /* Frameworks */,
 				169A0D9918B82ABD00E42D1A /* Resources */,
+				5B907E5579E74932B83A5FEA /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -168,9 +305,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 169A0DCA18B82ABE00E42D1A /* Build configuration list for PBXNativeTarget "MercuryTests" */;
 			buildPhases = (
+				0DCCE982E3164DD9ACDE5CB6 /* Check Pods Manifest.lock */,
 				169A0DB218B82ABE00E42D1A /* Sources */,
 				169A0DB318B82ABE00E42D1A /* Frameworks */,
 				169A0DB418B82ABE00E42D1A /* Resources */,
+				61140593F2EE4585A5851C7F /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -234,12 +373,90 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		0DCCE982E3164DD9ACDE5CB6 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		5B907E5579E74932B83A5FEA /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		61140593F2EE4585A5851C7F /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CC43C7B2A27D4AB78006DF06 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		169A0D9718B82ABD00E42D1A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1605410918B843C000C200C6 /* HGPosition.m in Sources */,
+				1605412618B9630000C200C6 /* NSDateFormatter+Mercury.m in Sources */,
+				1605413218B9965800C200C6 /* PositionChartViewController.m in Sources */,
+				1605411618B8FFF700C200C6 /* UIColor+Mercury.m in Sources */,
 				169A0DAF18B82ABE00E42D1A /* AppDelegate.m in Sources */,
+				1605413818B99CAB00C200C6 /* UINavigationController+AutoRotation.m in Sources */,
+				1605411318B8FD5700C200C6 /* SettingsViewController.m in Sources */,
+				1605411A18B91DE900C200C6 /* PositionSummaryCell.m in Sources */,
+				1605412918B96A6000C200C6 /* HGHistory.m in Sources */,
+				1605412018B92D0A00C200C6 /* MercuryData.m in Sources */,
+				1605412F18B981DD00C200C6 /* NSArray+Mercury.m in Sources */,
+				1605411D18B922C100C200C6 /* YahooAPIClient.m in Sources */,
+				1605413518B99C5500C200C6 /* UITabBarController+AutoRotation.m in Sources */,
+				169A0DCF18B82DBA00E42D1A /* PositionsViewController.m in Sources */,
+				1605412318B93D9A00C200C6 /* PositionDetailViewController.m in Sources */,
+				1605410118B83A4800C200C6 /* PositionDisplayCell.m in Sources */,
 				169A0DAB18B82ABE00E42D1A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -356,6 +573,7 @@
 		};
 		169A0DC818B82ABE00E42D1A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9CDE19C2F9074FD4B20E637F /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -369,6 +587,7 @@
 		};
 		169A0DC918B82ABE00E42D1A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9CDE19C2F9074FD4B20E637F /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -382,6 +601,7 @@
 		};
 		169A0DCB18B82ABE00E42D1A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9CDE19C2F9074FD4B20E637F /* Pods.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Mercury.app/Mercury";
@@ -405,6 +625,7 @@
 		};
 		169A0DCC18B82ABE00E42D1A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9CDE19C2F9074FD4B20E637F /* Pods.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Mercury.app/Mercury";
@@ -441,6 +662,7 @@
 				169A0DC918B82ABE00E42D1A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		169A0DCA18B82ABE00E42D1A /* Build configuration list for PBXNativeTarget "MercuryTests" */ = {
 			isa = XCConfigurationList;
@@ -449,6 +671,7 @@
 				169A0DCC18B82ABE00E42D1A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

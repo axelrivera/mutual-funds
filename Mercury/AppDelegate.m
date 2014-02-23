@@ -8,13 +8,37 @@
 
 #import "AppDelegate.h"
 
+#import "UITabBarController+AutoRotation.h"
+#import "UINavigationController+AutoRotation.h"
+#import "PositionsViewController.h"
+#import "SettingsViewController.h"
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [[UINavigationBar appearance] setBarTintColor:[UIColor hg_barBackgroundColor]];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor hg_textColor] }];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
+    self.window.tintColor = [UIColor hg_highlightColor];
+    
+    PositionsViewController *watchlistController = [[PositionsViewController alloc] initWithPositionType:HGPositionTypeWatchlist];
+    UINavigationController *watchlistNavController = [[UINavigationController alloc] initWithRootViewController:watchlistController];
+    
+    PositionsViewController *positionsController = [[PositionsViewController alloc] initWithPositionType:HGPositionTypeMyPositions];
+    UINavigationController *positionsNavController = [[UINavigationController alloc] initWithRootViewController:positionsController];
+    
+    SettingsViewController *settingsController = [[SettingsViewController alloc] init];
+    UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsController];
+    
+    NSArray *viewControllers = @[ watchlistNavController, positionsNavController, settingsNavController ];
+    
+    self.tabBarController = [[UITabBarController alloc] init];
+    self.tabBarController.viewControllers = viewControllers;
+    
+    [self.window setRootViewController:self.tabBarController];
+        
     [self.window makeKeyAndVisible];
     return YES;
 }
