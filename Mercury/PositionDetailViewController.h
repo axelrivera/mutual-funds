@@ -10,13 +10,18 @@
 
 @class NCISimpleChartView;
 
+typedef void(^PositionDetailViewControllerSaveBlock)(HGTicker *ticker);
+
 @interface PositionDetailViewController : UITableViewController
 
 @property (strong, nonatomic) NCISimpleChartView *chartView;
 
-@property (strong, nonatomic) HGPosition *position;
+@property (strong, nonatomic) HGTicker *ticker;
 @property (strong, nonatomic) NSArray *chartDataSource;
+@property (assign, nonatomic) BOOL allowSave;
+@property (copy, nonatomic) PositionDetailViewControllerSaveBlock saveBlock;
 
-- (instancetype)initWithPosition:(HGPosition *)position;
+- (instancetype)initWithTicker:(HGTicker *)ticker;
+- (instancetype)initWithTicker:(HGTicker *)ticker allowSave:(BOOL)allowSave;
 
 @end

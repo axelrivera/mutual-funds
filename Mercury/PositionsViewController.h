@@ -8,18 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSInteger, HGPositionType) {
-    HGPositionTypeWatchlist,
-    HGPositionTypeMyPositions
-};
-
 @interface PositionsViewController : UIViewController
 
-@property (assign, nonatomic) HGPositionType positionType;
+@property (assign, nonatomic) HGTickerType tickerType;
 
 @property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) NSArray *dataSource;
 
-- (instancetype)initWithPositionType:(HGPositionType)positionType;
+- (instancetype)initWithTickerType:(HGTickerType)tickerType;
 
 @end

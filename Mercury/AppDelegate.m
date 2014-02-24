@@ -23,10 +23,10 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.tintColor = [UIColor hg_highlightColor];
     
-    PositionsViewController *watchlistController = [[PositionsViewController alloc] initWithPositionType:HGPositionTypeWatchlist];
+    PositionsViewController *watchlistController = [[PositionsViewController alloc] initWithTickerType:HGTickerTypeWatchlist];
     UINavigationController *watchlistNavController = [[UINavigationController alloc] initWithRootViewController:watchlistController];
     
-    PositionsViewController *positionsController = [[PositionsViewController alloc] initWithPositionType:HGPositionTypeMyPositions];
+    PositionsViewController *positionsController = [[PositionsViewController alloc] initWithTickerType:HGTickerTypeMyPositions];
     UINavigationController *positionsNavController = [[UINavigationController alloc] initWithRootViewController:positionsController];
     
     SettingsViewController *settingsController = [[SettingsViewController alloc] init];

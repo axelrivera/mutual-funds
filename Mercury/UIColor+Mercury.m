@@ -17,7 +17,7 @@
 
 + (UIColor *)hg_highlightColor
 {
-    return HexColor(0xC4A000);
+    return HexColor(0x5C3566);
 }
 
 + (UIColor *)hg_barBackgroundColor
@@ -27,7 +27,7 @@
 
 + (UIColor *)hg_mainBackgroundColor
 {
-    return [self hg_barBackgroundColor];
+    return HexColor(0xE7E7E7);
 }
 
 @end

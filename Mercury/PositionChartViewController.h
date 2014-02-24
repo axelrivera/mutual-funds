@@ -14,9 +14,9 @@
 
 @property (strong, nonatomic) NCISimpleChartView *chartView;
 
-@property (strong, nonatomic) HGPosition *position;
+@property (strong, nonatomic) HGTicker *ticker;
 @property (strong, nonatomic) NSArray *dataSource;
 
-- (instancetype)initWithPosition:(HGPosition *)position;
+- (instancetype)initWithTicker:(HGTicker *)ticker;
 
 @end

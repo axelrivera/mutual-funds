@@ -12,13 +12,14 @@
 #import "PositionDetailViewController.h"
 #import "PositionDisplayCell.h"
 
-@interface PositionsViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface PositionsViewController () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) UITableViewController *tableViewController;
 
 @property (strong, nonatomic) UIBarButtonItem *addButton;
 @property (strong, nonatomic) UIBarButtonItem *editButton;
 @property (strong, nonatomic) UIBarButtonItem *editDoneButton;
+@property (strong, nonatomic) UIBarButtonItem *clearButton;
 
 @end
 
@@ -26,20 +27,33 @@
 
 - (instancetype)init
 {
-    return [self initWithPositionType:HGPositionTypeWatchlist];
+    return [self initWithTickerType:HGTickerTypeWatchlist];
 }
 
-- (instancetype)initWithPositionType:(HGPositionType)positionType
+- (instancetype)initWithTickerType:(HGTickerType)tickerType
 {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
-        _positionType = positionType;
+        _tickerType = tickerType;
         
-        if (positionType == HGPositionTypeWatchlist) {
+        if (tickerType == HGTickerTypeWatchlist) {
             self.title = @"Watchlist";
         } else {
             self.title = @"My Positions";
         }
+
+        UIImage *tabImage = nil;
+        UIImage *tabImageSelected = nil;
+        if (tickerType == HGTickerTypeWatchlist) {
+            tabImage = [UIImage imageNamed:@"graph"];
+            tabImageSelected = [UIImage imageNamed:@"graph-selected"];
+        } else {
+            tabImage = [UIImage imageNamed:@"top-list"];
+            tabImageSelected = [UIImage imageNamed:@"top-list-selected"];
+        }
+
+        self.tabBarItem.image = tabImage;
+        self.tabBarItem.selectedImage = tabImageSelected;
         
         _dataSource = @[];
     }
@@ -86,9 +100,21 @@
     self.editDoneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                         target:self
                                                                         action:@selector(editDoneAction:)];
+
+    self.clearButton = [[UIBarButtonItem alloc] initWithTitle:@"Delete All"
+                                                        style:UIBarButtonItemStylePlain
+                                                       target:self
+                                                       action:@selector(clearAllAction:)];
     
     [self.navigationItem setLeftBarButtonItem:self.editButton animated:NO];
     [self.navigationItem setRightBarButtonItem:self.addButton animated:NO];
+
+    if (self.tickerType == HGTickerTypeMyPositions) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(myPositionsReloaded:)
+                                                     name:ReloadMyPositionsNotification
+                                                   object:nil];
+    }
 }
 
 - (void)viewDidLayoutSubviews
@@ -106,10 +132,27 @@
     }
 }
 
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc
+{
+    if (self.tickerType == HGTickerTypeMyPositions) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:ReloadMyPositionsNotification object:nil];
+    }
 }
 
 #pragma mark - Public methods
@@ -121,7 +164,7 @@
     
     if (editing) {
         [self.navigationItem setLeftBarButtonItem:self.editDoneButton animated:YES];
-        [self.navigationItem setRightBarButtonItem:nil animated:YES];
+        [self.navigationItem setRightBarButtonItem:self.clearButton animated:YES];
     } else {
         [self.navigationItem setLeftBarButtonItem:self.editButton animated:YES];
         [self.navigationItem setRightBarButtonItem:self.addButton animated:YES];
@@ -132,7 +175,7 @@
 
 - (void)reloadPositions
 {
-    HGPositionsCompletionBlock completionBlock = ^(NSArray *positions, NSError *error) {
+    HGTickersCompletionBlock completionBlock = ^(NSArray *tickers, NSError *error) {
         [self.tableViewController.refreshControl endRefreshing];
         
         if (error) {
@@ -145,11 +188,11 @@
             return;
         }
         
-        self.dataSource = positions;
+        self.dataSource = tickers;
         [self.tableView reloadData];
     };
     
-    if (self.positionType == HGPositionTypeWatchlist) {
+    if (self.tickerType == HGTickerTypeWatchlist) {
         [[MercuryData sharedData] fetchWatchlistWithCompletion:completionBlock];
     } else {
         [[MercuryData sharedData] fetchMyPositionsWithCompletion:completionBlock];
@@ -160,7 +203,13 @@
 
 - (void)addAction:(id)sender
 {
-    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Ticker Search"
+                                                        message:nil
+                                                       delegate:self
+                                              cancelButtonTitle:@"Cancel"
+                                              otherButtonTitles:@"Search", nil];
+    alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+    [alertView show];
 }
 
 - (void)editWatchlistAction:(id)sender
@@ -173,19 +222,20 @@
     [self setEditing:NO animated:YES];
 }
 
+- (void)clearAllAction:(id)sender
+{
+
+}
+
 - (void)reloadAction:(UIRefreshControl *)refreshControl
 {
     [self reloadPositions];
 }
 
-- (BOOL)shouldAutorotate
+- (void)myPositionsReloaded:(NSNotification *)notification
 {
-    return NO;
-}
-
-- (NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskPortrait;
+    self.dataSource = [MercuryData sharedData].myPositions;
+    [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource Methods
@@ -204,11 +254,11 @@
         cell = [[PositionDisplayCell alloc] initWithReuseIdentifier:CellIdentifier];
     }
     
-    HGPosition *position = self.dataSource[indexPath.row];
+    HGTicker *ticker = self.dataSource[indexPath.row];
     
-    cell.closeLabel.text = position.close;
-    cell.nameLabel.text = position.name;
-    cell.symbolLabel.text = position.symbol;
+    cell.closeLabel.text = ticker.position.close;
+    cell.nameLabel.text = ticker.position.name;
+    cell.symbolLabel.text = ticker.position.symbol;
     
     [cell setNeedsUpdateConstraints];
     
@@ -221,8 +271,10 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    HGPosition *position = self.dataSource[indexPath.row];
-    PositionDetailViewController *detailController = [[PositionDetailViewController alloc] initWithPosition:position];
+    HGTicker *ticker = self.dataSource[indexPath.row];
+    PositionDetailViewController *detailController = [[PositionDetailViewController alloc] initWithTicker:ticker];
+    detailController.hidesBottomBarWhenPushed = YES;
+
     [self.navigationController pushViewController:detailController animated:YES];
 }
 
@@ -249,6 +301,52 @@
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
 {
     
+}
+
+#pragma mark - UITextFieldDelegate Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        UITextField *textField = [alertView textFieldAtIndex:0];
+        NSString *symbol = [textField.text uppercaseString];
+
+        [[YahooAPIClient sharedClient] fetchPositionsForSymbols:@[ symbol ]
+                                                     completion:^(NSArray *positions, NSError *error)
+        {
+            if (error || IsEmpty(positions)) {
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error searching symbol"
+                                                                    message:@"Error searching symbol"
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"OK"
+                                                          otherButtonTitles:nil];
+                [alertView show];
+                return;
+            }
+
+            PositionDetailViewControllerSaveBlock saveBlock = ^(HGTicker *ticker) {
+                if (self.tickerType == HGTickerTypeWatchlist) {
+                    [[MercuryData sharedData].watchlist addObject:ticker];
+                    self.dataSource = [MercuryData sharedData].watchlist;
+                } else {
+                    [[MercuryData sharedData].myPositions addObject:ticker];
+                    self.dataSource = [MercuryData sharedData].myPositions;
+                }
+
+                [self.tableView reloadData];
+            };
+
+            HGTicker *ticker = [HGTicker tickerWithType:self.tickerType symbol:symbol];
+            ticker.position = positions[0];
+
+            PositionDetailViewController *controller = [[PositionDetailViewController alloc] initWithTicker:ticker
+                                                                                                  allowSave:YES];
+            controller.saveBlock = saveBlock;
+            controller.hidesBottomBarWhenPushed = YES;
+
+            [self.navigationController pushViewController:controller animated:YES];
+        }];
+    }
 }
 
 @end

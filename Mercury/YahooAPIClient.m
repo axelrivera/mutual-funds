@@ -40,7 +40,15 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
             !IsEmpty(responseObject[@"query"][@"results"]) &&
             !IsEmpty(responseObject[@"query"][@"results"][@"row"]))
         {
-            NSArray *quotesRaw = responseObject[@"query"][@"results"][@"row"];
+            id raw = responseObject[@"query"][@"results"][@"row"];
+            NSArray *quotesRaw = @[];
+
+            if ([raw isKindOfClass:[NSDictionary class]]) {
+                quotesRaw = @[ raw ];
+            } else if ([raw isKindOfClass:[NSArray class]]) {
+                quotesRaw = raw;
+            }
+
             NSMutableArray *positions = [@[] mutableCopy];
             
             for (NSDictionary *dictionary in quotesRaw) {
@@ -150,7 +158,8 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
 
 - (NSDictionary *)parametersForQuery:(NSString *)query
 {
-    NSMutableDictionary *dictionary = [@{ @"format" : @"json", @"ignore" : @".csv" } mutableCopy];
+    //NSMutableDictionary *dictionary = [@{ @"format" : @"json", @"ignore" : @".csv" } mutableCopy];
+    NSMutableDictionary *dictionary = [@{ @"format" : @"json" } mutableCopy];
     if (!IsEmpty(query)) {
         dictionary[@"q"] = query;
     }

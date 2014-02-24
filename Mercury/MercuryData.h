@@ -8,15 +8,20 @@
 
 #import <Foundation/Foundation.h>
 
+typedef void(^HGTickersCompletionBlock)(NSArray *tickers, NSError *error);
+
 @interface MercuryData : NSObject
 
 @property (strong, nonatomic) NSMutableArray *watchlist;
 @property (strong, nonatomic) NSMutableArray *myPositions;
 
-- (void)fetchWatchlistWithCompletion:(HGPositionsCompletionBlock)completion;
-- (void)fetchMyPositionsWithCompletion:(HGPositionsCompletionBlock)completion;
+- (void)fetchWatchlistWithCompletion:(HGTickersCompletionBlock)completion;
+- (void)fetchMyPositionsWithCompletion:(HGTickersCompletionBlock)completion;
 
 - (void)fetchHistoricalDataForSymbol:(NSString *)symbol completion:(HGHistoricalDataCompletionBlock)completion;
+
+- (BOOL)isSymbolPresentInMyPositions:(NSString *)symbol;
+- (void)removePositionWithSymbol:(NSString *)symbol;
 
 + (instancetype)sharedData;
 

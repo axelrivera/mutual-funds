@@ -17,12 +17,12 @@
 
 @implementation PositionChartViewController
 
-- (instancetype)initWithPosition:(HGPosition *)position
+- (instancetype)initWithTicker:(HGTicker *)ticker
 {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
-        _position = position;
-        _dataSource = [[position.historyArray subarrayWithRange:NSMakeRange(0, 365)] reversedArray];
+        _ticker = ticker;
+        _dataSource = [[ticker.position.historyArray subarrayWithRange:NSMakeRange(0, 365)] reversedArray];
     }
     return self;
 }

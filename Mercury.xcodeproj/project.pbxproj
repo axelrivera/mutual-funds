@@ -34,6 +34,7 @@
 		169A0DC218B82ABE00E42D1A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 169A0DC018B82ABE00E42D1A /* InfoPlist.strings */; };
 		169A0DC418B82ABE00E42D1A /* MercuryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 169A0DC318B82ABE00E42D1A /* MercuryTests.m */; };
 		169A0DCF18B82DBA00E42D1A /* PositionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 169A0DCE18B82DBA00E42D1A /* PositionsViewController.m */; };
+		16F0797218BA835F00497607 /* HGTicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 16F0797118BA835F00497607 /* HGTicker.m */; };
 		62F5EDAA2D6B47D7AB50AF79 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 290F2EA80FAD4BA6878CC57A /* libPods.a */; };
 		C6736770D1B24F91851CF9C7 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 290F2EA80FAD4BA6878CC57A /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -97,6 +98,8 @@
 		169A0DCD18B82DBA00E42D1A /* PositionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PositionsViewController.h; sourceTree = "<group>"; };
 		169A0DCE18B82DBA00E42D1A /* PositionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PositionsViewController.m; sourceTree = "<group>"; };
 		169A0DD018B82E9A00E42D1A /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		16F0797018BA835F00497607 /* HGTicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HGTicker.h; sourceTree = "<group>"; };
+		16F0797118BA835F00497607 /* HGTicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HGTicker.m; sourceTree = "<group>"; };
 		290F2EA80FAD4BA6878CC57A /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CDE19C2F9074FD4B20E637F /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -130,6 +133,8 @@
 		1605410218B8431E00C200C6 /* Model + Data */ = {
 			isa = PBXGroup;
 			children = (
+				16F0797018BA835F00497607 /* HGTicker.h */,
+				16F0797118BA835F00497607 /* HGTicker.m */,
 				1605410718B843C000C200C6 /* HGPosition.h */,
 				1605410818B843C000C200C6 /* HGPosition.m */,
 				1605412718B96A6000C200C6 /* HGHistory.h */,
@@ -453,6 +458,7 @@
 				1605412018B92D0A00C200C6 /* MercuryData.m in Sources */,
 				1605412F18B981DD00C200C6 /* NSArray+Mercury.m in Sources */,
 				1605411D18B922C100C200C6 /* YahooAPIClient.m in Sources */,
+				16F0797218BA835F00497607 /* HGTicker.m in Sources */,
 				1605413518B99C5500C200C6 /* UITabBarController+AutoRotation.m in Sources */,
 				169A0DCF18B82DBA00E42D1A /* PositionsViewController.m in Sources */,
 				1605412318B93D9A00C200C6 /* PositionDetailViewController.m in Sources */,

@@ -12,6 +12,10 @@
 // Eleven Years in Seconds
 #define kHistoricalStartDateInSecods 60 * 60 * 24 * 365 * 11
 
+// Notifications
+
+#define ReloadMyPositionsNotification @"ReloadMyPositionsNotification"
+
 // Helper Macro Functions
 
 #define NSStringFromBOOL(value) value ? @"YES" : @"NO"

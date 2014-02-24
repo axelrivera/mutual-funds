@@ -12,6 +12,7 @@
 #import "UIColor+Mercury.h"
 #import "NSDateFormatter+Mercury.h"
 #import "NSArray+Mercury.h"
+#import "HGTicker.h"
 #import "HGHistory.h"
 #import "HGPosition.h"
 #import "YahooAPIClient.h"

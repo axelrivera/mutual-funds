@@ -17,35 +17,54 @@
         _watchlist = [@[] mutableCopy];
         _myPositions = [@[] mutableCopy];
         
-        [_watchlist addObject:@"RPG"];
-        [_watchlist addObject:@"OBEGX"];
-        [_watchlist addObject:@"SPY"];
+        [_watchlist addObject:[HGTicker tickerWithType:HGTickerTypeWatchlist symbol:@"RPG"]];
+        [_watchlist addObject:[HGTicker tickerWithType:HGTickerTypeWatchlist symbol:@"OBEGX"]];
+        [_watchlist addObject:[HGTicker tickerWithType:HGTickerTypeWatchlist symbol:@"SPY"]];
         
-        [_myPositions addObject:@"JSVAX"];
-        [_myPositions addObject:@"SWLSX"];
+        [_myPositions addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"JSVAX"]];
+        [_myPositions addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"SWLSX"]];
     }
     return self;
 }
 
 - (void)fetchWatchlistWithCompletion:(HGPositionsCompletionBlock)completion
 {
-    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:self.watchlist completion:^(NSArray *positions, NSError *error) {
+    NSMutableArray *symbols = [@[] mutableCopy];
+    for (HGTicker *ticker in self.watchlist) {
+        [symbols addObject:ticker.symbol];
+    }
+
+    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:symbols completion:^(NSArray *positions, NSError *error) {
         if (error) {
             if (completion) {
                 completion(nil, error);
             }
             return;
         }
+
+        for (HGTicker *ticker in self.watchlist) {
+            for (HGPosition *position in positions) {
+                if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
+                    ticker.position = position;
+                    break;
+                }
+            }
+        }
         
         if (completion) {
-            completion(positions, nil);
+            completion(self.watchlist, nil);
         }
     }];
 }
 
 - (void)fetchMyPositionsWithCompletion:(HGPositionsCompletionBlock)completion
 {
-    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:self.myPositions completion:^(NSArray *positions, NSError *error) {
+    NSMutableArray *symbols = [@[] mutableCopy];
+    for (HGTicker *ticker in self.myPositions) {
+        [symbols addObject:ticker.symbol];
+    }
+
+    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:symbols completion:^(NSArray *positions, NSError *error) {
         if (error) {
             if (completion) {
                 completion(nil, error);
@@ -53,8 +72,17 @@
             return;
         }
         
+        for (HGTicker *ticker in self.myPositions) {
+            for (HGPosition *position in positions) {
+                if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
+                    ticker.position = position;
+                    break;
+                }
+            }
+        }
+
         if (completion) {
-            completion(positions, nil);
+            completion(self.myPositions, nil);
         }
     }];
 }
@@ -79,6 +107,37 @@
              completion(historicalData, error);
          }
      }];
+}
+
+- (BOOL)isSymbolPresentInMyPositions:(NSString *)symbol
+{
+    BOOL present = NO;
+    for (HGTicker *ticker in self.myPositions) {
+        if ([[symbol uppercaseString] isEqualToString:[ticker.symbol uppercaseString]]) {
+            present = YES;
+            break;
+        }
+    }
+    return present;
+}
+
+- (void)removePositionWithSymbol:(NSString *)symbol
+{
+    HGTicker *removedTicker = nil;
+    for (NSInteger i = 0; i < [self.myPositions count]; i++) {
+        HGTicker *ticker = self.myPositions[i];
+        if ([[ticker.symbol uppercaseString] isEqualToString:[symbol uppercaseString]]) {
+            removedTicker = ticker;
+            [self.myPositions removeObjectAtIndex:i];
+            break;
+        }
+    }
+
+    if (removedTicker) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:ReloadMyPositionsNotification
+                                                            object:nil
+                                                          userInfo:@{ @"myPositionRemoved" : removedTicker }];
+    }
 }
 
 #pragma mark - Singleton Methods
