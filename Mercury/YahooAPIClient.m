@@ -8,6 +8,8 @@
 
 #import "YahooAPIClient.h"
 
+#import "NSString+Yahoo.h"
+
 #import <AFNetworkActivityIndicatorManager.h>
 
 static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
@@ -18,6 +20,7 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
 {
     self = [super initWithBaseURL:url];
     if (self) {
+        self.responseSerializer = [AFHTTPResponseSerializer serializer];
         [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     }
     return self;
@@ -27,43 +30,29 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
 
 - (NSURLSessionDataTask *)fetchPositionsForSymbols:(NSArray *)symbols completion:(HGPositionsCompletionBlock)completion
 {
-    NSDictionary *parameters = [self quoteParametersForSymbols:symbols];
+    NSString *symbolsStr = [symbols componentsJoinedByString:@","];
+    NSDictionary *parameters = @{ @"s" : symbolsStr, @"f" : [NSString hg_quoteColumnsString] };
     
     DLog(@"Trying to Fetch Positions With Parameters:");
     DLog(@"%@", parameters);
     
-    return [self GET:@"" parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
+    return [self GET:@"http://download.finance.yahoo.com/d/quotes.csv" parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
         DLog(@"Fetch Response");
-        DLog(@"%@", responseObject);
+        NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+        NSArray *quotesRaw = [responseString hg_arrayOfQuoteDictionaries];
+        DLog(@"%@", quotesRaw);
         
-        if (!IsEmpty(responseObject[@"query"]) &&
-            !IsEmpty(responseObject[@"query"][@"results"]) &&
-            !IsEmpty(responseObject[@"query"][@"results"][@"row"]))
-        {
-            id raw = responseObject[@"query"][@"results"][@"row"];
-            NSArray *quotesRaw = @[];
-
-            if ([raw isKindOfClass:[NSDictionary class]]) {
-                quotesRaw = @[ raw ];
-            } else if ([raw isKindOfClass:[NSArray class]]) {
-                quotesRaw = raw;
-            }
-
-            NSMutableArray *positions = [@[] mutableCopy];
-            
-            for (NSDictionary *dictionary in quotesRaw) {
-                HGPosition *position = [[HGPosition alloc] initWithDictionary:dictionary];
-                [positions addObject:position];
-            }
-            
-            if (completion) {
-                completion(positions, nil);
-            }
-        } else {
-            NSError *error = [NSError errorWithDomain:@"mydomain" code:0 userInfo:nil];
-            if (completion) {
-                completion(nil, error);
-            }
+        NSMutableArray *positions = [@[] mutableCopy];
+        
+        for (NSDictionary *dictionary in quotesRaw) {
+            HGPosition *position = [[HGPosition alloc] initWithDictionary:dictionary];
+            [positions addObject:position];
+        }
+        
+        DLog(@"positions: %@", positions);
+        
+        if (completion) {
+            completion(positions, nil);
         }
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         DLog(@"Fetch Error: %@", error);
@@ -79,40 +68,43 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
                                                 period:(NSString *)period
                                             completion:(HGHistoricalDataCompletionBlock)completion
 {
-    NSDictionary *parameters = [self historicalParametersForSymbol:symbol start:start end:end period:period];
+    NSString *startMonth = [[NSNumber numberWithInteger:[[[NSDateFormatter hg_monthFormatter] stringFromDate:start] integerValue] - 1] stringValue];
+    NSString *startDay = [[NSDateFormatter hg_dayFormatter] stringFromDate:start];
+    NSString *startYear = [[NSDateFormatter hg_yearFormatter] stringFromDate:start];
+    
+    NSString *endMonth = [[NSNumber numberWithInteger:[[[NSDateFormatter hg_monthFormatter] stringFromDate:end] integerValue] - 1] stringValue];
+    NSString *endDay = [[NSDateFormatter hg_dayFormatter] stringFromDate:end];
+    NSString *endYear = [[NSDateFormatter hg_yearFormatter] stringFromDate:end];
+    
+    NSDictionary *parameters = @{ @"s" : symbol,
+                                  @"a" : startMonth,
+                                  @"b" : startDay,
+                                  @"c" : startYear,
+                                  @"d" : endMonth,
+                                  @"e" : endDay,
+                                  @"f" : endYear,
+                                  @"g" : period };
     
     DLog(@"Trying to Fetch Historical Data With Parameters:");
     DLog(@"%@", parameters);
     
-    return [self GET:@"" parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
-        DLog(@"Fetch Response");
-        DLog(@"%@", responseObject);
+    return [self GET:@"http://ichart.finance.yahoo.com/table.csv" parameters:parameters
+             success:^(NSURLSessionDataTask *task, id responseObject)
+    {
+        DLog(@"Fetch History for %@", symbol)
+        NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+        NSArray *historyRaw = [responseString hg_arrayOfHistoricalDictionaries];
+        DLog(@"%@", historyRaw);
         
-        if (!IsEmpty(responseObject[@"query"]) &&
-            !IsEmpty(responseObject[@"query"][@"results"]) &&
-            !IsEmpty(responseObject[@"query"][@"results"][@"row"]))
-        {
-            NSMutableArray *historyRaw = [NSMutableArray arrayWithArray:responseObject[@"query"][@"results"][@"row"]];
-            
-            if (!IsEmpty(historyRaw)) {
-                [historyRaw removeObjectAtIndex:0];
-            }
-            
-            NSMutableArray *history = [@[] mutableCopy];
-            
-            for (NSDictionary *dictionary in historyRaw) {
-                HGHistory *data = [[HGHistory alloc] initWithDictionary:dictionary];
-                [history addObject:data];
-            }
-            
-            if (completion) {
-                completion(history, nil);
-            }
-        } else {
-            NSError *error = [NSError errorWithDomain:@"mydomain" code:0 userInfo:nil];
-            if (completion) {
-                completion(nil, error);
-            }
+        NSMutableArray *history = [@[] mutableCopy];
+        
+        for (NSDictionary *dictionary in historyRaw) {
+            HGHistory *data = [[HGHistory alloc] initWithDictionary:dictionary];
+            [history addObject:data];
+        }
+        
+        if (completion) {
+            completion(history, nil);
         }
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         DLog(@"Fetch Error: %@", error);
@@ -122,51 +114,6 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
     }];
 }
 
-#pragma mark - Private Methods
-
-- (NSDictionary *)quoteParametersForSymbols:(NSArray *)symbols
-{
-    NSString *columnCodes = @"snl1c1p2d1t1xpobb6aa5mwva2";
-    NSString *columns =
-    @"symbol,name,close,change,change_in_percent,last_trade_date,last_trade_time,stock_exchange,"
-    "previous_close,open,bid,bid_size,ask,ask_size,days_range,weeks_range_52,volume,avg_daily_volume";
-    
-    NSString *format = @"select * from csv where url='http://download.finance.yahoo.com/d/quotes.csv?s=%@&f=%@&e=.csv' and columns='%@'";
-    NSString *query = [NSString stringWithFormat:format, [symbols componentsJoinedByString:@","], columnCodes, columns];
-    
-    return [self parametersForQuery:query];
-}
-
-- (NSDictionary *)historicalParametersForSymbol:(NSString *)symbol start:(NSDate *)start end:(NSDate *)end period:(NSString *)period
-{
-    NSString *startMonth = [[NSNumber numberWithInteger:[[[NSDateFormatter hg_monthFormatter] stringFromDate:start] integerValue] - 1] stringValue];
-    NSString *startDay = [[NSDateFormatter hg_dayFormatter] stringFromDate:start];
-    NSString *startYear = [[NSDateFormatter hg_yearFormatter] stringFromDate:start];
-    
-    NSString *endMonth = [[NSNumber numberWithInteger:[[[NSDateFormatter hg_monthFormatter] stringFromDate:end] integerValue] - 1] stringValue];
-    NSString *endDay = [[NSDateFormatter hg_dayFormatter] stringFromDate:end];
-    NSString *endYear = [[NSDateFormatter hg_yearFormatter] stringFromDate:end];
-    
-    NSString *format =
-    @"select * from csv where url='http://ichart.finance.yahoo.com/table.csv?s=%@&a=%@&b=%@&c=%@&d=%@&e=%@&f=%@&g=%@'"
-    " and columns='date,open,high,low,close,volume,adj_close'";
-    NSString *query = [NSString stringWithFormat:format,
-                       symbol, startMonth, startDay, startYear, endMonth, endDay, endYear, period];
-    
-    return [self parametersForQuery:query];
-}
-
-- (NSDictionary *)parametersForQuery:(NSString *)query
-{
-    //NSMutableDictionary *dictionary = [@{ @"format" : @"json", @"ignore" : @".csv" } mutableCopy];
-    NSMutableDictionary *dictionary = [@{ @"format" : @"json" } mutableCopy];
-    if (!IsEmpty(query)) {
-        dictionary[@"q"] = query;
-    }
-    
-    return dictionary;
-}
-
 #pragma mark - Singleton Methods
 
 + (instancetype)sharedClient
@@ -174,7 +121,7 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
     static YahooAPIClient *_sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _sharedInstance = [[[self class] alloc] initWithBaseURL:[NSURL URLWithString:YahooAPIBaseURLString]];
+        _sharedInstance = [[[self class] alloc] initWithBaseURL:nil];
     });
     return _sharedInstance;
 }

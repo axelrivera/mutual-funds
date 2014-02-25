@@ -16,6 +16,8 @@
     if (self) {
         _watchlist = [@[] mutableCopy];
         _myPositions = [@[] mutableCopy];
+        _fetchingWatchlist = NO;
+        _fetchingMyPositions = NO;
         
         [_watchlist addObject:[HGTicker tickerWithType:HGTickerTypeWatchlist symbol:@"RPG"]];
         [_watchlist addObject:[HGTicker tickerWithType:HGTickerTypeWatchlist symbol:@"OBEGX"]];
@@ -27,14 +29,71 @@
     return self;
 }
 
+- (void)fetchAllPositionsWithCompletion:(HGAllPositionsCompletionBlock)completion
+{
+    self.fetchingWatchlist = YES;
+    self.fetchingMyPositions = YES;
+    
+    NSMutableArray *symbols = [@[] mutableCopy];
+    
+    for (HGTicker *ticker in self.watchlist) {
+        [symbols addObject:ticker.symbol];
+    }
+    
+    for (HGTicker *ticker in self.myPositions) {
+        [symbols addObject:ticker.symbol];
+    }
+    
+    NSSet *symbolsSet = [NSSet setWithArray:symbols];
+    
+    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:[symbolsSet allObjects] completion:^(NSArray *positions, NSError *error) {
+        self.fetchingWatchlist = NO;
+        self.fetchingMyPositions = NO;
+        
+        if (error) {
+            if (completion) {
+                completion(nil, nil, error);
+            }
+            return;
+        }
+        
+        for (HGTicker *ticker in self.watchlist) {
+            for (HGPosition *position in positions) {
+                if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
+                    ticker.position = position;
+                    break;
+                }
+            }
+        }
+        
+        for (HGTicker *ticker in self.myPositions) {
+            for (HGPosition *position in positions) {
+                if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
+                    ticker.position = position;
+                    break;
+                }
+            }
+        }
+        
+        NSDictionary *userInfo = @{ @"myPositions" : self.myPositions, @"watchlist" : self.watchlist };
+        [[NSNotificationCenter defaultCenter] postNotificationName:AllPositionsReloadedNotification
+                                                            object:nil
+                                                          userInfo:userInfo];
+    }];
+}
+
 - (void)fetchWatchlistWithCompletion:(HGPositionsCompletionBlock)completion
 {
+    self.fetchingWatchlist = YES;
+    
     NSMutableArray *symbols = [@[] mutableCopy];
     for (HGTicker *ticker in self.watchlist) {
         [symbols addObject:ticker.symbol];
     }
 
     [[YahooAPIClient sharedClient] fetchPositionsForSymbols:symbols completion:^(NSArray *positions, NSError *error) {
+        self.fetchingWatchlist = NO;
+        
         if (error) {
             if (completion) {
                 completion(nil, error);
@@ -59,12 +118,16 @@
 
 - (void)fetchMyPositionsWithCompletion:(HGPositionsCompletionBlock)completion
 {
+    self.fetchingMyPositions = YES;
+    
     NSMutableArray *symbols = [@[] mutableCopy];
     for (HGTicker *ticker in self.myPositions) {
         [symbols addObject:ticker.symbol];
     }
 
     [[YahooAPIClient sharedClient] fetchPositionsForSymbols:symbols completion:^(NSArray *positions, NSError *error) {
+        self.fetchingMyPositions = NO;
+        
         if (error) {
             if (completion) {
                 completion(nil, error);
@@ -134,7 +197,7 @@
     }
 
     if (removedTicker) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:ReloadMyPositionsNotification
+        [[NSNotificationCenter defaultCenter] postNotificationName:MyPositionsReloadedNotification
                                                             object:nil
                                                           userInfo:@{ @"myPositionRemoved" : removedTicker }];
     }

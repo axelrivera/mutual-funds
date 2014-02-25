@@ -22,4 +22,7 @@
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 
+- (id)sma1Value;
+- (id)sma2Value;
+
 @end

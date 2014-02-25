@@ -71,7 +71,7 @@
     
     for (NSInteger i = 0; i < [self.dataSource count]; i++) {
         HGHistory * history = self.dataSource[i];
-        [self.chartView addPoint:(double)i val:@[ history.close, history.sma1, history.sma2 ]];
+        [self.chartView addPoint:(double)i val:@[ history.close, [history sma1Value], [history sma2Value] ]];
     }
     
     [self.chartView drawChart];

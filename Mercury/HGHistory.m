@@ -21,10 +21,20 @@
         _low = [[NSDecimalNumber decimalNumberWithString:dictionary[@"low"]] copy];
         _volume = [[NSNumber numberWithInteger:[dictionary[@"volume"] integerValue]] copy];
         _adjustedClose = [[NSDecimalNumber decimalNumberWithString:dictionary[@"adj_close"]] copy];
-        _sma1 = nil;
-        _sma2 = nil;
+        _sma1 = [NSDecimalNumber notANumber];
+        _sma2 = [NSDecimalNumber notANumber];
     }
     return self;
+}
+
+- (id)sma1Value
+{
+    return [self.sma1 isEqualToNumber:[NSDecimalNumber notANumber]] ? [NSNull null] : self.sma1;
+}
+
+- (id)sma2Value
+{
+    return [self.sma2 isEqualToNumber:[NSDecimalNumber notANumber]] ? [NSNull null] : self.sma2;
 }
 
 - (NSString *)description

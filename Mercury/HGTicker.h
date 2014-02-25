@@ -25,4 +25,8 @@ typedef NS_ENUM(NSInteger, HGTickerType) {
 
 + (instancetype)tickerWithType:(HGTickerType)tickerType symbol:(NSString *)symbol;
 
+- (NSString *)name;
+- (NSString *)close;
+- (NSString *)priceAndPercentChange;
+
 @end

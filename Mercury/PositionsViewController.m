@@ -108,11 +108,20 @@
     
     [self.navigationItem setLeftBarButtonItem:self.editButton animated:NO];
     [self.navigationItem setRightBarButtonItem:self.addButton animated:NO];
-
-    if (self.tickerType == HGTickerTypeMyPositions) {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(allPositionsReloaded:)
+                                                 name:AllPositionsReloadedNotification
+                                               object:nil];
+    
+    if (self.tickerType == HGTickerTypeWatchlist) {
+        self.dataSource = [MercuryData sharedData].watchlist;
+    } else {
+        self.dataSource = [MercuryData sharedData].myPositions;
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(myPositionsReloaded:)
-                                                     name:ReloadMyPositionsNotification
+                                                     name:MyPositionsReloadedNotification
                                                    object:nil];
     }
 }
@@ -127,9 +136,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (IsEmpty(self.dataSource)) {
-        [self reloadPositions];
-    }
 }
 
 - (BOOL)shouldAutorotate
@@ -150,8 +156,10 @@
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:AllPositionsReloadedNotification object:nil];
+    
     if (self.tickerType == HGTickerTypeMyPositions) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:ReloadMyPositionsNotification object:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:MyPositionsReloadedNotification object:nil];
     }
 }
 
@@ -193,8 +201,16 @@
     };
     
     if (self.tickerType == HGTickerTypeWatchlist) {
+        if ([MercuryData sharedData].isFetchingWatchlist) {
+            [self.tableViewController.refreshControl endRefreshing];
+            return;
+        }
         [[MercuryData sharedData] fetchWatchlistWithCompletion:completionBlock];
     } else {
+        if ([MercuryData sharedData].isFetchingMyPositions) {
+            [self.tableViewController.refreshControl endRefreshing];
+            return;
+        }
         [[MercuryData sharedData] fetchMyPositionsWithCompletion:completionBlock];
     }
 }
@@ -209,6 +225,12 @@
                                               cancelButtonTitle:@"Cancel"
                                               otherButtonTitles:@"Search", nil];
     alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+    
+    UITextField *textField = [alertView textFieldAtIndex:0];
+    textField.autocapitalizationType = UITextAutocapitalizationTypeAllCharacters;
+    textField.keyboardType = UIKeyboardTypeASCIICapable;
+    textField.autocorrectionType = UITextAutocorrectionTypeNo;
+    
     [alertView show];
 }
 
@@ -238,6 +260,18 @@
     [self.tableView reloadData];
 }
 
+- (void)allPositionsReloaded:(NSNotification *)notification
+{
+    NSDictionary *userInfo = notification.userInfo;
+    if (self.tickerType == HGTickerTypeWatchlist) {
+        self.dataSource = IsEmpty(userInfo[@"watchlist"]) ? @[] : userInfo[@"watchlist"];
+    } else {
+        self.dataSource = IsEmpty(userInfo[@"myPositions"]) ? @[] : userInfo[@"myPositions"];
+    }
+    
+    [self.tableView reloadData];
+}
+
 #pragma mark - UITableViewDataSource Methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -256,9 +290,9 @@
     
     HGTicker *ticker = self.dataSource[indexPath.row];
     
-    cell.closeLabel.text = ticker.position.close;
-    cell.nameLabel.text = ticker.position.name;
-    cell.symbolLabel.text = ticker.position.symbol;
+    cell.symbolLabel.text = ticker.symbol;
+    cell.nameLabel.text = [ticker name];
+    cell.closeLabel.text = [ticker close];
     
     [cell setNeedsUpdateConstraints];
     
@@ -310,10 +344,14 @@
     if (buttonIndex == 1) {
         UITextField *textField = [alertView textFieldAtIndex:0];
         NSString *symbol = [textField.text uppercaseString];
+        
+        self.navigationItem.rightBarButtonItem.enabled = NO;
 
         [[YahooAPIClient sharedClient] fetchPositionsForSymbols:@[ symbol ]
                                                      completion:^(NSArray *positions, NSError *error)
         {
+            self.navigationItem.rightBarButtonItem.enabled = YES;
+            
             if (error || IsEmpty(positions)) {
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error searching symbol"
                                                                     message:@"Error searching symbol"

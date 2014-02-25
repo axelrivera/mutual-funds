@@ -53,9 +53,9 @@
     {
         self.ticker.position.historyArray = historicalData;
         self.chartDataSource = [[historicalData subarrayWithRange:NSMakeRange(0, 90)] reversedArray];
-
+        
         for (NSInteger i = 0; i < [self.chartDataSource count]; i++) {
-            HGHistory *history = self.chartDataSource[i];
+            HGHistory * history = self.chartDataSource[i];
             [self.chartView addPoint:(double)i val:@[ history.close ]];
         }
 
@@ -120,7 +120,7 @@
     
     [[MercuryData sharedData].myPositions addObject:ticker];
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:ReloadMyPositionsNotification
+    [[NSNotificationCenter defaultCenter] postNotificationName:MyPositionsReloadedNotification
                                                         object:nil
                                                       userInfo:nil];
 

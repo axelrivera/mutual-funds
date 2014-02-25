@@ -17,19 +17,19 @@ PODS:
   - AFNetworking/Serialization (2.1.0)
   - AFNetworking/UIKit (2.1.0):
     - AFNetworking/NSURLConnection
-  - BNHtmlPdfKit (0.3.1)
+  - CHCSVParser (2.0.7)
   - NCICharts (1.0.1)
   - UIView+AutoLayout (1.1.0)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.0)
-  - BNHtmlPdfKit (~> 0.3.1)
+  - CHCSVParser (~> 2.0.7)
   - NCICharts (~> 1.0.1)
   - UIView+AutoLayout
 
 SPEC CHECKSUMS:
   AFNetworking: c7d7901a83f631414c7eda1737261f696101a5cd
-  BNHtmlPdfKit: 7276cd975391921be1c371346b577c248ceae697
+  CHCSVParser: 30ac034cc0d37d9c783e7af96926270524836d70
   NCICharts: 7f1c2b7ab51b6c424d5d99f4d0544d1eecde2c06
   UIView+AutoLayout: 94cea4d2f3ed095434afdf6ed2a6d288f7f2d611
 

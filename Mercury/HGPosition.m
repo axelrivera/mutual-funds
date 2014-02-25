@@ -14,6 +14,7 @@
 {
     self = [super init];
     if (self) {
+        DLog(@"Dictionary: %@", dictionary);
         _symbol = [dictionary[@"symbol"] copy];
         _name = [dictionary[@"name"] copy];
         _close = [dictionary[@"close"] copy];
@@ -62,7 +63,8 @@
             current.sma1 = [[collection sumHistoryCloses] decimalNumberByDividingBy:decimalPeriod];
         }
         @catch (NSException *exception) {
-            current.sma1 = nil;
+            current.sma1 = [NSDecimalNumber notANumber];
+            break;
         }
     }
 }
@@ -82,9 +84,15 @@
             current.sma2 = [[collection sumHistoryCloses] decimalNumberByDividingBy:decimalPeriod];
         }
         @catch (NSException *exception) {
-            current.sma2 = nil;
+            current.sma2 = [NSDecimalNumber notANumber];
+            break;
         }
     }
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"name: %@, close: %@, change: %@", self.name, self.close, [self priceAndPercentageChange]];
 }
 
 @end

@@ -21,6 +21,9 @@
 		1605413218B9965800C200C6 /* PositionChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605413118B9965800C200C6 /* PositionChartViewController.m */; };
 		1605413518B99C5500C200C6 /* UITabBarController+AutoRotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605413418B99C5500C200C6 /* UITabBarController+AutoRotation.m */; };
 		1605413818B99CAB00C200C6 /* UINavigationController+AutoRotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605413718B99CAB00C200C6 /* UINavigationController+AutoRotation.m */; };
+		160B3BC918BC1CF30075CC14 /* NSString+Yahoo.m in Sources */ = {isa = PBXBuildFile; fileRef = 160B3BC818BC1CF30075CC14 /* NSString+Yahoo.m */; };
+		160B3BCC18BC4EAA0075CC14 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 160B3BCA18BC4EAA0075CC14 /* iTunesArtwork */; };
+		160B3BCD18BC4EAA0075CC14 /* iTunesArtwork@2x in Resources */ = {isa = PBXBuildFile; fileRef = 160B3BCB18BC4EAA0075CC14 /* iTunesArtwork@2x */; };
 		169A0D9F18B82ABD00E42D1A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169A0D9E18B82ABD00E42D1A /* Foundation.framework */; };
 		169A0DA118B82ABD00E42D1A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169A0DA018B82ABD00E42D1A /* CoreGraphics.framework */; };
 		169A0DA318B82ABD00E42D1A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169A0DA218B82ABD00E42D1A /* UIKit.framework */; };
@@ -79,7 +82,11 @@
 		1605413418B99C5500C200C6 /* UITabBarController+AutoRotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITabBarController+AutoRotation.m"; sourceTree = "<group>"; };
 		1605413618B99CAB00C200C6 /* UINavigationController+AutoRotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+AutoRotation.h"; sourceTree = "<group>"; };
 		1605413718B99CAB00C200C6 /* UINavigationController+AutoRotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+AutoRotation.m"; sourceTree = "<group>"; };
-		169A0D9B18B82ABD00E42D1A /* Mercury.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mercury.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		160B3BC718BC1CF30075CC14 /* NSString+Yahoo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Yahoo.h"; sourceTree = "<group>"; };
+		160B3BC818BC1CF30075CC14 /* NSString+Yahoo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Yahoo.m"; sourceTree = "<group>"; };
+		160B3BCA18BC4EAA0075CC14 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
+		160B3BCB18BC4EAA0075CC14 /* iTunesArtwork@2x */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iTunesArtwork@2x"; sourceTree = "<group>"; };
+		169A0D9B18B82ABD00E42D1A /* Mutual Funds.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Mutual Funds.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		169A0D9E18B82ABD00E42D1A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		169A0DA018B82ABD00E42D1A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		169A0DA218B82ABD00E42D1A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -204,6 +211,8 @@
 				1605413418B99C5500C200C6 /* UITabBarController+AutoRotation.m */,
 				1605413618B99CAB00C200C6 /* UINavigationController+AutoRotation.h */,
 				1605413718B99CAB00C200C6 /* UINavigationController+AutoRotation.m */,
+				160B3BC718BC1CF30075CC14 /* NSString+Yahoo.h */,
+				160B3BC818BC1CF30075CC14 /* NSString+Yahoo.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -222,7 +231,7 @@
 		169A0D9C18B82ABD00E42D1A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				169A0D9B18B82ABD00E42D1A /* Mercury.app */,
+				169A0D9B18B82ABD00E42D1A /* Mutual Funds.app */,
 				169A0DB618B82ABE00E42D1A /* MercuryTests.xctest */,
 			);
 			name = Products;
@@ -258,6 +267,8 @@
 		169A0DA518B82ABE00E42D1A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				160B3BCA18BC4EAA0075CC14 /* iTunesArtwork */,
+				160B3BCB18BC4EAA0075CC14 /* iTunesArtwork@2x */,
 				169A0DA618B82ABE00E42D1A /* Mercury-Info.plist */,
 				169A0DA718B82ABE00E42D1A /* InfoPlist.strings */,
 				169A0DAA18B82ABE00E42D1A /* main.m */,
@@ -303,7 +314,7 @@
 			);
 			name = Mercury;
 			productName = Mercury;
-			productReference = 169A0D9B18B82ABD00E42D1A /* Mercury.app */;
+			productReference = 169A0D9B18B82ABD00E42D1A /* Mutual Funds.app */;
 			productType = "com.apple.product-type.application";
 		};
 		169A0DB518B82ABE00E42D1A /* MercuryTests */ = {
@@ -363,7 +374,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				160B3BCD18BC4EAA0075CC14 /* iTunesArtwork@2x in Resources */,
 				169A0DA918B82ABE00E42D1A /* InfoPlist.strings in Resources */,
+				160B3BCC18BC4EAA0075CC14 /* iTunesArtwork in Resources */,
 				169A0DB118B82ABE00E42D1A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -452,6 +465,7 @@
 				1605411618B8FFF700C200C6 /* UIColor+Mercury.m in Sources */,
 				169A0DAF18B82ABE00E42D1A /* AppDelegate.m in Sources */,
 				1605413818B99CAB00C200C6 /* UINavigationController+AutoRotation.m in Sources */,
+				160B3BC918BC1CF30075CC14 /* NSString+Yahoo.m in Sources */,
 				1605411318B8FD5700C200C6 /* SettingsViewController.m in Sources */,
 				1605411A18B91DE900C200C6 /* PositionSummaryCell.m in Sources */,
 				1605412918B96A6000C200C6 /* HGHistory.m in Sources */,
@@ -586,7 +600,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mercury/Mercury-Prefix.pch";
 				INFOPLIST_FILE = "Mercury/Mercury-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Mutual Funds";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -600,7 +614,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mercury/Mercury-Prefix.pch";
 				INFOPLIST_FILE = "Mercury/Mercury-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Mutual Funds";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -14,7 +14,8 @@
 
 // Notifications
 
-#define ReloadMyPositionsNotification @"ReloadMyPositionsNotification"
+#define AllPositionsReloadedNotification @"HGAllPositionsReloadedNotification"
+#define MyPositionsReloadedNotification @"HGMyPositionsReloadedNotification"
 
 // Helper Macro Functions
 
