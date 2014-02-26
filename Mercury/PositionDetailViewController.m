@@ -49,10 +49,10 @@
                                     nciSelPointSizes: @[@5, @10, @5]}];
 
     [[MercuryData sharedData] fetchHistoricalDataForSymbol:self.ticker.symbol
-                                                completion:^(NSArray *historicalData, NSError *error)
+                                                completion:^(NSArray *history, NSError *error)
     {
         DLog(@"Got the historycal Data");
-        self.ticker.position.historyArray = historicalData;
+        self.ticker.position.history = history;
         
         DLog(@"After Setter");
 

@@ -32,7 +32,7 @@
         _yearRange = [dictionary[@"weeks_range_52"] copy];
         _volume = [dictionary[@"volume"] copy];
         _avgDailyVolume = [dictionary[@"avg_daily_volume"] copy];
-        _historyArray = nil;
+        _history = nil;
     }
     return self;
 }
@@ -58,7 +58,7 @@
         _yearRange = [[coder decodeObjectForKey:@"HGPositionYearRange"] copy];
         _volume = [[coder decodeObjectForKey:@"HGPositionVolume"] copy];
         _avgDailyVolume = [[coder decodeObjectForKey:@"HGPositionAvgDailyVolume"] copy];
-        _historyArray = [[coder decodeObjectForKey:@"HGPositionHistoryArray"] copy];
+        _history = [[coder decodeObjectForKey:@"HGPositionHistory"] copy];
     }
     return self;
 }
@@ -82,7 +82,7 @@
     [coder encodeObject:self.yearRange forKey:@"HGPositionYearRange"];
     [coder encodeObject:self.volume forKey:@"HGPositionVolume"];
     [coder encodeObject:self.avgDailyVolume forKey:@"HGPositionAvgDailyVolume"];
-    [coder encodeObject:self.historyArray forKey:@"HGPositionHistoryArray"];
+    [coder encodeObject:self.history forKey:@"HGPositionHistory"];
 }
 
 - (NSString *)priceAndPercentageChange
@@ -97,7 +97,7 @@
     
     NSMutableArray *resultArray = [@[] mutableCopy];
     
-    NSInteger totalHistory = [self.historyArray count];
+    NSInteger totalHistory = [self.history count];
     NSInteger totalSMA1 = [SMA1Array count];
     NSInteger totalSMA2 = [SMA2Array count];
     
@@ -107,7 +107,7 @@
         id SMA2Value = [NSNull null];
         
         if (i < totalHistory) {
-            HGHistory *history = self.historyArray[i];
+            HGHistory *history = self.history[i];
             close = history.close;
         }
         
@@ -148,10 +148,10 @@
 - (NSArray *)historySubarrayForInterval:(NSUInteger)interval
 {
     NSArray *array = @[];
-    if ([self.historyArray count] < interval) {
-        array = [NSArray arrayWithArray:self.historyArray];
+    if ([self.history count] < interval) {
+        array = [NSArray arrayWithArray:self.history];
     } else {
-        array = [self.historyArray subarrayWithRange:NSMakeRange(0, interval)];
+        array = [self.history subarrayWithRange:NSMakeRange(0, interval)];
     }
     return array;
 }

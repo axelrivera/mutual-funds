@@ -8,6 +8,8 @@
 
 #import "MercuryData.h"
 
+#import "NSString+Yahoo.h"
+
 @implementation MercuryData
 
 - (instancetype)init
@@ -166,7 +168,7 @@
     }];
 }
 
-- (void)fetchHistoricalDataForSymbol:(NSString *)symbol completion:(HGHistoricalDataCompletionBlock)completion
+- (void)fetchHistoricalDataForSymbol:(NSString *)symbol completion:(HGHistoryCompletionBlock)completion
 {
     NSDate *today = [NSDate date];
     NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
@@ -180,11 +182,25 @@
     DLog(@"End Date: %@", todayAtMidnight)
     
     [[YahooAPIClient sharedClient] fetchHistoricalDataForSymbol:symbol start:startDate end:todayAtMidnight period:@"d"
-                                                     completion:^(NSArray *historicalData, NSError *error)
+                                                     completion:^(NSString *historicalData, NSError *error)
      {
-         if (completion) {
-             completion(historicalData, error);
-         }
+         dispatch_queue_t backgroundQueue = dispatch_queue_create("me.axelrivera.queue", NULL);
+         dispatch_async(backgroundQueue, ^{
+             NSArray *historyRaw = [historicalData hg_arrayOfHistoricalDictionaries];
+             //DLog(@"%@", historyRaw);
+             
+             NSMutableArray *history = [@[] mutableCopy];
+             
+             for (NSDictionary *dictionary in historyRaw) {
+                 HGHistory *data = [[HGHistory alloc] initWithDictionary:dictionary];
+                 [history addObject:data];
+             }
+             if (completion) {
+                 completion(history, error);
+             }
+         });
+         
+         
      }];
 }
 

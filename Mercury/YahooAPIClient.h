@@ -9,7 +9,7 @@
 #import <AFHTTPRequestOperationManager.h>
 
 typedef void(^HGPositionsCompletionBlock)(NSArray *positions, NSError *error);
-typedef void(^HGHistoricalDataCompletionBlock)(NSArray *historicalData, NSError *error);
+typedef void(^HGHistoricalDataCompletionBlock)(NSString *historicalData, NSError *error);
 
 @interface YahooAPIClient : AFHTTPRequestOperationManager
 

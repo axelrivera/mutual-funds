@@ -29,7 +29,7 @@
 @property (copy, nonatomic) NSString *volume;
 @property (copy, nonatomic) NSString *avgDailyVolume;
 
-@property (strong, nonatomic) NSArray *historyArray;
+@property (strong, nonatomic) NSArray *history;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 

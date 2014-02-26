@@ -90,18 +90,9 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
      {
          DLog(@"Fetch History for %@", symbol)
          NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-         NSArray *historyRaw = [responseString hg_arrayOfHistoricalDictionaries];
-         //DLog(@"%@", historyRaw);
-         
-         NSMutableArray *history = [@[] mutableCopy];
-         
-         for (NSDictionary *dictionary in historyRaw) {
-             HGHistory *data = [[HGHistory alloc] initWithDictionary:dictionary];
-             [history addObject:data];
-         }
          
          if (completion) {
-             completion(history, nil);
+             completion(responseString, nil);
          }
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          DLog(@"Fetch Error: %@", error);
