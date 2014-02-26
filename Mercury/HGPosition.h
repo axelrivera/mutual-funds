@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface HGPosition : NSObject
+@interface HGPosition : NSObject <NSCoding>
 
 @property (copy, nonatomic) NSString *symbol;
 @property (copy, nonatomic) NSString *name;
@@ -35,7 +35,6 @@
 
 - (NSString *)priceAndPercentageChange;
 
-- (void)calculateSMA1;
-- (void)calculateSMA2;
+- (NSArray *)chartArrayForInterval:(NSUInteger)interval SMA1:(NSUInteger)SMA1 SMA2:(NSUInteger)SMA2;
 
 @end

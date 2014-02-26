@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface HGHistory : NSObject
+@interface HGHistory : NSObject <NSCoding>
 
 @property (copy, nonatomic) NSDate *date;
 @property (copy, nonatomic) NSDecimalNumber *close;
@@ -17,12 +17,7 @@
 @property (copy, nonatomic) NSDecimalNumber *low;
 @property (copy, nonatomic) NSNumber *volume;
 @property (copy, nonatomic) NSDecimalNumber *adjustedClose;
-@property (copy, nonatomic) NSDecimalNumber *sma1;
-@property (copy, nonatomic) NSDecimalNumber *sma2;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
-
-- (id)sma1Value;
-- (id)sma2Value;
 
 @end

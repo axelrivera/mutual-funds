@@ -13,10 +13,15 @@
 #import "PositionsViewController.h"
 #import "SettingsViewController.h"
 
+#import <AFNetworkActivityIndicatorManager.h>
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+    [[MercuryData sharedData] loadData];
+    
     [[UINavigationBar appearance] setBarTintColor:[UIColor hg_barBackgroundColor]];
     [[UINavigationBar appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor hg_textColor] }];
     
@@ -53,6 +58,7 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [[MercuryData sharedData] saveData];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -69,6 +75,7 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    [[MercuryData sharedData] saveData];
 }
 
 @end

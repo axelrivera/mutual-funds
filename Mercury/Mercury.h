@@ -9,6 +9,7 @@
 #ifndef Mercury_Mercury_h
 #define Mercury_Mercury_h
 
+#import "FileHelpers.h"
 #import "UIColor+Mercury.h"
 #import "NSDateFormatter+Mercury.h"
 #import "NSArray+Mercury.h"

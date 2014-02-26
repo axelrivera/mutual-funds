@@ -21,25 +21,39 @@
         _low = [[NSDecimalNumber decimalNumberWithString:dictionary[@"low"]] copy];
         _volume = [[NSNumber numberWithInteger:[dictionary[@"volume"] integerValue]] copy];
         _adjustedClose = [[NSDecimalNumber decimalNumberWithString:dictionary[@"adj_close"]] copy];
-        _sma1 = [NSDecimalNumber notANumber];
-        _sma2 = [NSDecimalNumber notANumber];
     }
     return self;
 }
 
-- (id)sma1Value
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
-    return [self.sma1 isEqualToNumber:[NSDecimalNumber notANumber]] ? [NSNull null] : self.sma1;
+    self = [super init];
+    if (self) {
+        _date = [[coder decodeObjectForKey:@"HGHistoryDate"] copy];
+        _close = [[coder decodeObjectForKey:@"HGHistoryClose"] copy];
+        _open = [[coder decodeObjectForKey:@"HGHistoryOpen"] copy];
+        _high = [[coder decodeObjectForKey:@"HGHistoryHigh"] copy];
+        _low = [[coder decodeObjectForKey:@"HGHistoryLow"] copy];
+        _volume = [[coder decodeObjectForKey:@"HGHistoryVolume"] copy];
+        _adjustedClose = [[coder decodeObjectForKey:@"HGHistoryAdjustedClose"] copy];
+    }
+    return self;
 }
 
-- (id)sma2Value
+- (void)encodeWithCoder:(NSCoder *)coder
 {
-    return [self.sma2 isEqualToNumber:[NSDecimalNumber notANumber]] ? [NSNull null] : self.sma2;
+    [coder encodeObject:self.date forKey:@"HGHistoryDate"];
+    [coder encodeObject:self.close forKey:@"HGHistoryClose"];
+    [coder encodeObject:self.open forKey:@"HGHistoryOpen"];
+    [coder encodeObject:self.high forKey:@"HGHistoryHigh"];
+    [coder encodeObject:self.low forKey:@"HGHistoryLow"];
+    [coder encodeObject:self.volume forKey:@"HGHistoryVolume"];
+    [coder encodeObject:self.adjustedClose forKey:@"HGHistoryAdjustedClose"];
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"date: %@, close: %@, sma1: %@, sma2: %@", self.date, self.close, self.sma1, self.sma2];
+    return [NSString stringWithFormat:@"date: %@, close: %@", self.date, self.close];
 }
 
 @end

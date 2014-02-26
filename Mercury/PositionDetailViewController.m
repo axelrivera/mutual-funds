@@ -51,16 +51,26 @@
     [[MercuryData sharedData] fetchHistoricalDataForSymbol:self.ticker.symbol
                                                 completion:^(NSArray *historicalData, NSError *error)
     {
+        DLog(@"Got the historycal Data");
         self.ticker.position.historyArray = historicalData;
-        self.chartDataSource = [[historicalData subarrayWithRange:NSMakeRange(0, 90)] reversedArray];
         
-        for (NSInteger i = 0; i < [self.chartDataSource count]; i++) {
-            HGHistory * history = self.chartDataSource[i];
-            [self.chartView addPoint:(double)i val:@[ history.close ]];
-        }
+        DLog(@"After Setter");
 
-        [self.chartView drawChart];
-        
+        dispatch_queue_t backgroundQueue = dispatch_queue_create("me.axelrivera.queue", NULL);
+        dispatch_async(backgroundQueue, ^{
+            DLog(@"Doing some background shit");
+            self.chartDataSource = [self.ticker.position chartArrayForInterval:90 SMA1:50 SMA2:200];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                DLog(@"Back to the main queue");
+                for (NSInteger i = 0; i < [self.chartDataSource count]; i++) {
+                    NSDictionary *dictionary = self.chartDataSource[i];
+                    [self.chartView addPoint:(double)i val:@[ dictionary[@"close"], dictionary[@"sma1"], dictionary[@"sma2"] ]];
+                }
+                
+                [self.chartView drawChart];
+            });    
+        });
     }];
 
     if (self.ticker.tickerType == HGTickerTypeWatchlist) {

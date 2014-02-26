@@ -10,8 +10,6 @@
 
 #import "NSString+Yahoo.h"
 
-#import <AFNetworkActivityIndicatorManager.h>
-
 static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
 
 @implementation YahooAPIClient
@@ -21,14 +19,13 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
     self = [super initWithBaseURL:url];
     if (self) {
         self.responseSerializer = [AFHTTPResponseSerializer serializer];
-        [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     }
     return self;
 }
 
 #pragma Public Methods
 
-- (NSURLSessionDataTask *)fetchPositionsForSymbols:(NSArray *)symbols completion:(HGPositionsCompletionBlock)completion
+- (void)fetchPositionsForSymbols:(NSArray *)symbols completion:(HGPositionsCompletionBlock)completion
 {
     NSString *symbolsStr = [symbols componentsJoinedByString:@","];
     NSDictionary *parameters = @{ @"s" : symbolsStr, @"f" : [NSString hg_quoteColumnsString] };
@@ -36,7 +33,7 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
     DLog(@"Trying to Fetch Positions With Parameters:");
     DLog(@"%@", parameters);
     
-    return [self GET:@"http://download.finance.yahoo.com/d/quotes.csv" parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
+    [self GET:@"http://download.finance.yahoo.com/d/quotes.csv" parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         DLog(@"Fetch Response");
         NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         NSArray *quotesRaw = [responseString hg_arrayOfQuoteDictionaries];
@@ -54,7 +51,7 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
         if (completion) {
             completion(positions, nil);
         }
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         DLog(@"Fetch Error: %@", error);
         if (completion) {
             completion(nil, error);
@@ -62,11 +59,11 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
     }];
 }
 
-- (NSURLSessionDataTask *)fetchHistoricalDataForSymbol:(NSString *)symbol
-                                                 start:(NSDate *)start
-                                                   end:(NSDate *)end
-                                                period:(NSString *)period
-                                            completion:(HGHistoricalDataCompletionBlock)completion
+- (void)fetchHistoricalDataForSymbol:(NSString *)symbol
+                               start:(NSDate *)start
+                                 end:(NSDate *)end
+                              period:(NSString *)period
+                          completion:(HGHistoricalDataCompletionBlock)completion
 {
     NSString *startMonth = [[NSNumber numberWithInteger:[[[NSDateFormatter hg_monthFormatter] stringFromDate:start] integerValue] - 1] stringValue];
     NSString *startDay = [[NSDateFormatter hg_dayFormatter] stringFromDate:start];
@@ -88,30 +85,30 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
     DLog(@"Trying to Fetch Historical Data With Parameters:");
     DLog(@"%@", parameters);
     
-    return [self GET:@"http://ichart.finance.yahoo.com/table.csv" parameters:parameters
-             success:^(NSURLSessionDataTask *task, id responseObject)
-    {
-        DLog(@"Fetch History for %@", symbol)
-        NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-        NSArray *historyRaw = [responseString hg_arrayOfHistoricalDictionaries];
-        DLog(@"%@", historyRaw);
-        
-        NSMutableArray *history = [@[] mutableCopy];
-        
-        for (NSDictionary *dictionary in historyRaw) {
-            HGHistory *data = [[HGHistory alloc] initWithDictionary:dictionary];
-            [history addObject:data];
-        }
-        
-        if (completion) {
-            completion(history, nil);
-        }
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        DLog(@"Fetch Error: %@", error);
-        if (completion) {
-            completion(nil, error);
-        }
-    }];
+    [self GET:@"http://ichart.finance.yahoo.com/table.csv" parameters:parameters
+      success:^(AFHTTPRequestOperation *operation, id responseObject)
+     {
+         DLog(@"Fetch History for %@", symbol)
+         NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+         NSArray *historyRaw = [responseString hg_arrayOfHistoricalDictionaries];
+         //DLog(@"%@", historyRaw);
+         
+         NSMutableArray *history = [@[] mutableCopy];
+         
+         for (NSDictionary *dictionary in historyRaw) {
+             HGHistory *data = [[HGHistory alloc] initWithDictionary:dictionary];
+             [history addObject:data];
+         }
+         
+         if (completion) {
+             completion(history, nil);
+         }
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         DLog(@"Fetch Error: %@", error);
+         if (completion) {
+             completion(nil, error);
+         }
+     }];
 }
 
 #pragma mark - Singleton Methods

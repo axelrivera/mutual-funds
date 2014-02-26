@@ -12,6 +12,12 @@
 // Eleven Years in Seconds
 #define kHistoricalStartDateInSecods 60 * 60 * 24 * 365 * 11
 
+// Five Minutes in Seconds
+#define kNetworkRequestTimeLimit 60 * 5
+
+// Mercury Data File
+#define kMercuryDataFile @"MercuryData.data"
+
 // Notifications
 
 #define AllPositionsReloadedNotification @"HGAllPositionsReloadedNotification"

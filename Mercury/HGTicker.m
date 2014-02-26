@@ -20,6 +20,24 @@
     return ticker;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super init];
+    if (self) {
+        _tickerType = [coder decodeIntegerForKey:@"HGTickerTickerType"];
+        _symbol = [[coder decodeObjectForKey:@"HGTickerSymbol"] copy];
+        _position = [coder decodeObjectForKey:@"HGTickerPosition"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeInteger:self.tickerType forKey:@"HGTickerTickerType"];
+    [coder encodeObject:self.symbol forKey:@"HGTickerSymbol"];
+    [coder encodeObject:self.position forKey:@"HGTickerPosition"];
+}
+
 - (NSString *)name
 {
     return self.position == nil ? @"" : self.position.name;

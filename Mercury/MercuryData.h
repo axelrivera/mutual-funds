@@ -11,7 +11,7 @@
 typedef void(^HGTickersCompletionBlock)(NSArray *tickers, NSError *error);
 typedef void(^HGAllPositionsCompletionBlock)(NSArray *watchlist, NSArray *myPositions, NSError *error);
 
-@interface MercuryData : NSObject
+@interface MercuryData : NSObject <NSCoding>
 
 @property (strong, nonatomic) NSMutableArray *watchlist;
 @property (strong, nonatomic) NSMutableArray *myPositions;
@@ -26,6 +26,9 @@ typedef void(^HGAllPositionsCompletionBlock)(NSArray *watchlist, NSArray *myPosi
 
 - (BOOL)isSymbolPresentInMyPositions:(NSString *)symbol;
 - (void)removePositionWithSymbol:(NSString *)symbol;
+
+- (void)loadData;
+- (void)saveData;
 
 + (instancetype)sharedData;
 

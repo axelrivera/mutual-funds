@@ -29,6 +29,22 @@
     return self;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super init];
+    if (self) {
+        _watchlist = [coder decodeObjectForKey:@"MercuryDataWatchlist"];
+        _myPositions = [coder decodeObjectForKey:@"MercuryDataMyPositions"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeObject:self.watchlist forKey:@"MercuryDataWatchlist"];
+    [coder encodeObject:self.myPositions forKey:@"MercuryDataMyPositions"];
+}
+
 - (void)fetchAllPositionsWithCompletion:(HGAllPositionsCompletionBlock)completion
 {
     self.fetchingWatchlist = YES;
@@ -202,6 +218,21 @@
                                                           userInfo:@{ @"myPositionRemoved" : removedTicker }];
     }
 }
+
+- (void)loadData
+{
+    MercuryData *data = [NSKeyedUnarchiver unarchiveObjectWithFile:pathInDocumentDirectory(kMercuryDataFile)];
+    if (data) {
+        self.watchlist = data.watchlist;
+        self.myPositions = data.myPositions;
+    }
+}
+
+- (void)saveData
+{
+    [NSKeyedArchiver archiveRootObject:self toFile:pathInDocumentDirectory(kMercuryDataFile)];
+}
+
 
 #pragma mark - Singleton Methods
 
