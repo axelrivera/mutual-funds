@@ -55,7 +55,7 @@
         self.tabBarItem.image = tabImage;
         self.tabBarItem.selectedImage = tabImageSelected;
         
-        _dataSource = @[];
+        _dataSource = [@[] mutableCopy];
     }
     return self;
 }
@@ -115,9 +115,9 @@
                                                object:nil];
     
     if (self.tickerType == HGTickerTypeWatchlist) {
-        self.dataSource = [MercuryData sharedData].watchlist;
+        self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].watchlist];
     } else {
-        self.dataSource = [MercuryData sharedData].myPositions;
+        self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myPositions];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(myPositionsReloaded:)
@@ -196,7 +196,7 @@
             return;
         }
         
-        self.dataSource = tickers;
+        self.dataSource = [[NSMutableArray alloc] initWithArray:tickers];
         [self.tableView reloadData];
     };
     
@@ -246,7 +246,16 @@
 
 - (void)clearAllAction:(id)sender
 {
-
+    [self.dataSource removeAllObjects];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+    
+    if (self.tickerType == HGTickerTypeWatchlist) {
+        [[MercuryData sharedData].watchlist removeAllObjects];
+    } else {
+        [[MercuryData sharedData].watchlist removeAllObjects];
+    }
+    
+    [self setEditing:NO animated:YES];
 }
 
 - (void)reloadAction:(UIRefreshControl *)refreshControl
@@ -256,18 +265,21 @@
 
 - (void)myPositionsReloaded:(NSNotification *)notification
 {
-    self.dataSource = [MercuryData sharedData].myPositions;
+    self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myPositions];
     [self.tableView reloadData];
 }
 
 - (void)allPositionsReloaded:(NSNotification *)notification
 {
     NSDictionary *userInfo = notification.userInfo;
+    NSMutableArray *array = nil;
     if (self.tickerType == HGTickerTypeWatchlist) {
-        self.dataSource = IsEmpty(userInfo[@"watchlist"]) ? @[] : userInfo[@"watchlist"];
+        array = IsEmpty(userInfo[@"watchlist"]) ? @[] : userInfo[@"watchlist"];
     } else {
-        self.dataSource = IsEmpty(userInfo[@"myPositions"]) ? @[] : userInfo[@"myPositions"];
+        array = IsEmpty(userInfo[@"myPositions"]) ? @[] : userInfo[@"myPositions"];
     }
+    
+    self.dataSource = [[NSMutableArray alloc] initWithArray:array];
     
     [self.tableView reloadData];
 }
@@ -322,19 +334,51 @@
     return YES;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return YES;
-}
-
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return UITableViewCellEditingStyleDelete;
 }
 
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        [self.dataSource removeObjectAtIndex:indexPath.row];
+        
+        [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
+        
+        if (self.tickerType == HGTickerTypeWatchlist) {
+            [[MercuryData sharedData].watchlist removeObjectAtIndex:indexPath.row];
+        } else {
+            [[MercuryData sharedData].myPositions removeObjectAtIndex:indexPath.row];
+        }
+        
+        if (IsEmpty(self.dataSource)) {
+            [self setEditing:NO animated:YES];
+        }
+    }
+}
+
+- (void)tableView:(UITableView *)tableView
+moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
+      toIndexPath:(NSIndexPath *)toIndexPath
+{
+    HGTicker *ticker = self.dataSource[fromIndexPath.row];
+    [self.dataSource removeObjectAtIndex:fromIndexPath.row];
+    [self.dataSource insertObject:ticker atIndex:toIndexPath.row];
     
+    if (self.tickerType == HGTickerTypeWatchlist) {
+        [[MercuryData sharedData].watchlist removeObjectAtIndex:fromIndexPath.row];
+        [[MercuryData sharedData].watchlist insertObject:ticker atIndex:toIndexPath.row];
+    } else {
+        [[MercuryData sharedData].myPositions removeObjectAtIndex:fromIndexPath.row];
+        [[MercuryData sharedData].myPositions insertObject:ticker atIndex:toIndexPath.row];
+    }
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
 }
 
 #pragma mark - UITextFieldDelegate Methods
@@ -346,13 +390,11 @@
         NSString *symbol = [textField.text uppercaseString];
         
         self.navigationItem.rightBarButtonItem.enabled = NO;
-
-        [[YahooAPIClient sharedClient] fetchPositionsForSymbols:@[ symbol ]
-                                                     completion:^(NSArray *positions, NSError *error)
-        {
+        
+        [[MercuryData sharedData] fetchPositionForSymbol:symbol completion:^(HGPosition *position, NSError *error) {
             self.navigationItem.rightBarButtonItem.enabled = YES;
             
-            if (error || IsEmpty(positions)) {
+            if (error) {
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error searching symbol"
                                                                     message:@"Error searching symbol"
                                                                    delegate:nil
@@ -361,27 +403,29 @@
                 [alertView show];
                 return;
             }
-
+            
             PositionDetailViewControllerSaveBlock saveBlock = ^(HGTicker *ticker) {
                 if (self.tickerType == HGTickerTypeWatchlist) {
                     [[MercuryData sharedData].watchlist addObject:ticker];
-                    self.dataSource = [MercuryData sharedData].watchlist;
+                    self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].watchlist];
                 } else {
                     [[MercuryData sharedData].myPositions addObject:ticker];
-                    self.dataSource = [MercuryData sharedData].myPositions;
+                    self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myPositions];
                 }
-
+                
                 [self.tableView reloadData];
             };
-
+            
+            DLog(@"position end: %@", position);
+            
             HGTicker *ticker = [HGTicker tickerWithType:self.tickerType symbol:symbol];
-            ticker.position = positions[0];
-
+            ticker.position = position;
+            
             PositionDetailViewController *controller = [[PositionDetailViewController alloc] initWithTicker:ticker
                                                                                                   allowSave:YES];
             controller.saveBlock = saveBlock;
             controller.hidesBottomBarWhenPushed = YES;
-
+            
             [self.navigationController pushViewController:controller animated:YES];
         }];
     }

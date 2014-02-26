@@ -25,7 +25,7 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
 
 #pragma Public Methods
 
-- (void)fetchPositionsForSymbols:(NSArray *)symbols completion:(HGPositionsCompletionBlock)completion
+- (void)fetchPositionsForSymbols:(NSArray *)symbols completion:(HGPositionsDataCompletionBlock)completion
 {
     NSString *symbolsStr = [symbols componentsJoinedByString:@","];
     NSDictionary *parameters = @{ @"s" : symbolsStr, @"f" : [NSString hg_quoteColumnsString] };
@@ -34,25 +34,15 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
     DLog(@"%@", parameters);
     
     [self GET:@"http://download.finance.yahoo.com/d/quotes.csv" parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        DLog(@"Fetch Response");
+        DLog(@"Fetch Positions Response:");
         NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-        NSArray *quotesRaw = [responseString hg_arrayOfQuoteDictionaries];
-        DLog(@"%@", quotesRaw);
         
-        NSMutableArray *positions = [@[] mutableCopy];
-        
-        for (NSDictionary *dictionary in quotesRaw) {
-            HGPosition *position = [[HGPosition alloc] initWithDictionary:dictionary];
-            [positions addObject:position];
-        }
-        
-        DLog(@"positions: %@", positions);
-        
+        DLog(@"%@", responseString);
         if (completion) {
-            completion(positions, nil);
+            completion(responseString, nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        DLog(@"Fetch Error: %@", error);
+        DLog(@"Fetch Positions Error: %@", error);
         if (completion) {
             completion(nil, error);
         }
@@ -88,7 +78,7 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
     [self GET:@"http://ichart.finance.yahoo.com/table.csv" parameters:parameters
       success:^(AFHTTPRequestOperation *operation, id responseObject)
      {
-         DLog(@"Fetch History for %@", symbol)
+         DLog(@"Fetched History for %@", symbol)
          NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
          
          if (completion) {

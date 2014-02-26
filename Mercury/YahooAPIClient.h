@@ -8,12 +8,12 @@
 
 #import <AFHTTPRequestOperationManager.h>
 
-typedef void(^HGPositionsCompletionBlock)(NSArray *positions, NSError *error);
+typedef void(^HGPositionsDataCompletionBlock)(NSString *positionsData, NSError *error);
 typedef void(^HGHistoricalDataCompletionBlock)(NSString *historicalData, NSError *error);
 
 @interface YahooAPIClient : AFHTTPRequestOperationManager
 
-- (void)fetchPositionsForSymbols:(NSArray *)symbols completion:(HGPositionsCompletionBlock)completion;
+- (void)fetchPositionsForSymbols:(NSArray *)symbols completion:(HGPositionsDataCompletionBlock)completion;
 
 - (void)fetchHistoricalDataForSymbol:(NSString *)symbol
                                                  start:(NSDate *)start

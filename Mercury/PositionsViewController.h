@@ -13,7 +13,7 @@
 @property (assign, nonatomic) HGTickerType tickerType;
 
 @property (strong, nonatomic) UITableView *tableView;
-@property (strong, nonatomic) NSArray *dataSource;
+@property (strong, nonatomic) NSMutableArray *dataSource;
 
 - (instancetype)initWithTickerType:(HGTickerType)tickerType;
 

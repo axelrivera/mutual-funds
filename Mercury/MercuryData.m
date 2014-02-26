@@ -35,8 +35,11 @@
 {
     self = [super init];
     if (self) {
-        _watchlist = [coder decodeObjectForKey:@"MercuryDataWatchlist"];
-        _myPositions = [coder decodeObjectForKey:@"MercuryDataMyPositions"];
+        NSArray *watchlist = [coder decodeObjectForKey:@"MercuryDataWatchlist"];
+        NSArray *myPositions = [coder decodeObjectForKey:@"MercuryDataMyPositions"];
+        
+        self.watchlist = IsEmpty(watchlist) ? [@[] mutableCopy] : [[NSMutableArray alloc] initWithArray:watchlist];
+        self.myPositions = IsEmpty(myPositions) ? [@[] mutableCopy] : [[NSMutableArray alloc] initWithArray:myPositions];
     }
     return self;
 }
@@ -64,7 +67,7 @@
     
     NSSet *symbolsSet = [NSSet setWithArray:symbols];
     
-    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:[symbolsSet allObjects] completion:^(NSArray *positions, NSError *error) {
+    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:[symbolsSet allObjects] completion:^(NSString *positionsData, NSError *error) {
         self.fetchingWatchlist = NO;
         self.fetchingMyPositions = NO;
         
@@ -75,32 +78,53 @@
             return;
         }
         
-        for (HGTicker *ticker in self.watchlist) {
-            for (HGPosition *position in positions) {
-                if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
-                    ticker.position = position;
-                    break;
+        dispatch_queue_t backgroundQueue = dispatch_queue_create("me.axelrivera.queue", NULL);
+        dispatch_async(backgroundQueue, ^{
+            NSArray *quotesRaw = [positionsData hg_arrayOfQuoteDictionaries];
+            DLog(@"%@", quotesRaw);
+            
+            NSMutableArray *positions = [@[] mutableCopy];
+            
+            for (NSDictionary *dictionary in quotesRaw) {
+                HGPosition *position = [[HGPosition alloc] initWithDictionary:dictionary];
+                [positions addObject:position];
+            }
+            
+            DLog(@"positions: %@", positions);
+            
+            for (HGTicker *ticker in self.watchlist) {
+                for (HGPosition *position in positions) {
+                    if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
+                        ticker.position = position;
+                        break;
+                    }
                 }
             }
-        }
-        
-        for (HGTicker *ticker in self.myPositions) {
-            for (HGPosition *position in positions) {
-                if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
-                    ticker.position = position;
-                    break;
+            
+            for (HGTicker *ticker in self.myPositions) {
+                for (HGPosition *position in positions) {
+                    if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
+                        ticker.position = position;
+                        break;
+                    }
                 }
             }
-        }
-        
-        NSDictionary *userInfo = @{ @"myPositions" : self.myPositions, @"watchlist" : self.watchlist };
-        [[NSNotificationCenter defaultCenter] postNotificationName:AllPositionsReloadedNotification
-                                                            object:nil
-                                                          userInfo:userInfo];
+            
+            NSDictionary *userInfo = @{ @"myPositions" : self.myPositions, @"watchlist" : self.watchlist };
+            [[NSNotificationCenter defaultCenter] postNotificationName:AllPositionsReloadedNotification
+                                                                object:nil
+                                                              userInfo:userInfo];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (completion) {
+                    completion(self.watchlist, self.myPositions, nil);
+                }
+            });
+        });
     }];
 }
 
-- (void)fetchWatchlistWithCompletion:(HGPositionsCompletionBlock)completion
+- (void)fetchWatchlistWithCompletion:(HGTickersCompletionBlock)completion
 {
     self.fetchingWatchlist = YES;
     
@@ -109,7 +133,7 @@
         [symbols addObject:ticker.symbol];
     }
 
-    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:symbols completion:^(NSArray *positions, NSError *error) {
+    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:symbols completion:^(NSString *positionsData, NSError *error) {
         self.fetchingWatchlist = NO;
         
         if (error) {
@@ -118,23 +142,40 @@
             }
             return;
         }
-
-        for (HGTicker *ticker in self.watchlist) {
-            for (HGPosition *position in positions) {
-                if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
-                    ticker.position = position;
-                    break;
+        
+        dispatch_queue_t backgroundQueue = dispatch_queue_create("me.axelrivera.queue", NULL);
+        dispatch_async(backgroundQueue, ^{
+            NSArray *quotesRaw = [positionsData hg_arrayOfQuoteDictionaries];
+            DLog(@"%@", quotesRaw);
+            
+            NSMutableArray *positions = [@[] mutableCopy];
+            
+            for (NSDictionary *dictionary in quotesRaw) {
+                HGPosition *position = [[HGPosition alloc] initWithDictionary:dictionary];
+                [positions addObject:position];
+            }
+            
+            DLog(@"positions: %@", positions);
+            
+            for (HGTicker *ticker in self.watchlist) {
+                for (HGPosition *position in positions) {
+                    if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
+                        ticker.position = position;
+                        break;
+                    }
                 }
             }
-        }
-        
-        if (completion) {
-            completion(self.watchlist, nil);
-        }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (completion) {
+                    completion(self.watchlist, nil);
+                }
+            });
+        });
     }];
 }
 
-- (void)fetchMyPositionsWithCompletion:(HGPositionsCompletionBlock)completion
+- (void)fetchMyPositionsWithCompletion:(HGTickersCompletionBlock)completion
 {
     self.fetchingMyPositions = YES;
     
@@ -143,7 +184,7 @@
         [symbols addObject:ticker.symbol];
     }
 
-    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:symbols completion:^(NSArray *positions, NSError *error) {
+    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:symbols completion:^(NSString *positionsData, NSError *error) {
         self.fetchingMyPositions = NO;
         
         if (error) {
@@ -153,18 +194,77 @@
             return;
         }
         
-        for (HGTicker *ticker in self.myPositions) {
-            for (HGPosition *position in positions) {
-                if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
-                    ticker.position = position;
-                    break;
+        dispatch_queue_t backgroundQueue = dispatch_queue_create("me.axelrivera.queue", NULL);
+        dispatch_async(backgroundQueue, ^{
+            NSArray *quotesRaw = [positionsData hg_arrayOfQuoteDictionaries];
+            DLog(@"%@", quotesRaw);
+            
+            NSMutableArray *positions = [@[] mutableCopy];
+            
+            for (NSDictionary *dictionary in quotesRaw) {
+                HGPosition *position = [[HGPosition alloc] initWithDictionary:dictionary];
+                [positions addObject:position];
+            }
+            
+            DLog(@"positions: %@", positions);
+            
+            for (HGTicker *ticker in self.myPositions) {
+                for (HGPosition *position in positions) {
+                    if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
+                        ticker.position = position;
+                        break;
+                    }
                 }
             }
-        }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (completion) {
+                    completion(self.myPositions, nil);
+                }
+            });
+        });
+    }];
+}
 
+- (void)fetchPositionForSymbol:(NSString *)symbol completion:(HGPositionCompletionBlock)completion
+{
+    if (IsEmpty(symbol)) {
         if (completion) {
-            completion(self.myPositions, nil);
+            NSError *error = [NSError errorWithDomain:@"me.axelrivera.error" code:0 userInfo:nil];
+            completion(nil, error);
         }
+        return;
+    }
+    
+    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:@[ symbol ] completion:^(NSString *positionsData, NSError *error) {
+        self.fetchingMyPositions = NO;
+        
+        if (error) {
+            if (completion) {
+                completion(nil, error);
+            }
+            return;
+        }
+        
+        dispatch_queue_t backgroundQueue = dispatch_queue_create("me.axelrivera.queue", NULL);
+        dispatch_async(backgroundQueue, ^{
+            NSArray *quotesRaw = [positionsData hg_arrayOfQuoteDictionaries];            
+            if (IsEmpty(quotesRaw)) {
+                if (completion) {
+                    NSError *error = [NSError errorWithDomain:@"me.axelrivera.error" code:0 userInfo:nil];
+                    completion(nil, error);
+                }
+                return;
+            }
+            
+            HGPosition *position = [[HGPosition alloc] initWithDictionary:quotesRaw[0]];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (completion) {
+                    completion(position, nil);
+                }
+            });
+        });
     }];
 }
 
@@ -184,6 +284,13 @@
     [[YahooAPIClient sharedClient] fetchHistoricalDataForSymbol:symbol start:startDate end:todayAtMidnight period:@"d"
                                                      completion:^(NSString *historicalData, NSError *error)
      {
+         if (error) {
+             if (completion) {
+                 completion(nil, error);
+             }
+             return;
+         }
+         
          dispatch_queue_t backgroundQueue = dispatch_queue_create("me.axelrivera.queue", NULL);
          dispatch_async(backgroundQueue, ^{
              NSArray *historyRaw = [historicalData hg_arrayOfHistoricalDictionaries];
@@ -199,8 +306,6 @@
                  completion(history, error);
              }
          });
-         
-         
      }];
 }
 
@@ -248,7 +353,6 @@
 {
     [NSKeyedArchiver archiveRootObject:self toFile:pathInDocumentDirectory(kMercuryDataFile)];
 }
-
 
 #pragma mark - Singleton Methods
 
