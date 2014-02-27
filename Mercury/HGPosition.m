@@ -90,40 +90,94 @@
     return [NSString stringWithFormat:@"%@ (%@)", self.change, self.percentageChange];
 }
 
-- (NSArray *)chartArrayForInterval:(NSUInteger)interval SMA1:(NSUInteger)SMA1 SMA2:(NSUInteger)SMA2
+- (NSString *)formattedClose
 {
-    NSArray *SMA1Array = [self SMAArrayForInterval:SMA1 + interval period:SMA1];
-    NSArray *SMA2Array = [self SMAArrayForInterval:SMA2 + interval period:SMA2];
-    
-    NSMutableArray *resultArray = [@[] mutableCopy];
-    
-    NSInteger totalHistory = [self.history count];
-    NSInteger totalSMA1 = [SMA1Array count];
-    NSInteger totalSMA2 = [SMA2Array count];
-    
-    for (NSInteger i = 0; i < interval; i++) {
-        id close = [NSNull null];
-        id SMA1Value = [NSNull null];
-        id SMA2Value = [NSNull null];
-        
-        if (i < totalHistory) {
-            HGHistory *history = self.history[i];
-            close = history.close;
-        }
-        
-        if (i < totalSMA1) {
-            SMA1Value = SMA1Array[i];
-        }
-        
-        if (i < totalSMA2) {
-            SMA2Value = SMA2Array[i];
-        }
-        
-        [resultArray addObject:@{ @"close" : close, @"sma1" : SMA1Value, @"sma2" : SMA2Value }];
-    }
-    
-    return [resultArray reversedArray];
+    NSNumber *number = [[NSNumberFormatter hg_closeFormatter] numberFromString:self.close];
+    return [[NSNumberFormatter hg_closeFormatter] stringFromNumber:number];
 }
+
+- (HGPositionChangeType)changeType
+{
+    NSNumber *changeNumber = [[NSNumberFormatter hg_changeFormatter] numberFromString:self.change];
+    DLog(@"Change Number: %@", changeNumber);
+    NSComparisonResult compare = [changeNumber compare:@0.00];
+    
+    HGPositionChangeType result = HGPositionChangeTypeNone;
+    
+    if (compare == NSOrderedSame) {
+        result = HGPositionChangeTypeNone;
+    } else if (compare == NSOrderedAscending) {
+        result = HGPositionChangeTypeNegative;
+    } else if (compare == NSOrderedDescending) {
+        result = HGPositionChangeTypePositive;
+    }
+    return  result;
+}
+
+- (UIColor *)colorForChangeType
+{
+    HGPositionChangeType changeType = [self changeType];
+    UIColor *color = [UIColor hg_textColor];
+    if (changeType == HGPositionChangeTypeNone) {
+        color = [UIColor hg_changeNoneColor];
+    } else if (changeType == HGPositionChangeTypePositive) {
+        color = [UIColor hg_changePositiveColor];
+    } else if (changeType == HGPositionChangeTypeNegative) {
+        color = [UIColor hg_changeNegativeColor];
+    }
+    return color;
+}
+
+- (void)calculateChartForInterval:(NSUInteger)interval
+                             SMA1:(NSUInteger)SMA1
+                             SMA2:(NSUInteger)SMA2
+                       completion:(HGPositionChartCompletionBlock)completion
+{
+    dispatch_queue_t backgroundQueue = dispatch_queue_create(kMercuryDispatchQueue, NULL);
+    dispatch_async(backgroundQueue, ^{
+        NSArray *SMA1Array = [self SMAArrayForInterval:SMA1 + interval period:SMA1];
+        NSArray *SMA2Array = [self SMAArrayForInterval:SMA2 + interval period:SMA2];
+        
+        NSMutableArray *resultArray = [@[] mutableCopy];
+        
+        NSInteger totalHistory = [self.history count];
+        NSInteger totalSMA1 = [SMA1Array count];
+        NSInteger totalSMA2 = [SMA2Array count];
+        
+        for (NSInteger i = 0; i < interval; i++) {
+            id close = [NSNull null];
+            id SMA1Value = [NSNull null];
+            id SMA2Value = [NSNull null];
+            id date = [NSNull null];
+            
+            if (i < totalHistory) {
+                HGHistory *history = self.history[i];
+                close = history.close;
+                date = history.date;
+            }
+            
+            if (i < totalSMA1) {
+                SMA1Value = SMA1Array[i];
+            }
+            
+            if (i < totalSMA2) {
+                SMA2Value = SMA2Array[i];
+            }
+            
+            [resultArray addObject:@{ @"date" : date, @"close" : close, @"sma1" : SMA1Value, @"sma2" : SMA2Value }];
+        }
+        
+        NSArray *reversedArray = [resultArray reversedArray];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completion) {
+                completion(reversedArray);
+            }
+        });
+    });
+}
+
+#pragma mark - Private Methods
 
 - (NSArray *)SMAArrayForInterval:(NSUInteger)interval period:(NSUInteger)period
 {

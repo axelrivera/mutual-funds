@@ -8,6 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSInteger, HGPositionChangeType) {
+    HGPositionChangeTypeNone,
+    HGPositionChangeTypePositive,
+    HGPositionChangeTypeNegative
+};
+
+typedef void(^HGPositionChartCompletionBlock)(NSArray *chartArray);
+
 @interface HGPosition : NSObject <NSCoding>
 
 @property (copy, nonatomic) NSString *symbol;
@@ -34,7 +42,14 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 
 - (NSString *)priceAndPercentageChange;
+- (NSString *)formattedClose;
+- (HGPositionChangeType)changeType;
+- (UIColor *)colorForChangeType;
 
-- (NSArray *)chartArrayForInterval:(NSUInteger)interval SMA1:(NSUInteger)SMA1 SMA2:(NSUInteger)SMA2;
+
+- (void)calculateChartForInterval:(NSUInteger)interval
+                             SMA1:(NSUInteger)SMA1
+                             SMA2:(NSUInteger)SMA2
+                       completion:(HGPositionChartCompletionBlock)completion;
 
 @end

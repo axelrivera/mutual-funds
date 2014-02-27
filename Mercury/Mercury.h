@@ -11,7 +11,9 @@
 
 #import "FileHelpers.h"
 #import "UIColor+Mercury.h"
+#import "NSString+Mercury.h"
 #import "NSDateFormatter+Mercury.h"
+#import "NSNumberFormatter+Mercury.h"
 #import "NSArray+Mercury.h"
 #import "HGTicker.h"
 #import "HGHistory.h"

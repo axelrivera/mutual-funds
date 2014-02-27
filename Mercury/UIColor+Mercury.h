@@ -15,4 +15,8 @@
 + (UIColor *)hg_barBackgroundColor;
 + (UIColor *)hg_mainBackgroundColor;
 
++ (UIColor *)hg_changePositiveColor;
++ (UIColor *)hg_changeNegativeColor;
++ (UIColor *)hg_changeNoneColor;
+
 @end

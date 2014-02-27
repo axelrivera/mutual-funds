@@ -30,4 +30,19 @@
     return HexColor(0xE7E7E7);
 }
 
++ (UIColor *)hg_changePositiveColor
+{
+    return HexColor(0x73D216);
+}
+
++ (UIColor *)hg_changeNegativeColor
+{
+    return HexColor(0xCC0000);
+}
+
++ (UIColor *)hg_changeNoneColor
+{
+    return HexColor(0xEDD400);
+}
+
 @end

@@ -6,8 +6,13 @@
 //  Copyright (c) 2014 Axel Rivera. All rights reserved.
 //
 
-#define kYahooAPIURLBaseString @"http://query.yahooapis.com/v1/public/yql"
-//#define kYahooAPIURLBaseString @"http://localhost:4000/v1/public/yql"
+#define kYahooQuotesURL @"http://download.finance.yahoo.com/d/quotes.csv"
+//#define kYahooQuotesURL @"http://localhost:4000/quotes.csv"
+//#define kYahooQuotesURL @"https://mercury-sharingan.fwd.wf/quotes.csv"
+
+#define kYahooHistoryURL @"http://ichart.finance.yahoo.com/table.csv"
+//#define kYahooHistoryURL @"http://localhost:4000/table.csv"
+//#define kYahooHistoryURL @"https://mercury-sharingan.fwd.wf/table.csv"
 
 // Eleven Years in Seconds
 #define kHistoricalStartDateInSecods 60 * 60 * 24 * 365 * 11
@@ -17,6 +22,9 @@
 
 // Mercury Data File
 #define kMercuryDataFile @"MercuryData.data"
+
+// Dispatch Queue Name
+#define kMercuryDispatchQueue "me.axelrivera.mercury.queue"
 
 // Notifications
 

@@ -39,7 +39,10 @@
 	self.chartView = [[NCISimpleChartView alloc]
                       initWithFrame:CGRectZero
                       andOptions: @{nciIsFill: @(NO),
-                                    nciSelPointSizes: @[@5, @10, @5]}];
+                                    nciLineColors: @[HexColor(0x204A87), HexColor(0x5C3566), HexColor(0xCE5C00)],
+                                    nciLineWidths: @[@1, [NSNull null]],
+                                    nciUseDateFormatter: @(YES),
+                                    nciHasSelection: @(NO)}];
     self.chartView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.chartView];
 }
@@ -69,17 +72,18 @@
 {
     [super viewDidAppear:animated];
     
-    dispatch_queue_t backgroundQueue = dispatch_queue_create("me.axelrivera.myqueue", 0);
-    dispatch_async(backgroundQueue, ^{
-        self.dataSource = [self.ticker.position chartArrayForInterval:365 SMA1:50 SMA2:200];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            for (NSInteger i = 0; i < [self.dataSource count]; i++) {
-                NSDictionary *dictionary = self.dataSource[i];
-                [self.chartView addPoint:(double)i val:@[ dictionary[@"close"], dictionary[@"sma1"], dictionary[@"sma2"] ]];
-            }
-            [self.chartView drawChart];
-        });
-    });
+    [self.ticker.position calculateChartForInterval:365 SMA1:50 SMA2:200 completion:^(NSArray *chartArray) {
+        self.dataSource = chartArray;
+        for (NSInteger i = 0; i < [self.dataSource count]; i++) {
+            NSDictionary *dictionary = self.dataSource[i];
+            
+            NSDate *date = dictionary[@"date"];
+            NSTimeInterval dateInterval = [date timeIntervalSince1970];
+            
+            [self.chartView addPoint:dateInterval val:@[ dictionary[@"close"], dictionary[@"sma1"], dictionary[@"sma2"] ]];
+        }
+        [self.chartView drawChart];
+    }];
 }
 
 - (void)didReceiveMemoryWarning

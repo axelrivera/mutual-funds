@@ -15,8 +15,6 @@
 @property (strong, nonatomic) UILabel *nameLabel;
 @property (strong, nonatomic) UILabel *changeLabel;
 
-//@property (strong, nonatomic) UIView *indicatorView;
-
 - (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 
 @end

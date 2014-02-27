@@ -45,7 +45,7 @@
 
 - (NSString *)close
 {
-    return self.position == nil ? @"" : self.position.close;
+    return self.position == nil ? @"" : [self.position formattedClose];
 }
 
 - (NSString *)priceAndPercentChange

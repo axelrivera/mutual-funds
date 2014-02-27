@@ -38,6 +38,8 @@
 		169A0DC218B82ABE00E42D1A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 169A0DC018B82ABE00E42D1A /* InfoPlist.strings */; };
 		169A0DC418B82ABE00E42D1A /* MercuryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 169A0DC318B82ABE00E42D1A /* MercuryTests.m */; };
 		169A0DCF18B82DBA00E42D1A /* PositionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 169A0DCE18B82DBA00E42D1A /* PositionsViewController.m */; };
+		16B98FAF18BEBC6300A55122 /* NSNumberFormatter+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B98FAE18BEBC6300A55122 /* NSNumberFormatter+Mercury.m */; };
+		16B98FB218BED58900A55122 /* NSString+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B98FB118BED58900A55122 /* NSString+Mercury.m */; };
 		16F0797218BA835F00497607 /* HGTicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 16F0797118BA835F00497607 /* HGTicker.m */; };
 		62F5EDAA2D6B47D7AB50AF79 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 290F2EA80FAD4BA6878CC57A /* libPods.a */; };
 		C6736770D1B24F91851CF9C7 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 290F2EA80FAD4BA6878CC57A /* libPods.a */; };
@@ -108,6 +110,10 @@
 		169A0DCD18B82DBA00E42D1A /* PositionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PositionsViewController.h; sourceTree = "<group>"; };
 		169A0DCE18B82DBA00E42D1A /* PositionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PositionsViewController.m; sourceTree = "<group>"; };
 		169A0DD018B82E9A00E42D1A /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		16B98FAD18BEBC6300A55122 /* NSNumberFormatter+Mercury.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumberFormatter+Mercury.h"; sourceTree = "<group>"; };
+		16B98FAE18BEBC6300A55122 /* NSNumberFormatter+Mercury.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumberFormatter+Mercury.m"; sourceTree = "<group>"; };
+		16B98FB018BED58900A55122 /* NSString+Mercury.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Mercury.h"; sourceTree = "<group>"; };
+		16B98FB118BED58900A55122 /* NSString+Mercury.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Mercury.m"; sourceTree = "<group>"; };
 		16F0797018BA835F00497607 /* HGTicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HGTicker.h; sourceTree = "<group>"; };
 		16F0797118BA835F00497607 /* HGTicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HGTicker.m; sourceTree = "<group>"; };
 		290F2EA80FAD4BA6878CC57A /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -218,6 +224,10 @@
 				1605413718B99CAB00C200C6 /* UINavigationController+AutoRotation.m */,
 				160B3BC718BC1CF30075CC14 /* NSString+Yahoo.h */,
 				160B3BC818BC1CF30075CC14 /* NSString+Yahoo.m */,
+				16B98FAD18BEBC6300A55122 /* NSNumberFormatter+Mercury.h */,
+				16B98FAE18BEBC6300A55122 /* NSNumberFormatter+Mercury.m */,
+				16B98FB018BED58900A55122 /* NSString+Mercury.h */,
+				16B98FB118BED58900A55122 /* NSString+Mercury.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -468,6 +478,7 @@
 				1605412618B9630000C200C6 /* NSDateFormatter+Mercury.m in Sources */,
 				1605413218B9965800C200C6 /* PositionChartViewController.m in Sources */,
 				167AC78018BD810C006BF9E6 /* FileHelpers.m in Sources */,
+				16B98FAF18BEBC6300A55122 /* NSNumberFormatter+Mercury.m in Sources */,
 				1605411618B8FFF700C200C6 /* UIColor+Mercury.m in Sources */,
 				169A0DAF18B82ABE00E42D1A /* AppDelegate.m in Sources */,
 				1605413818B99CAB00C200C6 /* UINavigationController+AutoRotation.m in Sources */,
@@ -476,6 +487,7 @@
 				1605411A18B91DE900C200C6 /* PositionSummaryCell.m in Sources */,
 				1605412918B96A6000C200C6 /* HGHistory.m in Sources */,
 				1605412018B92D0A00C200C6 /* MercuryData.m in Sources */,
+				16B98FB218BED58900A55122 /* NSString+Mercury.m in Sources */,
 				1605412F18B981DD00C200C6 /* NSArray+Mercury.m in Sources */,
 				1605411D18B922C100C200C6 /* YahooAPIClient.m in Sources */,
 				16F0797218BA835F00497607 /* HGTicker.m in Sources */,

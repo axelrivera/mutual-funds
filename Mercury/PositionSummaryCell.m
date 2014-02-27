@@ -10,7 +10,7 @@
 
 #import <UIView+AutoLayout.h>
 
-#define kTextContentViewHeight 122.0
+#define kTextContentViewHeight 106.0
 
 @interface PositionSummaryCell ()
 
@@ -50,7 +50,7 @@
         _nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
         _nameLabel.font = [UIFont systemFontOfSize:12.0];
-        _nameLabel.textColor = [UIColor hg_textColor];
+        _nameLabel.textColor = [UIColor grayColor];
         _nameLabel.highlightedTextColor = [UIColor whiteColor];
         _nameLabel.backgroundColor = [UIColor clearColor];
         
@@ -71,7 +71,7 @@
         _dateLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
         _dateLabel.font = [UIFont systemFontOfSize:10.0];
-        _dateLabel.textColor = [UIColor hg_textColor];
+        _dateLabel.textColor = [UIColor grayColor];
         _dateLabel.highlightedTextColor = [UIColor whiteColor];
         _dateLabel.backgroundColor = [UIColor clearColor];
         
@@ -92,13 +92,19 @@
     
     [self.symbolLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0.0];
     [self.symbolLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0.0];
-    [self.symbolLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0.0];
     
-    [self.nameLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.symbolLabel];
-    [self.nameLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0.0];
+    CGSize symbolSize = [self.symbolLabel.text hg_sizeWithFont:self.symbolLabel.font
+                                                      forWidth:(self.bounds.size.width - 20.0) / 2.0
+                                                 lineBreakMode:NSLineBreakByTruncatingTail];
+    
+    [self.symbolLabel autoSetDimension:ALDimensionWidth toSize:symbolSize.width];
+    
+    [self.nameLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.symbolLabel withOffset:-3.0];
     [self.nameLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0.0];
     
-    [self.closeLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.nameLabel];
+    [self.symbolLabel autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:self.nameLabel withOffset:-5.0];
+    
+    [self.closeLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.symbolLabel];
     [self.closeLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0.0];
     [self.closeLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0.0];
     

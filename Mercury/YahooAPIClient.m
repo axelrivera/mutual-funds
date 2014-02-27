@@ -10,8 +10,6 @@
 
 #import "NSString+Yahoo.h"
 
-static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
-
 @implementation YahooAPIClient
 
 - (instancetype)initWithBaseURL:(NSURL *)url
@@ -33,11 +31,12 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
     DLog(@"Trying to Fetch Positions With Parameters:");
     DLog(@"%@", parameters);
     
-    [self GET:@"http://download.finance.yahoo.com/d/quotes.csv" parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        DLog(@"Fetch Positions Response:");
+    [self GET:kYahooQuotesURL parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        DLog(@"Fetch Positions Response:\n");
         NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         
-        DLog(@"%@", responseString);
+        //DLog(@"\n%@", responseString);
+        
         if (completion) {
             completion(responseString, nil);
         }
@@ -75,11 +74,13 @@ static NSString * const YahooAPIBaseURLString = kYahooAPIURLBaseString;
     DLog(@"Trying to Fetch Historical Data With Parameters:");
     DLog(@"%@", parameters);
     
-    [self GET:@"http://ichart.finance.yahoo.com/table.csv" parameters:parameters
+    [self GET:kYahooHistoryURL parameters:parameters
       success:^(AFHTTPRequestOperation *operation, id responseObject)
      {
-         DLog(@"Fetched History for %@", symbol)
+         DLog(@"Fetched History for %@", symbol);
          NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+         
+         //DLog(@"\n%@", responseString);
          
          if (completion) {
              completion(responseString, nil);

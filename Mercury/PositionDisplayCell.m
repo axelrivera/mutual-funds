@@ -30,12 +30,6 @@
         self.accessoryType = UITableViewCellAccessoryNone;
         self.selectionStyle = UITableViewCellSelectionStyleDefault;
         
-//        _indicatorView = [[UIView alloc] initWithFrame:CGRectZero];
-//        _indicatorView.translatesAutoresizingMaskIntoConstraints = NO;
-//        _indicatorView.backgroundColor = [UIColor blackColor];
-//        
-//        [_indicatorView autoSetDimension:ALDimensionWidth toSize:kIndicatorViewWidth];
-        
         _symbolLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _symbolLabel.translatesAutoresizingMaskIntoConstraints = NO;
         _symbolLabel.font = [UIFont systemFontOfSize:26.0];
@@ -54,14 +48,22 @@
         _nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
         _nameLabel.font = [UIFont systemFontOfSize:12.0];
-        _nameLabel.textColor = [UIColor hg_textColor];
+        _nameLabel.textColor = [UIColor grayColor];
         _nameLabel.highlightedTextColor = [UIColor whiteColor];
         _nameLabel.backgroundColor = [UIColor clearColor];
+        
+        _changeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _changeLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        _changeLabel.font = [UIFont systemFontOfSize:16.0];
+        _changeLabel.textColor = [UIColor hg_textColor];
+        _changeLabel.highlightedTextColor = [UIColor whiteColor];
+        _changeLabel.backgroundColor = [UIColor clearColor];
+        _changeLabel.textAlignment = NSTextAlignmentRight;
         
         [self.contentView addSubview:_symbolLabel];
         [self.contentView addSubview:_closeLabel];
         [self.contentView addSubview:_nameLabel];
-//        [self.contentView addSubview:_indicatorView];
+        [self.contentView addSubview:_changeLabel];
     }
     return self;
 }
@@ -76,6 +78,9 @@
     
     [self.closeLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:10.0];
     [self.closeLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10.0];
+    
+    [self.changeLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10.0];
+    [self.changeLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10.0];
     
     [super updateConstraints];
 }

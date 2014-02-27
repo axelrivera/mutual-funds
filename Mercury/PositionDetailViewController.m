@@ -17,6 +17,9 @@
 @property (strong, nonatomic) UIBarButtonItem *addToMyPositionsButton;
 @property (strong, nonatomic) UIBarButtonItem *removeFromMyPositionsButton;
 
+- (void)updateDataSourceIncludeChart:(BOOL)includeChart;
+- (void)reloadChart;
+
 @end
 
 @implementation PositionDetailViewController
@@ -33,6 +36,8 @@
         self.title = @"Details";
         _ticker = ticker;
         _allowSave = allowSave;
+        _dataSource = @[];
+        _chartView = nil;
     }
     return self;
 }
@@ -42,35 +47,14 @@
     [super viewDidLoad];
 
     self.tableView.backgroundColor = [UIColor hg_mainBackgroundColor];
-
-    self.chartView = [[NCISimpleChartView alloc]
-                      initWithFrame:CGRectZero
-                      andOptions: @{nciIsFill: @(NO),
-                                    nciSelPointSizes: @[@5, @10, @5]}];
-
+    
+    [self updateDataSourceIncludeChart:NO];
+    
     [[MercuryData sharedData] fetchHistoricalDataForSymbol:self.ticker.symbol
                                                 completion:^(NSArray *history, NSError *error)
     {
-        DLog(@"Got the historycal Data");
         self.ticker.position.history = history;
-        
-        DLog(@"After Setter");
-
-        dispatch_queue_t backgroundQueue = dispatch_queue_create("me.axelrivera.queue", NULL);
-        dispatch_async(backgroundQueue, ^{
-            DLog(@"Doing some background shit");
-            self.chartDataSource = [self.ticker.position chartArrayForInterval:90 SMA1:50 SMA2:200];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                DLog(@"Back to the main queue");
-                for (NSInteger i = 0; i < [self.chartDataSource count]; i++) {
-                    NSDictionary *dictionary = self.chartDataSource[i];
-                    [self.chartView addPoint:(double)i val:@[ dictionary[@"close"], dictionary[@"sma1"], dictionary[@"sma2"] ]];
-                }
-                
-                [self.chartView drawChart];
-            });    
-        });
+        [self reloadChart];
     }];
 
     if (self.ticker.tickerType == HGTickerTypeWatchlist) {
@@ -121,6 +105,74 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - Private Methods
+
+- (void)updateDataSourceIncludeChart:(BOOL)includeChart
+{
+    NSDictionary *dictionary = @{};
+    NSMutableArray *sections =[@[] mutableCopy];
+    NSMutableArray *rows = [@[] mutableCopy];
+    
+    if (self.allowSave) {
+        NSString *text = self.ticker.tickerType == HGTickerTypeWatchlist ? @"Save to Watchlist" : @"Save to My Positions";
+        dictionary = @{ @"text": text, @"type" : @"save" };
+        [rows addObject:dictionary];
+        
+        [sections addObject:@{ @"rows" : rows }];
+    }
+    
+    rows = [@[] mutableCopy];
+    
+    dictionary = @{ @"type" : @"ticker" };
+    [rows addObject:dictionary];
+    [sections addObject:@{ @"rows" : rows }];
+    
+    rows = [@[] mutableCopy];
+    
+    dictionary = @{ @"type" : @"chart", @"include" : [NSNumber numberWithBool:includeChart] };
+    [rows addObject:dictionary];
+    [sections addObject:@{ @"title" : @"Three Month Chart", @"rows" : rows }];
+    
+    self.dataSource = sections;
+}
+
+- (void)reloadChart
+{
+    if (IsEmpty(self.ticker.position.history)) {
+        return;
+    }
+    
+//    NSString* (^xRenderBlock)(double) = ^(double value) {
+//        DLog(@"Value: %f", value);
+//        return [NSString stringWithFormat:@"%.0f", value];
+//    };
+    
+    self.chartView = [[NCISimpleChartView alloc]
+                      initWithFrame:CGRectZero
+                      andOptions: @{nciIsFill: @(NO),
+                                    nciLineColors: @[HexColor(0x204A87), HexColor(0x5C3566), HexColor(0xCE5C00)],
+                                    nciLineWidths: @[@1, [NSNull null]],
+                                    nciUseDateFormatter: @(YES),
+                                    nciHasSelection: @(NO)}];
+    
+    [self.ticker.position  calculateChartForInterval:90 SMA1:50 SMA2:200 completion:^(NSArray *chartArray) {
+        self.chartDataSource = chartArray;
+        for (NSInteger i = 0; i < [self.chartDataSource count]; i++) {
+            NSDictionary *dictionary = self.chartDataSource[i];
+            
+            NSDate *date = dictionary[@"date"];
+            NSTimeInterval dateInterval = [date timeIntervalSince1970];
+            
+            [self.chartView addPoint:dateInterval val:@[ dictionary[@"close"], dictionary[@"sma1"], dictionary[@"sma2"] ]];
+        }
+        
+        [self.chartView drawChart];
+        
+        [self updateDataSourceIncludeChart:YES];
+        [self.tableView reloadData];
+    }];
+}
+
 #pragma mark - Selector Methods
 
 - (void)addToMyPositionsAction:(id)sender
@@ -156,26 +208,23 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSInteger sections = 2;
-    if (self.allowSave) {
-        sections = 3;
-    }
-
-    return sections;
+    return [self.dataSource count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 1;
+    return [self.dataSource[section][@"rows"] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *ChartIdentifier = @"ChartCell";
     static NSString *SummaryIdentifier = @"SummaryCell";
     static NSString *SaveIdentifier = @"SaveCell";
+    
+    NSDictionary *dictionary = self.dataSource[indexPath.section][@"rows"][indexPath.row];
+    NSString *rowType = dictionary[@"type"];
 
-    if (self.allowSave && indexPath.section == 0) {
+    if ([rowType isEqualToString:@"save"]) {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:SaveIdentifier];
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:SaveIdentifier];
@@ -191,7 +240,7 @@
         return cell;
     }
 
-    if ((self.allowSave && indexPath.section == 1) || indexPath.section == 0) {
+    if ([rowType isEqualToString:@"ticker"]) {
         PositionSummaryCell *cell = [tableView dequeueReusableCellWithIdentifier:SummaryIdentifier];
         if (cell == nil) {
             cell = [[PositionSummaryCell alloc] initWithReuseIdentifier:SummaryIdentifier];
@@ -203,14 +252,35 @@
         cell.changeLabel.text = [self.ticker.position priceAndPercentageChange];
         cell.dateLabel.text = self.ticker.position.lastTradeDate;
         
+        cell.changeLabel.textColor = [self.ticker.position colorForChangeType];
+        
         return cell;
     }
-
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ChartIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ChartIdentifier];
-        self.chartView.frame = CGRectMake(0.0, 0.0, tableView.frame.size.width, 200.0);
+    
+    BOOL includeChart = [dictionary[@"include"] boolValue];
+    
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+    
+    CGRect viewRect = CGRectMake(0.0, 0.0, tableView.frame.size.width, 200.0);
+    
+    if (includeChart) {
+        self.chartView.frame = viewRect;
         cell.accessoryView = self.chartView;
+        [self.chartView setNeedsDisplay];
+    } else {
+        UIView *view = [[UIView alloc] initWithFrame:viewRect];
+        view.backgroundColor = [UIColor clearColor];
+        UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        CGRect indicatorRect = indicatorView.frame;
+        [indicatorView startAnimating];
+        
+        indicatorRect.origin.x = (view.frame.size.width - indicatorRect.size.width) / 2.0;
+        indicatorRect.origin.y = (view.frame.size.height - indicatorRect.size.height) / 2.0;
+        
+        indicatorView.frame = indicatorRect;
+        
+        [view addSubview:indicatorView];
+        cell.accessoryView = view;
     }
 
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -228,30 +298,27 @@
         if (self.saveBlock) {
             self.allowSave = NO;
             self.saveBlock(self.ticker);
-
-            [self.tableView reloadData];
+            
+            [self updateDataSourceIncludeChart:YES];
+            
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
     }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CGFloat height = 0.0;
-
-    if (self.allowSave) {
-        if (indexPath.section == 0) {
-            height = 44;
-        } else if (indexPath.section == 1) {
-            height = 146.0;
-        } else {
-            height = 200.0;
-        }
-    } else {
-        if (indexPath.section == 0) {
-            height = 146.0;
-        } else if (indexPath.section == 1) {
-            return 200.0;
-        }
+    CGFloat height = 44.0;
+    
+    NSDictionary *dictionary = self.dataSource[indexPath.section][@"rows"][indexPath.row];
+    NSString *rowType = dictionary[@"type"];
+    
+    if ([rowType isEqualToString:@"save"]) {
+        height = 44.0;
+    } else if ([rowType isEqualToString:@"ticker"]) {
+        height = 126.0;
+    } else if ([rowType isEqualToString:@"chart"]) {
+        height = 200.0;
     }
 
     return height;
@@ -260,15 +327,10 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     NSString *title = nil;
-    if (self.allowSave) {
-        if (section == 2) {
-            title = @"Three Month Chart";
-        }
-    } else {
-        if (section == 1) {
-            title = @"Three Month Chart";
-        }
-    }
+    
+    NSDictionary *dictionary = self.dataSource[section];
+    title = dictionary[@"title"];
+    
     return title;
 }
 

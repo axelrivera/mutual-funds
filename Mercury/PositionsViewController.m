@@ -136,6 +136,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self.tableView reloadData];
 }
 
 - (BOOL)shouldAutorotate
@@ -281,7 +282,9 @@
     
     self.dataSource = [[NSMutableArray alloc] initWithArray:array];
     
-    [self.tableView reloadData];
+    dispatch_async(dispatch_get_main_queue(), ^{
+       [self.tableView reloadData];
+    });
 }
 
 #pragma mark - UITableViewDataSource Methods
@@ -305,6 +308,9 @@
     cell.symbolLabel.text = ticker.symbol;
     cell.nameLabel.text = [ticker name];
     cell.closeLabel.text = [ticker close];
+    cell.changeLabel.text = [ticker priceAndPercentChange];
+    
+    cell.changeLabel.textColor = [ticker.position colorForChangeType];
     
     [cell setNeedsUpdateConstraints];
     
