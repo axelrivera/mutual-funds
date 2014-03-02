@@ -15,8 +15,10 @@
 @property (strong, nonatomic) NCISimpleChartView *chartView;
 
 @property (strong, nonatomic) HGTicker *ticker;
+@property (strong, nonatomic) NSArray *chartArray;
 @property (strong, nonatomic) NSArray *dataSource;
+@property (strong, nonatomic) NSString *currentPeriod;
 
-- (instancetype)initWithTicker:(HGTicker *)ticker;
+- (instancetype)initWithTicker:(HGTicker *)ticker chartArray:(NSArray *)chartArray;
 
 @end

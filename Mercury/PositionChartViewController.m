@@ -17,12 +17,13 @@
 
 @implementation PositionChartViewController
 
-- (instancetype)initWithTicker:(HGTicker *)ticker
+- (instancetype)initWithTicker:(HGTicker *)ticker chartArray:(NSArray *)chartArray
 {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         _ticker = ticker;
-        _dataSource = @[];
+        _chartArray = chartArray;
+        _currentPeriod = HGChartPeriodTenYearWeekly;
     }
     return self;
 }
@@ -36,14 +37,38 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    NSDate *startDate = [NSDate chartStartDateForInterval:[[HGSettings defaultSettings] intervalForChartPeriod:self.currentPeriod]];
+    
+    DLog(@"Chart Array: %@", self.chartArray);
+    
+    self.dataSource = [self.chartArray chartWeeklyArrayWithStartDate:startDate];
+    
 	self.chartView = [[NCISimpleChartView alloc]
                       initWithFrame:CGRectZero
                       andOptions: @{nciIsFill: @(NO),
                                     nciLineColors: @[HexColor(0x204A87), HexColor(0x5C3566), HexColor(0xCE5C00)],
                                     nciLineWidths: @[@1, [NSNull null]],
                                     nciUseDateFormatter: @(YES),
-                                    nciHasSelection: @(NO)}];
+                                    nciHasSelection: @(NO),
+                                    nciXLabelsDistance: @100,
+                                    nciGridLeftMargin: @40,
+                                    nciXLabelsFont: [UIFont systemFontOfSize:8.0],
+                                    nciYLabelsFont: [UIFont systemFontOfSize:8.0],
+                                    nciGridHorizontal: [[NCILine alloc] initWithWidth:0.5 color:[UIColor colorWithWhite:0.5 alpha:0.3] andDashes:@[@1, @1]],
+                                    nciGridVertical: [[NCILine alloc] initWithWidth:0.0 color:[UIColor clearColor] andDashes:nil]}];
     self.chartView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    for (NSInteger i = 0; i < [self.dataSource count]; i++) {
+        NSDictionary *dictionary = self.dataSource[i];
+        
+        NSDate *date = dictionary[@"date"];
+        NSTimeInterval dateInterval = [date timeIntervalSince1970];
+        
+        [self.chartView addPoint:dateInterval val:@[ dictionary[@"close"], dictionary[@"sma1"], dictionary[@"sma2"] ]];
+    }
+    [self.chartView drawChart];
+    
     [self.view addSubview:self.chartView];
 }
 
@@ -71,19 +96,6 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    [self.ticker.position calculateChartForInterval:365 SMA1:50 SMA2:200 completion:^(NSArray *chartArray) {
-        self.dataSource = chartArray;
-        for (NSInteger i = 0; i < [self.dataSource count]; i++) {
-            NSDictionary *dictionary = self.dataSource[i];
-            
-            NSDate *date = dictionary[@"date"];
-            NSTimeInterval dateInterval = [date timeIntervalSince1970];
-            
-            [self.chartView addPoint:dateInterval val:@[ dictionary[@"close"], dictionary[@"sma1"], dictionary[@"sma2"] ]];
-        }
-        [self.chartView drawChart];
-    }];
 }
 
 - (void)didReceiveMemoryWarning
@@ -95,7 +107,7 @@
 - (BOOL)shouldAutorotate
 {
     if ([UIDevice currentDevice].orientation == UIInterfaceOrientationPortrait) {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
         return NO;
     }
     return YES;
@@ -105,14 +117,5 @@
 {
     return UIInterfaceOrientationMaskLandscape;
 }
-
-//- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
-//{
-//    if ([UIDevice currentDevice].orientation == UIInterfaceOrientationLandscapeLeft) {
-//        return UIInterfaceOrientationLandscapeLeft;
-//    } else {
-//        return UIInterfaceOrientationLandscapeLeft;
-//    }
-//}
 
 @end

@@ -28,7 +28,10 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.tintColor = [UIColor hg_highlightColor];
     
-    PositionsViewController *watchlistController = [[PositionsViewController alloc] initWithTickerType:HGTickerTypeWatchlist];
+    PositionsViewController *indexController = [[PositionsViewController alloc] initWithTickerType:HGTickerTypeMyIndexes];
+    UINavigationController *indexNavController = [[UINavigationController alloc] initWithRootViewController:indexController];
+    
+    PositionsViewController *watchlistController = [[PositionsViewController alloc] initWithTickerType:HGTickerTypeMyWatchlist];
     UINavigationController *watchlistNavController = [[UINavigationController alloc] initWithRootViewController:watchlistController];
     
     PositionsViewController *positionsController = [[PositionsViewController alloc] initWithTickerType:HGTickerTypeMyPositions];
@@ -37,7 +40,7 @@
     SettingsViewController *settingsController = [[SettingsViewController alloc] init];
     UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsController];
     
-    NSArray *viewControllers = @[ watchlistNavController, positionsNavController, settingsNavController ];
+    NSArray *viewControllers = @[ indexNavController, watchlistNavController, positionsNavController, settingsNavController ];
     
     self.tabBarController = [[UITabBarController alloc] init];
     self.tabBarController.viewControllers = viewControllers;

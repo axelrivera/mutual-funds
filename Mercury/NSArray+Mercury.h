@@ -11,7 +11,9 @@
 @interface NSArray (Mercury)
 
 - (NSArray *)reversedArray;
-
 - (NSDecimalNumber *)sumHistoryCloses;
+- (NSArray *)chartWeeklyArrayWithStartDate:(NSDate *)startDate;
+- (NSArray *)chartDailyArrayWithStartDate:(NSDate *)startDate;
+- (NSArray *)chartSubarrayWithStartDate:(NSDate *)startDate;
 
 @end

@@ -23,7 +23,7 @@ typedef void(^HGPositionChartCompletionBlock)(NSArray *chartArray);
 @property (copy, nonatomic) NSString *close;
 @property (copy, nonatomic) NSString *change;
 @property (copy, nonatomic) NSString *percentageChange;
-@property (copy, nonatomic) NSString *lastTradeDate;
+@property (copy, nonatomic) NSString *lastTradeDateString;
 @property (copy, nonatomic) NSString *lastTradeTime;
 @property (copy, nonatomic) NSString *stockExchange;
 @property (copy, nonatomic) NSString *previousClose;
@@ -43,13 +43,12 @@ typedef void(^HGPositionChartCompletionBlock)(NSArray *chartArray);
 
 - (NSString *)priceAndPercentageChange;
 - (NSString *)formattedClose;
+- (NSDate *)lastTradeDate;
 - (HGPositionChangeType)changeType;
 - (UIColor *)colorForChangeType;
 
-
-- (void)calculateChartForInterval:(NSUInteger)interval
-                             SMA1:(NSUInteger)SMA1
-                             SMA2:(NSUInteger)SMA2
-                       completion:(HGPositionChartCompletionBlock)completion;
+- (void)calculateChartWithSMA1:(NSUInteger)SMA1
+                          SMA2:(NSUInteger)SMA2
+                    completion:(HGPositionChartCompletionBlock)completion;
 
 @end

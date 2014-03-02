@@ -8,17 +8,35 @@
 
 #import "PositionDetailViewController.h"
 
+#import <UIView+AutoLayout.h>
+#import "UIViewController+Layout.h"
+
 #import "PositionChartViewController.h"
 #import "PositionSummaryCell.h"
 #import <NCIChartView.h>
 
-@interface PositionDetailViewController ()
+static const CGFloat ContainerChartPaddingTop = 10.0;
+static const CGFloat ContainerChartPaddingMiddle = 10.0;
+static const CGFloat ContainerLabelHeight = 16.0;
+static const CGFloat ContainerChartHeight = 135.0;
+static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
+                                        ContainerLabelHeight +
+                                        ContainerChartPaddingMiddle +
+                                        ContainerChartHeight);
+
+@interface PositionDetailViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) UIBarButtonItem *addToMyPositionsButton;
 @property (strong, nonatomic) UIBarButtonItem *removeFromMyPositionsButton;
+@property (strong, nonatomic) UIView *chartContainerView;
+@property (strong, nonatomic) UILabel *chartLabel;
+@property (strong, nonatomic) UILabel *chartLegendLabel;
+@property (strong, nonatomic) UIView *chartTopLine;
 
-- (void)updateDataSourceIncludeChart:(BOOL)includeChart;
+- (void)updateDataSourceWithSignals:(BOOL)signals reloadTable:(BOOL)reloadTable animated:(BOOL)animated;
 - (void)reloadChart;
+
+- (void)setupChartContainerView;
 
 @end
 
@@ -31,65 +49,108 @@
 
 - (instancetype)initWithTicker:(HGTicker *)ticker allowSave:(BOOL)allowSave
 {
-    self = [super initWithStyle:UITableViewStyleGrouped];
+    self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.title = @"Details";
         _ticker = ticker;
         _allowSave = allowSave;
         _dataSource = @[];
+        _chartDataSource = @[];
+        _chartLimitedDataSource = @[];
+        _chartSignals = @[];
         _chartView = nil;
     }
     return self;
 }
 
+- (void)loadView
+{
+    self.view = [[UIView alloc] initWithFrame:CGRectZero];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    [self.view addSubview:self.tableView];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.currentChartPeriod = [[HGSettings defaultSettings] detailChartPeriod];
 
     self.tableView.backgroundColor = [UIColor hg_mainBackgroundColor];
     
-    [self updateDataSourceIncludeChart:NO];
+    [self updateDataSourceWithSignals:NO reloadTable:NO animated:YES];
     
-    [[MercuryData sharedData] fetchHistoricalDataForSymbol:self.ticker.symbol
+    [[MercuryData sharedData] fetchHistoricalDataForTicker:self.ticker
                                                 completion:^(NSArray *history, NSError *error)
     {
         self.ticker.position.history = history;
         [self reloadChart];
     }];
-
-    if (self.ticker.tickerType == HGTickerTypeWatchlist) {
-        self.addToMyPositionsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"star"]
-                                                                     style:UIBarButtonItemStylePlain
-                                                                    target:self
-                                                                    action:@selector(addToMyPositionsAction:)];
-
-        self.removeFromMyPositionsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"star-selected"]
-                                                                            style:UIBarButtonItemStylePlain
-                                                                           target:self
-                                                                           action:@selector(removeFromMyPositionsAction:)];
+    
+    if (self.allowSave) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
+                                                                                               target:self
+                                                                                               action:@selector(saveAction:)];
+    } else {
+        if (self.ticker.tickerType == HGTickerTypeMyWatchlist) {
+            self.addToMyPositionsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"star"]
+                                                                           style:UIBarButtonItemStylePlain
+                                                                          target:self
+                                                                          action:@selector(addToMyPositionsAction:)];
+            
+            self.removeFromMyPositionsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"star-selected"]
+                                                                                style:UIBarButtonItemStylePlain
+                                                                               target:self
+                                                                               action:@selector(removeFromMyPositionsAction:)];
+        }
     }
+
+    [self setupChartContainerView];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+    [self.tableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+    
+    UIEdgeInsets insets = self.tableView.contentInset;
+    insets.top = self.topOrigin;
+    insets.bottom = ContainerHeight;
+    
+    self.tableView.contentInset = insets;
+    self.tableView.scrollIndicatorInsets = insets;
+    
+    [self.chartContainerView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0.0];
+    [self.chartContainerView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0.0];
+    [self.chartContainerView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0.0];
+    
+    [self.view layoutSubviews];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-
-    if (self.ticker.tickerType == HGTickerTypeWatchlist) {
-        BOOL present = [[MercuryData sharedData] isSymbolPresentInMyPositions:self.ticker.symbol];
-        if (present) {
-            self.navigationItem.rightBarButtonItem = self.removeFromMyPositionsButton;
-        } else {
-            self.navigationItem.rightBarButtonItem = self.addToMyPositionsButton;
-        }
-    }
 }
 
 - (BOOL)shouldAutorotate
 {
+    if (IsEmpty(self.chartDataSource)) {
+        return NO;
+    }
+    
     if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
-        PositionChartViewController *chartController = [[PositionChartViewController alloc] initWithTicker:self.ticker];
-        chartController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-        [self.navigationController presentViewController:chartController animated:YES completion:nil];
+        PositionChartViewController *chartController = [[PositionChartViewController alloc] initWithTicker:self.ticker
+                                                                                                chartArray:self.chartDataSource];
+        
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:chartController];
+        navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+        [navController setNavigationBarHidden:YES];
+        
+        [self.navigationController presentViewController:navController animated:YES completion:nil];
     }
     return NO;
 }
@@ -107,33 +168,61 @@
 
 #pragma mark - Private Methods
 
-- (void)updateDataSourceIncludeChart:(BOOL)includeChart
+- (void)updateDataSourceWithSignals:(BOOL)signals reloadTable:(BOOL)reloadTable animated:(BOOL)animated
 {
     NSDictionary *dictionary = @{};
     NSMutableArray *sections =[@[] mutableCopy];
     NSMutableArray *rows = [@[] mutableCopy];
     
-    if (self.allowSave) {
-        NSString *text = self.ticker.tickerType == HGTickerTypeWatchlist ? @"Save to Watchlist" : @"Save to My Positions";
-        dictionary = @{ @"text": text, @"type" : @"save" };
-        [rows addObject:dictionary];
-        
-        [sections addObject:@{ @"rows" : rows }];
-    }
-    
-    rows = [@[] mutableCopy];
-    
     dictionary = @{ @"type" : @"ticker" };
     [rows addObject:dictionary];
     [sections addObject:@{ @"rows" : rows }];
+
+    if (signals) {
+        rows = [@[] mutableCopy];
+
+        for (NSDictionary *signal in self.chartSignals) {
+            NSString *text = signal[@"signal"];
+            NSString *dateStr = [[NSDateFormatter hg_signalDateFormatter] stringFromDate:signal[@"date"]];
+            dictionary = @{ @"text" : text,
+                            @"detail" : dateStr,
+                            @"type" : @"signal" };
+            [rows addObject:dictionary];
+        }
+        
+        if (!IsEmpty(rows)) {
+            NSString *title = nil;
+            if ([self.currentChartPeriod isEqualToString:HGChartPeriodOneYearDaily]) {
+                title = @"Signals in the Past Year";
+            } else {
+                title = @"Signals in the Past Three Months";
+            }
+            
+            [sections addObject:@{ @"title" : title, @"rows" : rows }];
+        }
+    }
     
-    rows = [@[] mutableCopy];
-    
-    dictionary = @{ @"type" : @"chart", @"include" : [NSNumber numberWithBool:includeChart] };
-    [rows addObject:dictionary];
-    [sections addObject:@{ @"title" : @"Three Month Chart", @"rows" : rows }];
+    NSRange deleteRange = NSMakeRange(0, [self.dataSource count]);
     
     self.dataSource = sections;
+    
+    NSRange insertRange = NSMakeRange(0, [self.dataSource count]);
+    
+    if (reloadTable) {
+        if (animated) {
+            [self.tableView beginUpdates];
+            
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndexesInRange:deleteRange]
+                          withRowAnimation:UITableViewRowAnimationFade];
+            
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndexesInRange:insertRange]
+                          withRowAnimation:UITableViewRowAnimationFade];
+            
+            [self.tableView endUpdates];
+        } else {
+            [self.tableView reloadData];
+        }
+    }
 }
 
 - (void)reloadChart
@@ -147,18 +236,28 @@
 //        return [NSString stringWithFormat:@"%.0f", value];
 //    };
     
-    self.chartView = [[NCISimpleChartView alloc]
-                      initWithFrame:CGRectZero
-                      andOptions: @{nciIsFill: @(NO),
-                                    nciLineColors: @[HexColor(0x204A87), HexColor(0x5C3566), HexColor(0xCE5C00)],
-                                    nciLineWidths: @[@1, [NSNull null]],
-                                    nciUseDateFormatter: @(YES),
-                                    nciHasSelection: @(NO)}];
+    NSString *currentPeriod = [[HGSettings defaultSettings] detailChartPeriod];
     
-    [self.ticker.position  calculateChartForInterval:90 SMA1:50 SMA2:200 completion:^(NSArray *chartArray) {
+    NSUInteger interval = [[HGSettings defaultSettings] intervalForChartPeriod:currentPeriod];
+    NSUInteger sma1 = [[HGSettings defaultSettings] SMA1forChartPeriod:currentPeriod];
+    NSUInteger sma2 = [[HGSettings defaultSettings] SMA2forChartPeriod:currentPeriod];
+    
+    [self.ticker.position  calculateChartWithSMA1:sma1 SMA2:sma2 completion:^(NSArray *chartArray) {
         self.chartDataSource = chartArray;
-        for (NSInteger i = 0; i < [self.chartDataSource count]; i++) {
-            NSDictionary *dictionary = self.chartDataSource[i];
+        
+        NSDate *startDate = [NSDate chartStartDateForInterval:interval];
+        
+        self.chartLimitedDataSource = [chartArray chartDailyArrayWithStartDate:startDate];
+        self.chartSignals = [[self.chartLimitedDataSource SMA_arrayOfAnalizedSignals] reversedArray];
+
+        [self updateDataSourceWithSignals:YES reloadTable:YES animated:YES];
+        
+        if (!IsEmpty(self.chartView.chartData)) {
+            [self.chartView.chartData removeAllObjects];
+        }
+        
+        for (NSInteger i = 0; i < [self.chartLimitedDataSource count]; i++) {
+            NSDictionary *dictionary = self.chartLimitedDataSource[i];
             
             NSDate *date = dictionary[@"date"];
             NSTimeInterval dateInterval = [date timeIntervalSince1970];
@@ -167,13 +266,116 @@
         }
         
         [self.chartView drawChart];
-        
-        [self updateDataSourceIncludeChart:YES];
-        [self.tableView reloadData];
     }];
 }
 
+- (void)setupChartContainerView
+{
+    self.chartContainerView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.chartContainerView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.chartContainerView.backgroundColor = [UIColor whiteColor];
+    
+    [self.chartContainerView autoSetDimension:ALDimensionHeight toSize:ContainerHeight];
+    
+    self.chartTopLine = [[UIView alloc] initWithFrame:CGRectZero];
+    self.chartTopLine.translatesAutoresizingMaskIntoConstraints = NO;
+    self.chartTopLine.backgroundColor = [UIColor hg_tableSeparatorColor];
+    
+    [self.chartTopLine autoSetDimension:ALDimensionHeight toSize:1.0];
+    
+    [self.chartContainerView addSubview:self.chartTopLine];
+    
+    self.chartLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    self.chartLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.chartLabel.font = [UIFont systemFontOfSize:12.0];
+    self.chartLabel.textColor = [UIColor darkGrayColor];
+    self.chartLabel.backgroundColor = [UIColor clearColor];
+    
+    NSString *text = nil;
+    if ([self.currentChartPeriod isEqualToString:HGChartPeriodOneYearDaily]) {
+        text = @"ONE YEAR DAILY CHART";
+    } else {
+        text = @"THREE MONTH DAILY CHART";
+    }
+    
+    self.chartLabel.text = text;
+    
+    [self.chartLabel autoSetDimension:ALDimensionHeight toSize:ContainerLabelHeight];
+    
+    [self.chartContainerView addSubview:self.chartLabel];
+    
+    self.chartLegendLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    self.chartLegendLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.chartLegendLabel.font = [UIFont systemFontOfSize:10.0];
+    self.chartLegendLabel.backgroundColor = [UIColor clearColor];
+    self.chartLegendLabel.textAlignment = NSTextAlignmentRight;
+    
+    NSUInteger sma1Interval = [[HGSettings defaultSettings] SMA1forChartPeriod:self.currentChartPeriod];
+    NSUInteger sma2Interval = [[HGSettings defaultSettings] SMA2forChartPeriod:self.currentChartPeriod];
+    
+    NSString *sma1 = [NSString stringWithFormat:@"sma(%lu)", (unsigned long)sma1Interval];
+    NSString *sma2 = [NSString stringWithFormat:@"sma(%lu)", (unsigned long)sma2Interval];
+    NSString *legenStr = [NSString stringWithFormat:@"%@  %@", sma1, sma2];
+    
+    NSRange sma1Range = [legenStr rangeOfString:sma1];
+    NSRange sma2Range = [legenStr rangeOfString:sma2];
+    
+    NSMutableAttributedString *legendAttributedStr = [[NSMutableAttributedString alloc] initWithString:legenStr];
+    [legendAttributedStr addAttribute:NSForegroundColorAttributeName value:HexColor(0x5C3566) range:sma1Range];
+    [legendAttributedStr addAttribute:NSForegroundColorAttributeName value:HexColor(0xCE5C00) range:sma2Range];
+    
+    self.chartLegendLabel.attributedText = legendAttributedStr;
+    
+    [self.chartLegendLabel autoSetDimension:ALDimensionHeight toSize:ContainerLabelHeight];
+    
+    [self.chartContainerView addSubview:self.chartLegendLabel];
+
+    self.chartView = [[NCISimpleChartView alloc]
+                      initWithFrame:CGRectZero
+                      andOptions: @{nciIsFill: @(NO),
+                                    nciLineColors: @[HexColor(0x204A87), HexColor(0x5C3566), HexColor(0xCE5C00)],
+                                    nciLineWidths: @[@1, [NSNull null]],
+                                    nciUseDateFormatter: @(YES),
+                                    nciHasSelection: @(NO),
+                                    nciXLabelsDistance: @100,
+                                    nciGridLeftMargin: @40,
+                                    nciXLabelsFont: [UIFont systemFontOfSize:8.0],
+                                    nciYLabelsFont: [UIFont systemFontOfSize:8.0],
+                                    nciGridHorizontal: [[NCILine alloc] initWithWidth:0.5 color:[UIColor colorWithWhite:0.5 alpha:0.3] andDashes:@[@1, @1]],
+                                    nciGridVertical: [[NCILine alloc] initWithWidth:0.0 color:[UIColor clearColor] andDashes:nil]}];
+    self.chartView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    [self.chartView autoSetDimension:ALDimensionHeight toSize:ContainerChartHeight];
+    
+    [self.chartContainerView addSubview:self.chartView];
+    
+    [self.chartTopLine autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0.0];
+    [self.chartTopLine autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0.0];
+    [self.chartTopLine autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0.0];
+    
+    [self.chartLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:ContainerChartPaddingTop];
+    [self.chartLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10.0];
+    
+    [self.chartLegendLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:ContainerChartPaddingTop];
+    [self.chartLegendLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10.0];
+    
+    [self.chartLabel autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:self.chartLegendLabel withOffset:2.0];
+    
+    [self.chartView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0.0];
+    [self.chartView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0.0];
+    [self.chartView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0.0];
+    
+    [self.view addSubview:self.chartContainerView];
+}
+
 #pragma mark - Selector Methods
+
+- (void)saveAction:(id)sender
+{
+    if (self.saveBlock) {
+        self.saveBlock(self.ticker);
+    }
+}
 
 - (void)addToMyPositionsAction:(id)sender
 {
@@ -220,6 +422,7 @@
 {
     static NSString *SummaryIdentifier = @"SummaryCell";
     static NSString *SaveIdentifier = @"SaveCell";
+    static NSString *SignalIdentifier = @"SignalCell";
     
     NSDictionary *dictionary = self.dataSource[indexPath.section][@"rows"][indexPath.row];
     NSString *rowType = dictionary[@"type"];
@@ -228,8 +431,7 @@
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:SaveIdentifier];
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:SaveIdentifier];
-            NSString *textStr = self.ticker.tickerType == HGTickerTypeWatchlist ? @"Save to Watchlist" : @"Save to My Positions";
-            cell.textLabel.text = textStr;
+            cell.textLabel.text = dictionary[@"text"];
             cell.textLabel.textAlignment = NSTextAlignmentCenter;
             cell.textLabel.textColor = [UIColor hg_highlightColor];
         }
@@ -250,42 +452,39 @@
         cell.nameLabel.text = self.ticker.position.name;
         cell.closeLabel.text = self.ticker.position.close;
         cell.changeLabel.text = [self.ticker.position priceAndPercentageChange];
-        cell.dateLabel.text = self.ticker.position.lastTradeDate;
+        cell.dateLabel.text = self.ticker.position.lastTradeDateString;
         
         cell.changeLabel.textColor = [self.ticker.position colorForChangeType];
         
         return cell;
     }
-    
-    BOOL includeChart = [dictionary[@"include"] boolValue];
-    
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-    
-    CGRect viewRect = CGRectMake(0.0, 0.0, tableView.frame.size.width, 200.0);
-    
-    if (includeChart) {
-        self.chartView.frame = viewRect;
-        cell.accessoryView = self.chartView;
-        [self.chartView setNeedsDisplay];
-    } else {
-        UIView *view = [[UIView alloc] initWithFrame:viewRect];
-        view.backgroundColor = [UIColor clearColor];
-        UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        CGRect indicatorRect = indicatorView.frame;
-        [indicatorView startAnimating];
-        
-        indicatorRect.origin.x = (view.frame.size.width - indicatorRect.size.width) / 2.0;
-        indicatorRect.origin.y = (view.frame.size.height - indicatorRect.size.height) / 2.0;
-        
-        indicatorView.frame = indicatorRect;
-        
-        [view addSubview:indicatorView];
-        cell.accessoryView = view;
+
+    if ([rowType isEqualToString:@"signal"]) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:SignalIdentifier];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:SignalIdentifier];
+            cell.textLabel.font = [UIFont systemFontOfSize:15.0];
+            cell.detailTextLabel.font = [UIFont systemFontOfSize:15.0];
+        }
+
+        UIColor *textColor = [UIColor blackColor];
+        if ([dictionary[@"text"] isEqualToString:@"buy"]) {
+            textColor = [UIColor hg_changePositiveColor];
+        } else if ([dictionary[@"text"] isEqualToString:@"sell"]) {
+            textColor = [UIColor hg_changeNegativeColor];
+        }
+
+        cell.textLabel.text = [dictionary[@"text"] capitalizedString];
+        cell.textLabel.textColor = textColor;
+        cell.detailTextLabel.text = dictionary[@"detail"];
+
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.accessoryType = UITableViewCellAccessoryNone;
+
+        return cell;
     }
-
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
-    return cell;
+    
+    return nil;
 }
 
 #pragma mark - UITableViewDelegate Methods
@@ -293,17 +492,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
-    if (self.allowSave && indexPath.row == 0) {
-        if (self.saveBlock) {
-            self.allowSave = NO;
-            self.saveBlock(self.ticker);
-            
-            [self updateDataSourceIncludeChart:YES];
-            
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
-        }
-    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -318,7 +506,7 @@
     } else if ([rowType isEqualToString:@"ticker"]) {
         height = 126.0;
     } else if ([rowType isEqualToString:@"chart"]) {
-        height = 200.0;
+        height = 130.0;
     }
 
     return height;

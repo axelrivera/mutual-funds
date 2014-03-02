@@ -45,4 +45,9 @@
     return HexColor(0xEDD400);
 }
 
++ (UIColor *)hg_tableSeparatorColor
+{
+    return HexColor(0xC7C5CC);
+}
+
 @end

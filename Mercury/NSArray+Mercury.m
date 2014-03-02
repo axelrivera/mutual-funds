@@ -10,7 +10,6 @@
 
 @implementation NSArray (Mercury)
 
-
 - (NSArray *)reversedArray
 {
     NSMutableArray *array = [@[] mutableCopy];;
@@ -31,6 +30,36 @@
         }
     }
     return sum;
+}
+
+- (NSArray *)chartWeeklyArrayWithStartDate:(NSDate *)startDate
+{
+    NSMutableArray *weeklyArray = [@[] mutableCopy];
+    for (NSDictionary *dictionary in self) {
+        NSDate *date = dictionary[@"date"];
+        if ([date isMonday]) {
+            [weeklyArray addObject:dictionary];
+        }
+    }
+    return [weeklyArray chartSubarrayWithStartDate:startDate];
+}
+
+- (NSArray *)chartDailyArrayWithStartDate:(NSDate *)startDate
+{
+    NSArray *dailyArray = [NSArray arrayWithArray:self];
+    return [dailyArray chartSubarrayWithStartDate:startDate];
+}
+
+- (NSArray *)chartSubarrayWithStartDate:(NSDate *)startDate
+{
+    NSMutableArray *subarray = [@[] mutableCopy];
+    for (NSDictionary *dictionary in self) {
+        NSDate *date = dictionary[@"date"];
+        if ([startDate compare:date] == NSOrderedAscending) {
+            [subarray addObject:dictionary];
+        }
+    }
+    return subarray;
 }
 
 @end

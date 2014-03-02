@@ -12,15 +12,19 @@
 
 typedef void(^PositionDetailViewControllerSaveBlock)(HGTicker *ticker);
 
-@interface PositionDetailViewController : UITableViewController
+@interface PositionDetailViewController : UIViewController
 
+@property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) NCISimpleChartView *chartView;
 
 @property (strong, nonatomic) HGTicker *ticker;
 @property (strong, nonatomic) NSArray *dataSource;
 @property (strong, nonatomic) NSArray *chartDataSource;
+@property (strong, nonatomic) NSArray *chartLimitedDataSource;
+@property (strong, nonatomic) NSArray *chartSignals;
 @property (assign, nonatomic) BOOL allowSave;
 @property (copy, nonatomic) PositionDetailViewControllerSaveBlock saveBlock;
+@property (strong, nonatomic) NSString *currentChartPeriod;
 
 - (instancetype)initWithTicker:(HGTicker *)ticker;
 - (instancetype)initWithTicker:(HGTicker *)ticker allowSave:(BOOL)allowSave;

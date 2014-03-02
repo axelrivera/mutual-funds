@@ -14,13 +14,12 @@
 {
     self = [super init];
     if (self) {
-        DLog(@"Dictionary: %@", dictionary);
         _symbol = [dictionary[@"symbol"] copy];
         _name = [dictionary[@"name"] copy];
         _close = [dictionary[@"close"] copy];
         _change = [dictionary[@"change"] copy];
         _percentageChange = [dictionary[@"change_in_percent"] copy];
-        _lastTradeDate = [dictionary[@"last_trade_date"] copy];
+        _lastTradeDateString = [dictionary[@"last_trade_date"] copy];
         _stockExchange = [dictionary[@"stock_exchange"] copy];
         _previousClose = [dictionary[@"previous_close"] copy];
         _open = [dictionary[@"open"] copy];
@@ -46,7 +45,7 @@
         _close = [[coder decodeObjectForKey:@"HGPositionClose"] copy];
         _change = [[coder decodeObjectForKey:@"HGPositionChange"] copy];
         _percentageChange = [[coder decodeObjectForKey:@"HGPositionPercentageChange"] copy];
-        _lastTradeDate = [[coder decodeObjectForKey:@"HGPositionLastTradeDate"] copy];
+        _lastTradeDateString = [[coder decodeObjectForKey:@"HGPositionLastTradeDateString"] copy];
         _stockExchange = [[coder decodeObjectForKey:@"HGPositionStockExchange"] copy];
         _previousClose = [[coder decodeObjectForKey:@"HGPositionPreviousClose"] copy];
         _open = [[coder decodeObjectForKey:@"HGPositionOpen"] copy];
@@ -70,7 +69,7 @@
     [coder encodeObject:self.close forKey:@"HGPositionClose"];
     [coder encodeObject:self.change forKey:@"HGPositionChange"];
     [coder encodeObject:self.percentageChange forKey:@"HGPositionPercentageChange"];
-    [coder encodeObject:self.lastTradeDate forKey:@"HGPositionLastTradeDate"];
+    [coder encodeObject:self.lastTradeDateString forKey:@"HGPositionLastTradeDateString"];
     [coder encodeObject:self.stockExchange forKey:@"HGPositionStockExchange"];
     [coder encodeObject:self.previousClose forKey:@"HGPositionPreviousClose"];
     [coder encodeObject:self.open forKey:@"HGPositionOpen"];
@@ -96,10 +95,15 @@
     return [[NSNumberFormatter hg_closeFormatter] stringFromNumber:number];
 }
 
+- (NSDate *)lastTradeDate
+{
+    NSDate *date = [[NSDateFormatter hg_lastTradeDateFormatter] dateFromString:self.lastTradeDateString];
+    return date;
+}
+
 - (HGPositionChangeType)changeType
 {
     NSNumber *changeNumber = [[NSNumberFormatter hg_changeFormatter] numberFromString:self.change];
-    DLog(@"Change Number: %@", changeNumber);
     NSComparisonResult compare = [changeNumber compare:@0.00];
     
     HGPositionChangeType result = HGPositionChangeTypeNone;
@@ -128,13 +132,14 @@
     return color;
 }
 
-- (void)calculateChartForInterval:(NSUInteger)interval
-                             SMA1:(NSUInteger)SMA1
-                             SMA2:(NSUInteger)SMA2
-                       completion:(HGPositionChartCompletionBlock)completion
+- (void)calculateChartWithSMA1:(NSUInteger)SMA1
+                          SMA2:(NSUInteger)SMA2
+                    completion:(HGPositionChartCompletionBlock)completion
 {
     dispatch_queue_t backgroundQueue = dispatch_queue_create(kMercuryDispatchQueue, NULL);
     dispatch_async(backgroundQueue, ^{
+        NSUInteger interval = HGChartPeriodTenYearInterval;
+        
         NSArray *SMA1Array = [self SMAArrayForInterval:SMA1 + interval period:SMA1];
         NSArray *SMA2Array = [self SMAArrayForInterval:SMA2 + interval period:SMA2];
         
@@ -144,11 +149,16 @@
         NSInteger totalSMA1 = [SMA1Array count];
         NSInteger totalSMA2 = [SMA2Array count];
         
+        NSDate *endDate = [NSDate chartEndDate];
+        NSDate *startDate = [NSDate chartStartDateForEndDate:endDate interval:interval];
+        
+        DLog(@"Chart Data For Dates: %@ - %@", startDate, endDate);
+        
         for (NSInteger i = 0; i < interval; i++) {
-            id close = [NSNull null];
+            NSNumber *close = @0.00;
             id SMA1Value = [NSNull null];
             id SMA2Value = [NSNull null];
-            id date = [NSNull null];
+            NSDate *date = [NSDate distantPast];
             
             if (i < totalHistory) {
                 HGHistory *history = self.history[i];
@@ -167,8 +177,7 @@
             [resultArray addObject:@{ @"date" : date, @"close" : close, @"sma1" : SMA1Value, @"sma2" : SMA2Value }];
         }
         
-        NSArray *reversedArray = [resultArray reversedArray];
-        
+        NSArray *reversedArray = [[resultArray chartSubarrayWithStartDate:startDate] reversedArray];
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completion) {
                 completion(reversedArray);

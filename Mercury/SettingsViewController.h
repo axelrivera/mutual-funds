@@ -10,4 +10,9 @@
 
 @interface SettingsViewController : UITableViewController
 
+@property (strong, nonatomic) UISegmentedControl *detailChartSegmentedControl;
+
+@property (strong, nonatomic) NSArray *dataSource;
+@property (strong, nonatomic) NSString *currentDetailChartPeriod;
+
 @end

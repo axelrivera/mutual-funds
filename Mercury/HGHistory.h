@@ -12,12 +12,9 @@
 
 @property (copy, nonatomic) NSDate *date;
 @property (copy, nonatomic) NSDecimalNumber *close;
-@property (copy, nonatomic) NSDecimalNumber *open;
-@property (copy, nonatomic) NSDecimalNumber *high;
-@property (copy, nonatomic) NSDecimalNumber *low;
-@property (copy, nonatomic) NSNumber *volume;
-@property (copy, nonatomic) NSDecimalNumber *adjustedClose;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
+
+- (void)setCloseFromString:(NSString *)closeString;
 
 @end

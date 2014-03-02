@@ -14,5 +14,7 @@
 + (NSDateFormatter *)hg_dayFormatter;
 + (NSDateFormatter *)hg_yearFormatter;
 + (NSDateFormatter *)hg_shortDateFormatter;
++ (NSDateFormatter *)hg_lastTradeDateFormatter;
++ (NSDateFormatter *)hg_signalDateFormatter;
 
 @end

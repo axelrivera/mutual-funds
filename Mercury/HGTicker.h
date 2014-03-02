@@ -12,8 +12,9 @@
 #import "HGHistory.h"
 
 typedef NS_ENUM(NSInteger, HGTickerType) {
-    HGTickerTypeWatchlist = 0,
-    HGTickerTypeMyPositions = 1
+    HGTickerTypeMyIndexes = 1000,
+    HGTickerTypeMyWatchlist = 2000,
+    HGTickerTypeMyPositions = 3000
 };
 
 @interface HGTicker : NSObject <NSCoding>

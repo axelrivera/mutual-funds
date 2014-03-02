@@ -9,23 +9,26 @@
 #import <Foundation/Foundation.h>
 
 typedef void(^HGTickersCompletionBlock)(NSArray *tickers, NSError *error);
-typedef void(^HGAllPositionsCompletionBlock)(NSArray *watchlist, NSArray *myPositions, NSError *error);
+typedef void(^HGAllPositionsCompletionBlock)(NSDictionary *tickerDictionary, NSError *error);
 typedef void(^HGHistoryCompletionBlock)(NSArray *history, NSError *error);
 typedef void(^HGPositionCompletionBlock)(HGPosition *position, NSError *error);
 
 @interface MercuryData : NSObject <NSCoding>
 
-@property (strong, nonatomic) NSMutableArray *watchlist;
-@property (strong, nonatomic) NSMutableArray *myPositions;
-@property (assign, nonatomic, getter = isFetchingWatchlist) BOOL fetchingWatchlist;
-@property (assign, nonatomic, getter = isFetchingMyPositions) BOOL fetchingMyPositions;
+@property (strong, atomic) NSMutableArray *myIndexes;
+@property (strong, atomic) NSMutableArray *myWatchlist;
+@property (strong, atomic) NSMutableArray *myPositions;
+
+@property (assign, atomic, getter = isFetchingMyIndexes) BOOL fetchingMyIndexes;
+@property (assign, atomic, getter = isFetchingMyWatchlist) BOOL fetchingMyWatchlist;
+@property (assign, atomic, getter = isFetchingMyPositions) BOOL fetchingMyPositions;
 
 - (void)fetchAllPositionsWithCompletion:(HGAllPositionsCompletionBlock)completion;
-- (void)fetchWatchlistWithCompletion:(HGTickersCompletionBlock)completion;
-- (void)fetchMyPositionsWithCompletion:(HGTickersCompletionBlock)completion;
+- (void)fetchTickerType:(HGTickerType)tickerType completion:(HGTickersCompletionBlock)completion;
+
 - (void)fetchPositionForSymbol:(NSString *)symbol completion:(HGPositionCompletionBlock)completion;
 
-- (void)fetchHistoricalDataForSymbol:(NSString *)symbol completion:(HGHistoryCompletionBlock)completion;
+- (void)fetchHistoricalDataForTicker:(HGTicker *)ticker completion:(HGHistoryCompletionBlock)completion;
 
 - (BOOL)isSymbolPresentInMyPositions:(NSString *)symbol;
 - (void)removePositionWithSymbol:(NSString *)symbol;

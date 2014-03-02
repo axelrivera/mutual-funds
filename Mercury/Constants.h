@@ -14,11 +14,8 @@
 //#define kYahooHistoryURL @"http://localhost:4000/table.csv"
 //#define kYahooHistoryURL @"https://mercury-sharingan.fwd.wf/table.csv"
 
-// Eleven Years in Seconds
-#define kHistoricalStartDateInSecods 60 * 60 * 24 * 365 * 11
-
 // Five Minutes in Seconds
-#define kNetworkRequestTimeLimit 60 * 5
+#define kNetworkRequestTimeLimit 60
 
 // Mercury Data File
 #define kMercuryDataFile @"MercuryData.data"
@@ -26,10 +23,23 @@
 // Dispatch Queue Name
 #define kMercuryDispatchQueue "me.axelrivera.mercury.queue"
 
+// Error Domain
+#define kMercuryErrorDomain @"me.axelrivera.mercury.error"
+
+// Select Keys
+#define kHGSelectKey @"key"
+#define kHGSelectTitle @"title"
+
 // Notifications
 
 #define AllPositionsReloadedNotification @"HGAllPositionsReloadedNotification"
 #define MyPositionsReloadedNotification @"HGMyPositionsReloadedNotification"
+
+// Convenience Keys
+
+#define kHGMyIndexes @"myIndexes"
+#define kHGMyWatchlist @"myWatchlist"
+#define kHGMyPositions @"myPositions"
 
 // Helper Macro Functions
 

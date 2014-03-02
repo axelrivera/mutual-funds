@@ -12,6 +12,8 @@ static NSDateFormatter *_monthFormatter;
 static NSDateFormatter *_dayFormatter;
 static NSDateFormatter *_yearFormatter;
 static NSDateFormatter *_shortDateFormatter;
+static NSDateFormatter *_lastTradeDateFormatter;
+static NSDateFormatter *_signalDateFormater;
 
 @implementation NSDateFormatter (Mercury)
 
@@ -37,7 +39,7 @@ static NSDateFormatter *_shortDateFormatter;
 {
     if (_yearFormatter == nil) {
         _yearFormatter = [[NSDateFormatter alloc] init];
-        _yearFormatter.dateFormat = @"Y";
+        _yearFormatter.dateFormat = @"yyyy";
     }
     return _yearFormatter;
 }
@@ -46,9 +48,31 @@ static NSDateFormatter *_shortDateFormatter;
 {
     if (_shortDateFormatter == nil) {
         _shortDateFormatter = [[NSDateFormatter alloc] init];
-        _shortDateFormatter.dateFormat = @"YYYY-MM-dd";
+        _shortDateFormatter.dateFormat = @"yyyy-MM-dd";
     }
     return _shortDateFormatter;
+}
+
+// Date: "2/27/2014"
+// Time: "6:05pm"
+
++ (NSDateFormatter *)hg_lastTradeDateFormatter
+{
+    if (_lastTradeDateFormatter == nil) {
+        _lastTradeDateFormatter = [[NSDateFormatter alloc] init];
+        _lastTradeDateFormatter.dateFormat = @"MM/dd/yyyy";
+    }
+    return _lastTradeDateFormatter;
+}
+
++ (NSDateFormatter *)hg_signalDateFormatter
+{
+    if (_signalDateFormater == nil) {
+        _signalDateFormater = [[NSDateFormatter alloc] init];
+        _signalDateFormater.dateStyle = NSDateFormatterFullStyle;
+        _signalDateFormater.timeStyle = NSDateFormatterNoStyle;
+    }
+    return _signalDateFormater;
 }
 
 @end

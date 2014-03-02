@@ -19,4 +19,6 @@
 + (UIColor *)hg_changeNegativeColor;
 + (UIColor *)hg_changeNoneColor;
 
++ (UIColor *)hg_tableSeparatorColor;
+
 @end

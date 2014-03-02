@@ -82,6 +82,9 @@
     [self.changeLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10.0];
     [self.changeLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10.0];
     
+    [self.closeLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:self.symbolLabel withOffset:2.0];
+    [self.nameLabel autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:self.changeLabel withOffset:-2.0];
+    
     [super updateConstraints];
 }
 

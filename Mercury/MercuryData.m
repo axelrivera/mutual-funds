@@ -10,20 +10,33 @@
 
 #import "NSString+Yahoo.h"
 
+@interface MercuryData ()
+
+- (void)setFetching:(BOOL)fetching tickerType:(HGTickerType)tickerType;
+- (NSMutableArray *)arrayForTickerType:(HGTickerType)tickerType;
+- (void)setArray:(NSArray *)array forTickerType:(HGTickerType)tickerType;
+
+@end
+
 @implementation MercuryData
 
 - (instancetype)init
 {
     self = [super init];
     if (self) {
-        _watchlist = [@[] mutableCopy];
+        _myIndexes = [@[] mutableCopy];
+        _myWatchlist = [@[] mutableCopy];
         _myPositions = [@[] mutableCopy];
-        _fetchingWatchlist = NO;
+        _fetchingMyIndexes = NO;
+        _fetchingMyWatchlist = NO;
         _fetchingMyPositions = NO;
         
-        [_watchlist addObject:[HGTicker tickerWithType:HGTickerTypeWatchlist symbol:@"RPG"]];
-        [_watchlist addObject:[HGTicker tickerWithType:HGTickerTypeWatchlist symbol:@"OBEGX"]];
-        [_watchlist addObject:[HGTicker tickerWithType:HGTickerTypeWatchlist symbol:@"SPY"]];
+        [_myIndexes addObject:[HGTicker tickerWithType:HGTickerTypeMyIndexes symbol:@"^GSPC"]];
+        [_myIndexes addObject:[HGTicker tickerWithType:HGTickerTypeMyIndexes symbol:@"^W5000"]];
+        
+        [_myWatchlist addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"RPG"]];
+        [_myWatchlist addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"OBEGX"]];
+        [_myWatchlist addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"SPY"]];
         
         [_myPositions addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"JSVAX"]];
         [_myPositions addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"SWLSX"]];
@@ -35,10 +48,12 @@
 {
     self = [super init];
     if (self) {
-        NSArray *watchlist = [coder decodeObjectForKey:@"MercuryDataWatchlist"];
+        NSArray *myIndexes = [coder decodeObjectForKey:@"MercuryDataMyIndexes"];
+        NSArray *myWatchlist = [coder decodeObjectForKey:@"MercuryDataMyWatchlist"];
         NSArray *myPositions = [coder decodeObjectForKey:@"MercuryDataMyPositions"];
         
-        self.watchlist = IsEmpty(watchlist) ? [@[] mutableCopy] : [[NSMutableArray alloc] initWithArray:watchlist];
+        self.myIndexes = IsEmpty(myIndexes) ? [@[] mutableCopy] : [[NSMutableArray alloc] initWithArray:myIndexes];
+        self.myWatchlist = IsEmpty(myWatchlist) ? [@[] mutableCopy] : [[NSMutableArray alloc] initWithArray:myWatchlist];
         self.myPositions = IsEmpty(myPositions) ? [@[] mutableCopy] : [[NSMutableArray alloc] initWithArray:myPositions];
     }
     return self;
@@ -46,18 +61,24 @@
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
-    [coder encodeObject:self.watchlist forKey:@"MercuryDataWatchlist"];
+    [coder encodeObject:self.myIndexes forKey:@"MercuryDataMyIndexes"];
+    [coder encodeObject:self.myWatchlist forKey:@"MercuryDataMyWatchlist"];
     [coder encodeObject:self.myPositions forKey:@"MercuryDataMyPositions"];
 }
 
 - (void)fetchAllPositionsWithCompletion:(HGAllPositionsCompletionBlock)completion
 {
-    self.fetchingWatchlist = YES;
-    self.fetchingMyPositions = YES;
+    [self setFetching:YES tickerType:HGTickerTypeMyIndexes];
+    [self setFetching:YES tickerType:HGTickerTypeMyWatchlist];
+    [self setFetching:YES tickerType:HGTickerTypeMyPositions];
     
     NSMutableArray *symbols = [@[] mutableCopy];
     
-    for (HGTicker *ticker in self.watchlist) {
+    for (HGTicker *ticker in self.myIndexes) {
+        [symbols addObject:ticker.symbol];
+    }
+    
+    for (HGTicker *ticker in self.myWatchlist) {
         [symbols addObject:ticker.symbol];
     }
     
@@ -68,20 +89,20 @@
     NSSet *symbolsSet = [NSSet setWithArray:symbols];
     
     [[YahooAPIClient sharedClient] fetchPositionsForSymbols:[symbolsSet allObjects] completion:^(NSString *positionsData, NSError *error) {
-        self.fetchingWatchlist = NO;
-        self.fetchingMyPositions = NO;
+        [self setFetching:NO tickerType:HGTickerTypeMyIndexes];
+        [self setFetching:NO tickerType:HGTickerTypeMyWatchlist];
+        [self setFetching:NO tickerType:HGTickerTypeMyPositions];
         
         if (error) {
             if (completion) {
-                completion(nil, nil, error);
+                completion(nil, error);
             }
             return;
         }
         
-        dispatch_queue_t backgroundQueue = dispatch_queue_create("me.axelrivera.queue", NULL);
+        dispatch_queue_t backgroundQueue = dispatch_queue_create(kMercuryDispatchQueue, NULL);
         dispatch_async(backgroundQueue, ^{
             NSArray *quotesRaw = [positionsData hg_arrayOfQuoteDictionaries];
-            DLog(@"%@", quotesRaw);
             
             NSMutableArray *positions = [@[] mutableCopy];
             
@@ -90,9 +111,16 @@
                 [positions addObject:position];
             }
             
-            DLog(@"positions: %@", positions);
+            for (HGTicker *ticker in self.myIndexes) {
+                for (HGPosition *position in positions) {
+                    if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
+                        ticker.position = position;
+                        break;
+                    }
+                }
+            }
             
-            for (HGTicker *ticker in self.watchlist) {
+            for (HGTicker *ticker in self.myWatchlist) {
                 for (HGPosition *position in positions) {
                     if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
                         ticker.position = position;
@@ -110,31 +138,35 @@
                 }
             }
             
-            NSDictionary *userInfo = @{ @"myPositions" : self.myPositions, @"watchlist" : self.watchlist };
+            NSDictionary *userInfo = @{ kHGMyIndexes : self.myIndexes,
+                                        kHGMyWatchlist : self.myWatchlist,
+                                        kHGMyPositions : self.myPositions };
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:AllPositionsReloadedNotification
                                                                 object:nil
                                                               userInfo:userInfo];
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (completion) {
-                    completion(self.watchlist, self.myPositions, nil);
+                    completion(userInfo, nil);
                 }
             });
         });
     }];
 }
 
-- (void)fetchWatchlistWithCompletion:(HGTickersCompletionBlock)completion
+- (void)fetchTickerType:(HGTickerType)tickerType completion:(HGTickersCompletionBlock)completion
 {
-    self.fetchingWatchlist = YES;
+    [self setFetching:YES tickerType:tickerType];
+    NSMutableArray *tickers = [self arrayForTickerType:tickerType];
     
     NSMutableArray *symbols = [@[] mutableCopy];
-    for (HGTicker *ticker in self.watchlist) {
+    for (HGTicker *ticker in tickers) {
         [symbols addObject:ticker.symbol];
     }
-
+    
     [[YahooAPIClient sharedClient] fetchPositionsForSymbols:symbols completion:^(NSString *positionsData, NSError *error) {
-        self.fetchingWatchlist = NO;
+        [self setFetching:NO tickerType:tickerType];
         
         if (error) {
             if (completion) {
@@ -143,10 +175,9 @@
             return;
         }
         
-        dispatch_queue_t backgroundQueue = dispatch_queue_create("me.axelrivera.queue", NULL);
+        dispatch_queue_t backgroundQueue = dispatch_queue_create(kMercuryDispatchQueue, NULL);
         dispatch_async(backgroundQueue, ^{
             NSArray *quotesRaw = [positionsData hg_arrayOfQuoteDictionaries];
-            DLog(@"%@", quotesRaw);
             
             NSMutableArray *positions = [@[] mutableCopy];
             
@@ -155,9 +186,9 @@
                 [positions addObject:position];
             }
             
-            DLog(@"positions: %@", positions);
+            NSMutableArray *tickers = [self arrayForTickerType:tickerType];
             
-            for (HGTicker *ticker in self.watchlist) {
+            for (HGTicker *ticker in tickers) {
                 for (HGPosition *position in positions) {
                     if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
                         ticker.position = position;
@@ -168,58 +199,7 @@
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (completion) {
-                    completion(self.watchlist, nil);
-                }
-            });
-        });
-    }];
-}
-
-- (void)fetchMyPositionsWithCompletion:(HGTickersCompletionBlock)completion
-{
-    self.fetchingMyPositions = YES;
-    
-    NSMutableArray *symbols = [@[] mutableCopy];
-    for (HGTicker *ticker in self.myPositions) {
-        [symbols addObject:ticker.symbol];
-    }
-
-    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:symbols completion:^(NSString *positionsData, NSError *error) {
-        self.fetchingMyPositions = NO;
-        
-        if (error) {
-            if (completion) {
-                completion(nil, error);
-            }
-            return;
-        }
-        
-        dispatch_queue_t backgroundQueue = dispatch_queue_create("me.axelrivera.queue", NULL);
-        dispatch_async(backgroundQueue, ^{
-            NSArray *quotesRaw = [positionsData hg_arrayOfQuoteDictionaries];
-            DLog(@"%@", quotesRaw);
-            
-            NSMutableArray *positions = [@[] mutableCopy];
-            
-            for (NSDictionary *dictionary in quotesRaw) {
-                HGPosition *position = [[HGPosition alloc] initWithDictionary:dictionary];
-                [positions addObject:position];
-            }
-            
-            DLog(@"positions: %@", positions);
-            
-            for (HGTicker *ticker in self.myPositions) {
-                for (HGPosition *position in positions) {
-                    if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
-                        ticker.position = position;
-                        break;
-                    }
-                }
-            }
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (completion) {
-                    completion(self.myPositions, nil);
+                    completion(tickers, nil);
                 }
             });
         });
@@ -230,7 +210,7 @@
 {
     if (IsEmpty(symbol)) {
         if (completion) {
-            NSError *error = [NSError errorWithDomain:@"me.axelrivera.error" code:0 userInfo:nil];
+            NSError *error = [NSError errorWithDomain:kMercuryErrorDomain code:0 userInfo:nil];
             completion(nil, error);
         }
         return;
@@ -246,12 +226,12 @@
             return;
         }
         
-        dispatch_queue_t backgroundQueue = dispatch_queue_create("me.axelrivera.queue", NULL);
+        dispatch_queue_t backgroundQueue = dispatch_queue_create(kMercuryDispatchQueue, NULL);
         dispatch_async(backgroundQueue, ^{
             NSArray *quotesRaw = [positionsData hg_arrayOfQuoteDictionaries];            
             if (IsEmpty(quotesRaw)) {
                 if (completion) {
-                    NSError *error = [NSError errorWithDomain:@"me.axelrivera.error" code:0 userInfo:nil];
+                    NSError *error = [NSError errorWithDomain:kMercuryErrorDomain code:0 userInfo:nil];
                     completion(nil, error);
                 }
                 return;
@@ -268,20 +248,16 @@
     }];
 }
 
-- (void)fetchHistoricalDataForSymbol:(NSString *)symbol completion:(HGHistoryCompletionBlock)completion
+- (void)fetchHistoricalDataForTicker:(HGTicker *)ticker completion:(HGHistoryCompletionBlock)completion
 {
-    NSDate *today = [NSDate date];
-    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:today];
-    [components setHour:0];
-    NSDate *todayAtMidnight = [calendar dateFromComponents:components];
+    NSString *period = @"d";
+    NSDate *tomorrow = [NSDate tomorrowAtMidnight];
+    NSDate *startDate = [tomorrow dateBySubtractingDays:HGChartHistoricalStartInterval];
     
-    NSDate *startDate = [todayAtMidnight dateByAddingTimeInterval:-kHistoricalStartDateInSecods];
-    
-    DLog(@"Start Date: %@", startDate);
-    DLog(@"End Date: %@", todayAtMidnight)
-    
-    [[YahooAPIClient sharedClient] fetchHistoricalDataForSymbol:symbol start:startDate end:todayAtMidnight period:@"d"
+    [[YahooAPIClient sharedClient] fetchHistoricalDataForSymbol:ticker.symbol
+                                                          start:startDate
+                                                            end:tomorrow
+                                                         period:period
                                                      completion:^(NSString *historicalData, NSError *error)
      {
          if (error) {
@@ -302,6 +278,19 @@
                  HGHistory *data = [[HGHistory alloc] initWithDictionary:dictionary];
                  [history addObject:data];
              }
+             
+             if (!IsEmpty(history) && ticker.position) {
+                 HGHistory *firstObject = history[0];
+                 NSDate *currentDate = [ticker.position lastTradeDate];
+                 
+                 if ([firstObject.date compare:currentDate] == NSOrderedDescending) {
+                     HGHistory *currentHistory = [[HGHistory alloc] init];
+                     currentHistory.date = currentDate;
+                     [currentHistory setCloseFromString:ticker.position.close];
+                     [history insertObject:currentHistory atIndex:0];
+                 }
+             }
+             
              if (completion) {
                  completion(history, error);
              }
@@ -344,7 +333,8 @@
 {
     MercuryData *data = [NSKeyedUnarchiver unarchiveObjectWithFile:pathInDocumentDirectory(kMercuryDataFile)];
     if (data) {
-        self.watchlist = data.watchlist;
+        self.myIndexes = data.myIndexes;
+        self.myWatchlist = data.myWatchlist;
         self.myPositions = data.myPositions;
     }
 }
@@ -352,6 +342,65 @@
 - (void)saveData
 {
     [NSKeyedArchiver archiveRootObject:self toFile:pathInDocumentDirectory(kMercuryDataFile)];
+}
+
+#pragma mark - Private Methods
+
+- (void)setFetching:(BOOL)fetching tickerType:(HGTickerType)tickerType;
+{
+    switch (tickerType) {
+        case HGTickerTypeMyIndexes:
+            self.fetchingMyIndexes = fetching;
+            break;
+        case HGTickerTypeMyWatchlist:
+            self.fetchingMyWatchlist = fetching;
+            break;
+        case HGTickerTypeMyPositions:
+            self.fetchingMyPositions = fetching;
+            break;
+        default:
+            break;
+    }
+}
+
+- (NSMutableArray *)arrayForTickerType:(HGTickerType)tickerType
+{
+    NSMutableArray *array = [@[] mutableCopy];
+    switch (tickerType) {
+        case HGTickerTypeMyIndexes:
+            array = self.myIndexes;
+            break;
+        case HGTickerTypeMyWatchlist:
+            array = self.myWatchlist;
+            break;
+        case HGTickerTypeMyPositions:
+            array = self.myPositions;
+            break;
+        default:
+            break;
+    }
+    return array;
+}
+
+- (void)setArray:(NSArray *)array forTickerType:(HGTickerType)tickerType
+{
+    if (IsEmpty(array)) {
+        array = @[];
+    }
+    
+    switch (tickerType) {
+        case HGTickerTypeMyIndexes:
+            self.myIndexes = [array mutableCopy];
+            break;
+        case HGTickerTypeMyWatchlist:
+            self.myWatchlist = [array mutableCopy];
+            break;
+        case HGTickerTypeMyPositions:
+            self.myPositions = [array mutableCopy];
+            break;
+        default:
+            break;
+    }
 }
 
 #pragma mark - Singleton Methods
