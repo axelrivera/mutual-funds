@@ -44,6 +44,7 @@
 		16A5C69418C37EFC0078EA01 /* HGSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 16A5C69318C37EFC0078EA01 /* HGSettings.m */; };
 		16AE022918C27DBE00D8E3C8 /* UIViewController+Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = 16AE022818C27DBE00D8E3C8 /* UIViewController+Layout.m */; };
 		16B27B0618C38CF900A355FF /* SelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B27B0518C38CF900A355FF /* SelectViewController.m */; };
+		16B27B0C18C40B4100A355FF /* SignalStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B27B0B18C40B4100A355FF /* SignalStatusCell.m */; };
 		16B98FAF18BEBC6300A55122 /* NSNumberFormatter+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B98FAE18BEBC6300A55122 /* NSNumberFormatter+Mercury.m */; };
 		16B98FB218BED58900A55122 /* NSString+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B98FB118BED58900A55122 /* NSString+Mercury.m */; };
 		16F0797218BA835F00497607 /* HGTicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 16F0797118BA835F00497607 /* HGTicker.m */; };
@@ -128,6 +129,8 @@
 		16AE022818C27DBE00D8E3C8 /* UIViewController+Layout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Layout.m"; sourceTree = "<group>"; };
 		16B27B0418C38CF900A355FF /* SelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectViewController.h; sourceTree = "<group>"; };
 		16B27B0518C38CF900A355FF /* SelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectViewController.m; sourceTree = "<group>"; };
+		16B27B0A18C40B4100A355FF /* SignalStatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignalStatusCell.h; sourceTree = "<group>"; };
+		16B27B0B18C40B4100A355FF /* SignalStatusCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignalStatusCell.m; sourceTree = "<group>"; };
 		16B98FAD18BEBC6300A55122 /* NSNumberFormatter+Mercury.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumberFormatter+Mercury.h"; sourceTree = "<group>"; };
 		16B98FAE18BEBC6300A55122 /* NSNumberFormatter+Mercury.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumberFormatter+Mercury.m"; sourceTree = "<group>"; };
 		16B98FB018BED58900A55122 /* NSString+Mercury.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Mercury.h"; sourceTree = "<group>"; };
@@ -184,6 +187,8 @@
 				1605410018B83A4800C200C6 /* PositionDisplayCell.m */,
 				1605411818B91DE900C200C6 /* PositionSummaryCell.h */,
 				1605411918B91DE900C200C6 /* PositionSummaryCell.m */,
+				16B27B0A18C40B4100A355FF /* SignalStatusCell.h */,
+				16B27B0B18C40B4100A355FF /* SignalStatusCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -254,10 +259,10 @@
 				16B98FB118BED58900A55122 /* NSString+Mercury.m */,
 				167749A318C00B6F00C1647D /* NSDate+Mercury.h */,
 				167749A418C00B6F00C1647D /* NSDate+Mercury.m */,
-				167749A618C029EF00C1647D /* NSArray+SMA.h */,
-				167749A718C029EF00C1647D /* NSArray+SMA.m */,
 				167749A918C02B1D00C1647D /* NSDecimalNumber+Mercury.h */,
 				167749AA18C02B1D00C1647D /* NSDecimalNumber+Mercury.m */,
+				167749A618C029EF00C1647D /* NSArray+SMA.h */,
+				167749A718C029EF00C1647D /* NSArray+SMA.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -510,6 +515,7 @@
 				1605410918B843C000C200C6 /* HGPosition.m in Sources */,
 				1605412618B9630000C200C6 /* NSDateFormatter+Mercury.m in Sources */,
 				1605413218B9965800C200C6 /* PositionChartViewController.m in Sources */,
+				16B27B0C18C40B4100A355FF /* SignalStatusCell.m in Sources */,
 				167749AB18C02B1D00C1647D /* NSDecimalNumber+Mercury.m in Sources */,
 				167AC78018BD810C006BF9E6 /* FileHelpers.m in Sources */,
 				16AE022918C27DBE00D8E3C8 /* UIViewController+Layout.m in Sources */,

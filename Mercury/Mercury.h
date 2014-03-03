@@ -9,6 +9,8 @@
 #ifndef Mercury_Mercury_h
 #define Mercury_Mercury_h
 
+typedef void(^HGCompletionBlock)(void);
+
 #import "HGSettings.h"
 #import "FileHelpers.h"
 #import "UIColor+Mercury.h"

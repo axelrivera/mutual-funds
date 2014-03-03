@@ -12,7 +12,7 @@
 #import "PositionDetailViewController.h"
 #import "PositionDisplayCell.h"
 
-@interface PositionsViewController () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
+@interface PositionsViewController () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate>
 
 @property (strong, nonatomic) UITableViewController *tableViewController;
 
@@ -147,6 +147,17 @@
     [self.tableView reloadData];
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    [self setEditing:NO animated:animated];
+    
+    if ([self.tableViewController.refreshControl isRefreshing]) {
+        [self.tableViewController.refreshControl endRefreshing];
+    }
+}
+
 - (BOOL)shouldAutorotate
 {
     return NO;
@@ -260,18 +271,13 @@
 
 - (void)clearAllAction:(id)sender
 {
-    [self.dataSource removeAllObjects];
-    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Delete all positions?"
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:@"Delete All"
+                                                    otherButtonTitles:nil];
     
-    if (self.tickerType == HGTickerTypeMyIndexes) {
-        [[MercuryData sharedData].myIndexes removeAllObjects];
-    } else if (self.tickerType == HGTickerTypeMyWatchlist) {
-        [[MercuryData sharedData].myWatchlist removeAllObjects];
-    } else {
-        [[MercuryData sharedData].myPositions removeAllObjects];
-    }
-    
-    [self setEditing:NO animated:YES];
+    [actionSheet showFromTabBar:self.tabBarController.tabBar];
 }
 
 - (void)reloadAction:(UIRefreshControl *)refreshControl
@@ -300,7 +306,7 @@
     self.dataSource = [[NSMutableArray alloc] initWithArray:array];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-       [self.tableView reloadData];
+        [self.tableView reloadData];
     });
 }
 
@@ -417,11 +423,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         UITextField *textField = [alertView textFieldAtIndex:0];
         NSString *symbol = [textField.text uppercaseString];
         
-        self.navigationItem.rightBarButtonItem.enabled = NO;
-        
         [[MercuryData sharedData] fetchPositionForSymbol:symbol completion:^(HGPosition *position, NSError *error) {
-            self.navigationItem.rightBarButtonItem.enabled = YES;
-            
             if (error) {
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error searching symbol"
                                                                     message:@"Error searching symbol"
@@ -459,6 +461,26 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             
             [self.navigationController pushViewController:controller animated:YES];
         }];
+    }
+}
+
+#pragma mark - UIActionSheetDelegate Methods
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        [self.dataSource removeAllObjects];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+        if (self.tickerType == HGTickerTypeMyIndexes) {
+            [[MercuryData sharedData].myIndexes removeAllObjects];
+        } else if (self.tickerType == HGTickerTypeMyWatchlist) {
+            [[MercuryData sharedData].myWatchlist removeAllObjects];
+        } else {
+            [[MercuryData sharedData].myPositions removeAllObjects];
+        }
+        
+        [self setEditing:NO animated:YES];
     }
 }
 

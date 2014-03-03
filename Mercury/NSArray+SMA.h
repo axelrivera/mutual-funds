@@ -10,6 +10,7 @@
 
 @interface NSArray (SMA)
 
+- (NSDictionary *)SMA_currentSignal;
 - (NSArray *)SMA_arrayOfAnalizedSignals;
 
 @end

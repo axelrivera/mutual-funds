@@ -47,7 +47,7 @@
 	self.chartView = [[NCISimpleChartView alloc]
                       initWithFrame:CGRectZero
                       andOptions: @{nciIsFill: @(NO),
-                                    nciLineColors: @[HexColor(0x204A87), HexColor(0x5C3566), HexColor(0xCE5C00)],
+                                    nciLineColors: @[[UIColor hg_closeColor], [UIColor hg_SMA1Color], [UIColor hg_SMA2Color]],
                                     nciLineWidths: @[@1, [NSNull null]],
                                     nciUseDateFormatter: @(YES),
                                     nciHasSelection: @(NO),
@@ -107,7 +107,9 @@
 - (BOOL)shouldAutorotate
 {
     if ([UIDevice currentDevice].orientation == UIInterfaceOrientationPortrait) {
-        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+        if (self.completionBlock) {
+            self.completionBlock();
+        }
         return NO;
     }
     return YES;

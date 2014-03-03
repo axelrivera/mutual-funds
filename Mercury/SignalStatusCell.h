@@ -10,4 +10,9 @@
 
 @interface SignalStatusCell : UITableViewCell
 
+@property (strong, nonatomic) UILabel *titleLabel;
+@property (strong, nonatomic) UILabel *descriptionLabel;
+
+- (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier;
+
 @end

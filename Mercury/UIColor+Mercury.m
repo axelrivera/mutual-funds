@@ -10,6 +10,16 @@
 
 @implementation UIColor (Mercury)
 
++ (UIColor *)hg_greenColor
+{
+    return HexColor(0x73D216);
+}
+
++ (UIColor *)hg_redColor
+{
+    return HexColor(0xCC0000);
+}
+
 + (UIColor *)hg_textColor
 {
     return HexColor(0x2E3436);
@@ -32,12 +42,12 @@
 
 + (UIColor *)hg_changePositiveColor
 {
-    return HexColor(0x73D216);
+    return [UIColor hg_greenColor];
 }
 
 + (UIColor *)hg_changeNegativeColor
 {
-    return HexColor(0xCC0000);
+    return [UIColor hg_redColor];
 }
 
 + (UIColor *)hg_changeNoneColor
@@ -48,6 +58,21 @@
 + (UIColor *)hg_tableSeparatorColor
 {
     return HexColor(0xC7C5CC);
+}
+
++ (UIColor *)hg_closeColor
+{
+    return HexColor(0x204A87);
+}
+
++ (UIColor *)hg_SMA1Color
+{
+    return HexColor(0x75507B);
+}
+
++ (UIColor *)hg_SMA2Color
+{
+    return HexColor(0xCE5C00);
 }
 
 @end

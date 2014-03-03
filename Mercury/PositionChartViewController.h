@@ -19,6 +19,8 @@
 @property (strong, nonatomic) NSArray *dataSource;
 @property (strong, nonatomic) NSString *currentPeriod;
 
+@property (copy, nonatomic) HGCompletionBlock completionBlock;
+
 - (instancetype)initWithTicker:(HGTicker *)ticker chartArray:(NSArray *)chartArray;
 
 @end

@@ -28,7 +28,7 @@ NSString * const HGChartPeriodTenYearWeekly = @"HGChartPeriodTenYearWeekly";
 {
     NSString *period = [[NSUserDefaults standardUserDefaults] objectForKey:kHGSettingsDetailChartPeriod];
     if (IsEmpty(period)) {
-        period = HGChartPeriodOneYearDaily;
+        period = HGChartPeriodThreeMonthDaily;
     }
     return period;
 }

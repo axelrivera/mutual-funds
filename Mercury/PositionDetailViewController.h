@@ -22,6 +22,7 @@ typedef void(^PositionDetailViewControllerSaveBlock)(HGTicker *ticker);
 @property (strong, nonatomic) NSArray *chartDataSource;
 @property (strong, nonatomic) NSArray *chartLimitedDataSource;
 @property (strong, nonatomic) NSArray *chartSignals;
+@property (strong, nonatomic) NSDictionary *currentSignal;
 @property (assign, nonatomic) BOOL allowSave;
 @property (copy, nonatomic) PositionDetailViewControllerSaveBlock saveBlock;
 @property (strong, nonatomic) NSString *currentChartPeriod;

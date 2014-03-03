@@ -10,6 +10,9 @@
 
 @interface UIColor (Mercury)
 
++ (UIColor *)hg_greenColor;
++ (UIColor *)hg_redColor;
+
 + (UIColor *)hg_textColor;
 + (UIColor *)hg_highlightColor;
 + (UIColor *)hg_barBackgroundColor;
@@ -20,5 +23,9 @@
 + (UIColor *)hg_changeNoneColor;
 
 + (UIColor *)hg_tableSeparatorColor;
+
++ (UIColor *)hg_closeColor;
++ (UIColor *)hg_SMA1Color;
++ (UIColor *)hg_SMA2Color;
 
 @end

@@ -13,6 +13,7 @@
 
 #import "PositionChartViewController.h"
 #import "PositionSummaryCell.h"
+#import "SignalStatusCell.h"
 #import <NCIChartView.h>
 
 static const CGFloat ContainerChartPaddingTop = 10.0;
@@ -146,11 +147,15 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         PositionChartViewController *chartController = [[PositionChartViewController alloc] initWithTicker:self.ticker
                                                                                                 chartArray:self.chartDataSource];
         
+        chartController.completionBlock = ^{
+            [self.tabBarController dismissViewControllerAnimated:YES completion:nil];
+        };
+        
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:chartController];
         navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         [navController setNavigationBarHidden:YES];
         
-        [self.navigationController presentViewController:navController animated:YES completion:nil];
+        [self.tabBarController presentViewController:navController animated:YES completion:nil];
     }
     return NO;
 }
@@ -179,6 +184,49 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     [sections addObject:@{ @"rows" : rows }];
 
     if (signals) {
+        if (!IsEmpty(self.currentSignal)) {
+            NSString *signal = self.currentSignal[@"signal"];
+            
+            NSString *title = nil;
+            NSString *description = nil;
+            UIColor *color = [UIColor blackColor];
+            
+            if ([signal isEqualToString:@"hold"]) {
+                title = @"Hold";
+                description = @"Looking good! The 50 day SMA is moving above the 200 day SMA.";
+                color = HexColor(0x73d216);
+            } else if ([signal isEqualToString:@"hold_sideways"]) {
+                title = @"Hold (Sideways)";
+                description = @"Warning! This position has had multiple signals within the past three months. The 200 day SMA is probably going sideways.";
+                color = HexColor(0xedd400);
+            } else if ([signal isEqualToString:@"buy"]) {
+                title = @"Buy";
+                description = @"Great news! We are detecting a buy signal. The 50 day SMA just moved above the 200 day SMA.";
+                color = HexColor(0x4e9a06);
+            } else if ([signal isEqualToString:@"buy_sideways"]) {
+                title = @"Buy (Sideways)";
+                description = @"Warning! This position has had multiple signals within the past three months. The 200 day SMA is probably going sideways.";
+                color = HexColor(0xedd400);
+            } else if ([signal isEqualToString:@"sell"]) {
+                title = @"Sell";
+                description = @"Warning! We are detecting a sell signal. The 50 day SMA just moved below the 200 day SMA.";
+                color = HexColor(0xef2929);
+            } else if ([signal isEqualToString:@"avoid"]) {
+                title = @"Avoid";
+                description = @"Avoid this position! The 50 day SMA is moving below the 200 day SMA.";
+                color = HexColor(0xa40000);
+            }
+            
+            if (title && description) {
+                rows = [@[] mutableCopy];
+                
+                dictionary = @{ @"text" : title, @"detail" : description, @"text_color" : color, @"type" : @"current_signal" };
+                [rows addObject:dictionary];
+                
+                [sections addObject:@{ @"title" : @"Latest Signal", @"rows" : rows }];
+            }
+        }
+        
         rows = [@[] mutableCopy];
 
         for (NSDictionary *signal in self.chartSignals) {
@@ -191,14 +239,7 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         }
         
         if (!IsEmpty(rows)) {
-            NSString *title = nil;
-            if ([self.currentChartPeriod isEqualToString:HGChartPeriodOneYearDaily]) {
-                title = @"Signals in the Past Year";
-            } else {
-                title = @"Signals in the Past Three Months";
-            }
-            
-            [sections addObject:@{ @"title" : title, @"rows" : rows }];
+            [sections addObject:@{ @"title" : @"Recent Signals", @"rows" : rows }];
         }
     }
     
@@ -248,7 +289,8 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         NSDate *startDate = [NSDate chartStartDateForInterval:interval];
         
         self.chartLimitedDataSource = [chartArray chartDailyArrayWithStartDate:startDate];
-        self.chartSignals = [[self.chartLimitedDataSource SMA_arrayOfAnalizedSignals] reversedArray];
+        self.chartSignals = [self.chartLimitedDataSource SMA_arrayOfAnalizedSignals];
+        self.currentSignal = [self.chartLimitedDataSource SMA_currentSignal];
 
         [self updateDataSourceWithSignals:YES reloadTable:YES animated:YES];
         
@@ -321,8 +363,8 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     NSRange sma2Range = [legenStr rangeOfString:sma2];
     
     NSMutableAttributedString *legendAttributedStr = [[NSMutableAttributedString alloc] initWithString:legenStr];
-    [legendAttributedStr addAttribute:NSForegroundColorAttributeName value:HexColor(0x5C3566) range:sma1Range];
-    [legendAttributedStr addAttribute:NSForegroundColorAttributeName value:HexColor(0xCE5C00) range:sma2Range];
+    [legendAttributedStr addAttribute:NSForegroundColorAttributeName value:[UIColor hg_SMA1Color] range:sma1Range];
+    [legendAttributedStr addAttribute:NSForegroundColorAttributeName value:[UIColor hg_SMA2Color] range:sma2Range];
     
     self.chartLegendLabel.attributedText = legendAttributedStr;
     
@@ -333,7 +375,7 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     self.chartView = [[NCISimpleChartView alloc]
                       initWithFrame:CGRectZero
                       andOptions: @{nciIsFill: @(NO),
-                                    nciLineColors: @[HexColor(0x204A87), HexColor(0x5C3566), HexColor(0xCE5C00)],
+                                    nciLineColors: @[[UIColor hg_closeColor], [UIColor hg_SMA1Color], [UIColor hg_SMA2Color]],
                                     nciLineWidths: @[@1, [NSNull null]],
                                     nciUseDateFormatter: @(YES),
                                     nciHasSelection: @(NO),
@@ -421,26 +463,11 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *SummaryIdentifier = @"SummaryCell";
-    static NSString *SaveIdentifier = @"SaveCell";
+    static NSString *CurrentSignalIdentifier = @"CurrentSignalCell";
     static NSString *SignalIdentifier = @"SignalCell";
     
     NSDictionary *dictionary = self.dataSource[indexPath.section][@"rows"][indexPath.row];
     NSString *rowType = dictionary[@"type"];
-
-    if ([rowType isEqualToString:@"save"]) {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:SaveIdentifier];
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:SaveIdentifier];
-            cell.textLabel.text = dictionary[@"text"];
-            cell.textLabel.textAlignment = NSTextAlignmentCenter;
-            cell.textLabel.textColor = [UIColor hg_highlightColor];
-        }
-
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.accessoryType = UITableViewCellAccessoryNone;
-
-        return cell;
-    }
 
     if ([rowType isEqualToString:@"ticker"]) {
         PositionSummaryCell *cell = [tableView dequeueReusableCellWithIdentifier:SummaryIdentifier];
@@ -455,6 +482,19 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         cell.dateLabel.text = self.ticker.position.lastTradeDateString;
         
         cell.changeLabel.textColor = [self.ticker.position colorForChangeType];
+        
+        return cell;
+    }
+    
+    if ([rowType isEqualToString:@"current_signal"]) {
+        SignalStatusCell *cell = [tableView dequeueReusableCellWithIdentifier:CurrentSignalIdentifier];
+        if (cell == nil) {
+            cell = [[SignalStatusCell alloc] initWithReuseIdentifier:CurrentSignalIdentifier];
+        }
+        
+        cell.titleLabel.text = dictionary[@"text"];
+        cell.titleLabel.textColor = dictionary[@"text_color"];
+        cell.descriptionLabel.text = dictionary[@"detail"];
         
         return cell;
     }
@@ -501,12 +541,10 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     NSDictionary *dictionary = self.dataSource[indexPath.section][@"rows"][indexPath.row];
     NSString *rowType = dictionary[@"type"];
     
-    if ([rowType isEqualToString:@"save"]) {
-        height = 44.0;
+    if ([rowType isEqualToString:@"current_signal"]) {
+        height = 94.0;
     } else if ([rowType isEqualToString:@"ticker"]) {
         height = 126.0;
-    } else if ([rowType isEqualToString:@"chart"]) {
-        height = 130.0;
     }
 
     return height;
