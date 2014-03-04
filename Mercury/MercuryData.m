@@ -270,7 +270,6 @@
          dispatch_queue_t backgroundQueue = dispatch_queue_create("me.axelrivera.queue", NULL);
          dispatch_async(backgroundQueue, ^{
              NSArray *historyRaw = [historicalData hg_arrayOfHistoricalDictionaries];
-             //DLog(@"%@", historyRaw);
              
              NSMutableArray *history = [@[] mutableCopy];
              

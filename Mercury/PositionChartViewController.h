@@ -14,6 +14,11 @@
 
 @property (strong, nonatomic) NCISimpleChartView *chartView;
 
+@property (strong, nonatomic) UIView *footerView;
+@property (strong, nonatomic) UISegmentedControl *segmentedControl;
+@property (strong, nonatomic) UILabel *nameLabel;
+@property (strong, nonatomic) UILabel *dateLabel;
+
 @property (strong, nonatomic) HGTicker *ticker;
 @property (strong, nonatomic) NSArray *chartArray;
 @property (strong, nonatomic) NSArray *dataSource;

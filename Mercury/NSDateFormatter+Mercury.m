@@ -14,6 +14,7 @@ static NSDateFormatter *_yearFormatter;
 static NSDateFormatter *_shortDateFormatter;
 static NSDateFormatter *_lastTradeDateFormatter;
 static NSDateFormatter *_signalDateFormater;
+static NSDateFormatter *_chartDateFormatter;
 
 @implementation NSDateFormatter (Mercury)
 
@@ -73,6 +74,16 @@ static NSDateFormatter *_signalDateFormater;
         _signalDateFormater.timeStyle = NSDateFormatterNoStyle;
     }
     return _signalDateFormater;
+}
+
++ (NSDateFormatter *)hg_chartDateFormatter
+{
+    if (_chartDateFormatter == nil) {
+        _chartDateFormatter = [[NSDateFormatter alloc] init];
+        _chartDateFormatter.dateStyle = NSDateFormatterLongStyle;
+        _chartDateFormatter.timeStyle = NSDateFormatterNoStyle;
+    }
+    return _chartDateFormatter;
 }
 
 @end

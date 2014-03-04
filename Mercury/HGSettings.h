@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 
 #define kHGSettingsDetailChartPeriod @"HGSettingsDetailChartPeriod"
+#define kHGSettingsFullscreenChartPeriod @"HGSettingsFullscreenChartPeriod"
 
 FOUNDATION_EXPORT NSUInteger const HGChartHistoricalStartInterval;
 
@@ -23,6 +24,9 @@ FOUNDATION_EXPORT NSString * const HGChartPeriodTenYearWeekly;
 
 - (NSString *)detailChartPeriod;
 - (void)setDetailChartPeriod:(NSString *)chartPeriod;
+
+- (NSString *)fullscreenChartPeriod;
+- (void)setFullscreenChartPeriod:(NSString *)chartPeriod;
 
 - (NSUInteger)intervalForChartPeriod:(NSString *)chartPeriod;
 - (NSUInteger)SMA1forChartPeriod:(NSString *)chartPeriod;

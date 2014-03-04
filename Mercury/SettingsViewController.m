@@ -33,13 +33,22 @@
     self.tableView.backgroundColor = [UIColor hg_mainBackgroundColor];
     self.currentDetailChartPeriod = [[HGSettings defaultSettings] detailChartPeriod];
     
-    self.detailChartSegmentedControl = [[UISegmentedControl alloc] initWithItems:@[ @"3 Months", @"1 Year" ]];
-    [self.detailChartSegmentedControl setWidth:80.0 forSegmentAtIndex:0];
-    [self.detailChartSegmentedControl setWidth:80.0 forSegmentAtIndex:1];
+    self.detailChartSegmentedControl = [[UISegmentedControl alloc] initWithItems:@[ @"3M", @"1Y" ]];
+    [self.detailChartSegmentedControl setWidth:50.0 forSegmentAtIndex:0];
+    [self.detailChartSegmentedControl setWidth:50.0 forSegmentAtIndex:1];
     
     [self.detailChartSegmentedControl addTarget:self
                                          action:@selector(detailSegmentedControlChanged:)
                                forControlEvents:UIControlEventValueChanged];
+    
+    self.fullscreenChartSegmentedControl = [[UISegmentedControl alloc] initWithItems:@[ @"3M", @"1Y", @"10Y" ]];
+    [self.fullscreenChartSegmentedControl setWidth:50.0 forSegmentAtIndex:0];
+    [self.fullscreenChartSegmentedControl setWidth:50.0 forSegmentAtIndex:1];
+    [self.fullscreenChartSegmentedControl setWidth:50.0 forSegmentAtIndex:2];
+    
+    [self.fullscreenChartSegmentedControl addTarget:self
+                                             action:@selector(fullscreenChartSegmentedControlChanged:)
+                                   forControlEvents:UIControlEventValueChanged];
     
     [self updateDataSource];
 }
@@ -47,10 +56,19 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
     if ([[[HGSettings defaultSettings] detailChartPeriod] isEqualToString:HGChartPeriodThreeMonthDaily]) {
         self.detailChartSegmentedControl.selectedSegmentIndex = 0;
     } else {
         self.detailChartSegmentedControl.selectedSegmentIndex = 1;
+    }
+    
+    if ([[[HGSettings defaultSettings] fullscreenChartPeriod] isEqualToString:HGChartPeriodThreeMonthDaily]) {
+        self.fullscreenChartSegmentedControl.selectedSegmentIndex = 0;
+    } else if ([[[HGSettings defaultSettings] fullscreenChartPeriod] isEqualToString:HGChartPeriodOneYearDaily]) {
+        self.fullscreenChartSegmentedControl.selectedSegmentIndex = 1;
+    } else {
+        self.fullscreenChartSegmentedControl.selectedSegmentIndex = 2;
     }
 }
 
@@ -75,6 +93,15 @@
     
     [sections addObject:@{ @"title" : @"Position Detail", @"rows" : rows }];
     
+    rows = [@[] mutableCopy];
+    
+    dictionary = @{ @"text" : @"Default Period",
+                    @"key" : @"fullscreen_chart" };
+    
+    [rows addObject:dictionary];
+    
+    [sections addObject:@{ @"title" : @"Fullscreen Chart" , @"rows" : rows }];
+    
     self.dataSource = sections;
 }
 
@@ -92,6 +119,20 @@
     [[HGSettings defaultSettings] setDetailChartPeriod:chartPeriod];
 }
 
+- (void)fullscreenChartSegmentedControlChanged:(UISegmentedControl *)segmentedControl
+{
+    NSString *chartPeriod = nil;
+    if (segmentedControl.selectedSegmentIndex == 0) {
+        chartPeriod = HGChartPeriodThreeMonthDaily;
+    } else if (segmentedControl.selectedSegmentIndex == 1) {
+        chartPeriod = HGChartPeriodOneYearDaily;
+    } else {
+        chartPeriod = HGChartPeriodTenYearWeekly;
+    }
+    
+    [[HGSettings defaultSettings] setFullscreenChartPeriod:chartPeriod];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -107,6 +148,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *ChartDetaiIdentifier = @"ChartDetailCell";
+    static NSString *FullscreenChartIdentifier = @"FullscreenChartcell";
     
     NSDictionary *dictionary = self.dataSource[indexPath.section][@"rows"][indexPath.row];
     NSString *key = dictionary[@"key"];
@@ -117,6 +159,19 @@
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:ChartDetaiIdentifier];
             cell.textLabel.font = [UIFont systemFontOfSize:14.0];
             cell.accessoryView = self.detailChartSegmentedControl;
+        }
+        
+        cell.textLabel.text = dictionary[@"text"];
+        
+        return cell;
+    }
+    
+    if ([key isEqualToString:@"fullscreen_chart"]) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:FullscreenChartIdentifier];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:FullscreenChartIdentifier];
+            cell.textLabel.font = [UIFont systemFontOfSize:14.0];
+            cell.accessoryView = self.fullscreenChartSegmentedControl;
         }
         
         cell.textLabel.text = dictionary[@"text"];

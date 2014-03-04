@@ -39,6 +39,21 @@ NSString * const HGChartPeriodTenYearWeekly = @"HGChartPeriodTenYearWeekly";
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (NSString *)fullscreenChartPeriod
+{
+    NSString *period = [[NSUserDefaults standardUserDefaults] objectForKey:kHGSettingsFullscreenChartPeriod];
+    if (IsEmpty(period)) {
+        period = HGChartPeriodOneYearDaily;
+    }
+    return period;
+}
+
+- (void)setFullscreenChartPeriod:(NSString *)chartPeriod
+{
+    [[NSUserDefaults standardUserDefaults] setObject:chartPeriod forKey:kHGSettingsFullscreenChartPeriod];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (NSUInteger)intervalForChartPeriod:(NSString *)chartPeriod
 {
     NSUInteger period = HGChartPeriodOneYearInterval;
