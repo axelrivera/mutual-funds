@@ -10,6 +10,7 @@
 
 typedef void(^HGPositionsDataCompletionBlock)(NSString *positionsData, NSError *error);
 typedef void(^HGHistoricalDataCompletionBlock)(NSString *historicalData, NSError *error);
+typedef void(^HGTickersCompletionBlock)(NSArray *tickers, NSError *error);
 
 @interface YahooAPIClient : AFHTTPRequestOperationManager
 
@@ -20,6 +21,8 @@ typedef void(^HGHistoricalDataCompletionBlock)(NSString *historicalData, NSError
                                                    end:(NSDate *)end
                                                 period:(NSString *)period
                                             completion:(HGHistoricalDataCompletionBlock)completion;
+
+- (void)fetchTickersForString:(NSString *)string completion:(HGTickersCompletionBlock)completion;
 
 + (instancetype)sharedClient;
 

@@ -93,6 +93,75 @@
      }];
 }
 
+- (void)fetchTickersForString:(NSString *)string completion:(HGTickersCompletionBlock)completion
+{
+    if (IsEmpty(string)) {
+        string = @"";
+    }
+    
+    NSDictionary *parameters = @{ @"query" : string,
+                                  @"callback" : @"YAHOO.Finance.SymbolSuggest.ssCallback" };
+    
+    DLog(@"Trying to Search Ticker With Parameters:");
+    DLog(@"%@", parameters);
+    
+    [self GET:kYahooAutocompleteURL parameters:parameters
+      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+          NSCharacterSet *emptySet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+          NSString *responseString = [[[NSString alloc] initWithData:responseObject
+                                                           encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:emptySet];
+          
+          DLog(@"Response Object: %@", responseString);
+          
+          NSString *offensiveStr = @"YAHOO.Finance.SymbolSuggest.ssCallback(";
+          
+          responseString = [responseString stringByReplacingOccurrencesOfString:offensiveStr withString:@""];
+          
+          NSString *JSONString = [responseString substringWithRange:NSMakeRange(0, [responseString length] - 1)];
+          NSData *JSONData = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
+          
+          NSError *JSONError = nil;
+          id JSON = [NSJSONSerialization JSONObjectWithData:JSONData options:0 error:&JSONError];
+          
+          if (JSONError) {
+              if (completion) {
+                  completion(nil, JSONError);
+              }
+              return;
+          }
+          
+          if ([JSON isKindOfClass:[NSDictionary class]] &&
+              JSON[@"ResultSet"] &&
+              JSON[@"ResultSet"][@"Result"])
+          {
+              NSArray *tickersRaw = JSON[@"ResultSet"][@"Result"];
+              
+              DLog(@"Tickers Response: %@", tickersRaw);
+              
+              NSMutableArray *tickers = [@[] mutableCopy];
+              
+              for (NSDictionary *dictionary in tickersRaw) {
+                  HGTicker *ticker = [[HGTicker alloc] initWithDictionary:dictionary];
+                  [tickers addObject:ticker];
+              }
+              
+              if (completion) {
+                  completion(tickers, nil);
+              }
+          } else {
+              if (completion) {
+                  NSError *error = [NSError errorWithDomain:kMercuryErrorDomain code:0 userInfo:nil];
+                  completion(nil, error);
+              }
+          }
+      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+          DLog(@"Fetch Error: %@", error);
+          if (completion) {
+              completion(nil, error);
+          }
+      }];
+}
+
 #pragma mark - Singleton Methods
 
 + (instancetype)sharedClient

@@ -22,9 +22,15 @@ typedef NS_ENUM(NSInteger, HGTickerType) {
 @property (assign, nonatomic) HGTickerType tickerType;
 
 @property (copy, nonatomic) NSString *symbol;
+@property (copy, nonatomic) NSString *tickerName;
+@property (copy, nonatomic) NSString *exchange;
+@property (copy, nonatomic) NSString *positionType;
+
 @property (strong, nonatomic) HGPosition *position;
 
 + (instancetype)tickerWithType:(HGTickerType)tickerType symbol:(NSString *)symbol;
+
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 
 - (NSString *)name;
 - (NSString *)close;

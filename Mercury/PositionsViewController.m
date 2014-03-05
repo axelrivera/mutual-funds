@@ -9,6 +9,7 @@
 #import "PositionsViewController.h"
 
 #import <UIView+AutoLayout.h>
+#import "SearchViewController.h"
 #import "PositionDetailViewController.h"
 #import "PositionDisplayCell.h"
 
@@ -244,19 +245,29 @@
 
 - (void)addAction:(id)sender
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Ticker Search"
-                                                        message:nil
-                                                       delegate:self
-                                              cancelButtonTitle:@"Cancel"
-                                              otherButtonTitles:@"Search", nil];
-    alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(positionSaved:)
+                                                 name:PositionSavedNotification
+                                               object:nil];
     
-    UITextField *textField = [alertView textFieldAtIndex:0];
-    textField.autocapitalizationType = UITextAutocapitalizationTypeAllCharacters;
-    textField.keyboardType = UIKeyboardTypeASCIICapable;
-    textField.autocorrectionType = UITextAutocorrectionTypeNo;
+    SearchViewController *searchController = [[SearchViewController alloc] initWithTickerType:self.tickerType];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:searchController];
     
-    [alertView show];
+    [self.navigationController presentViewController:navController animated:YES completion:nil];
+    
+//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Ticker Search"
+//                                                        message:nil
+//                                                       delegate:self
+//                                              cancelButtonTitle:@"Cancel"
+//                                              otherButtonTitles:@"Search", nil];
+//    alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+//    
+//    UITextField *textField = [alertView textFieldAtIndex:0];
+//    textField.autocapitalizationType = UITextAutocapitalizationTypeAllCharacters;
+//    textField.keyboardType = UIKeyboardTypeASCIICapable;
+//    textField.autocorrectionType = UITextAutocorrectionTypeNo;
+//    
+//    [alertView show];
 }
 
 - (void)editWatchlistAction:(id)sender
@@ -308,6 +319,30 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView reloadData];
     });
+}
+
+- (void)positionSaved:(NSNotification *)notification
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PositionSavedNotification object:nil];
+    
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *tickerType = userInfo[@"ticker_type"];
+    HGTicker *ticker = userInfo[@"ticker"];
+    
+    if (tickerType && ticker) {
+        if ([tickerType integerValue] == HGTickerTypeMyIndexes) {
+            [[MercuryData sharedData].myIndexes addObject:ticker];
+            self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myIndexes];
+        } else if ([tickerType integerValue] == HGTickerTypeMyWatchlist) {
+            [[MercuryData sharedData].myWatchlist addObject:ticker];
+            self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myWatchlist];
+        } else {
+            [[MercuryData sharedData].myPositions addObject:ticker];
+            self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myPositions];
+        }
+        
+        [self.tableView reloadData];
+    }
 }
 
 #pragma mark - UITableViewDataSource Methods

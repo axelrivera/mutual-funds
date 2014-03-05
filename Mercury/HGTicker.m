@@ -20,6 +20,18 @@
     return ticker;
 }
 
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary
+{
+    self = [super init];
+    if (self) {
+        _symbol = [dictionary[@"symbol"] copy];
+        _tickerName = [dictionary[@"name"] copy];
+        _exchange = [dictionary[@"exch"] copy];
+        _positionType = dictionary[@"typeDisp"];
+    }
+    return self;
+}
+
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     self = [super init];

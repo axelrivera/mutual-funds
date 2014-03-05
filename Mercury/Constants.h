@@ -14,6 +14,8 @@
 //#define kYahooHistoryURL @"http://localhost:4000/table.csv"
 //#define kYahooHistoryURL @"https://mercury-sharingan.fwd.wf/table.csv"
 
+#define kYahooAutocompleteURL @"http://autoc.finance.yahoo.com/autoc"
+
 // Five Minutes in Seconds
 #define kNetworkRequestTimeLimit 60
 
@@ -34,6 +36,7 @@
 
 #define AllPositionsReloadedNotification @"HGAllPositionsReloadedNotification"
 #define MyPositionsReloadedNotification @"HGMyPositionsReloadedNotification"
+#define PositionSavedNotification @"HGPositionSavedNotification"
 
 // Convenience Keys
 
