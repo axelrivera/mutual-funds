@@ -19,7 +19,7 @@
     NSDictionary *current = self[[self count] - 1];
     NSDictionary *previous = self[[self count] - 2];
     
-    NSString *signal = nil;
+    NSString *signal = @"not_available";
     
     NSDate *currentDate = current[@"date"];
     NSDecimalNumber *currentSMA1 = current[@"sma1"];

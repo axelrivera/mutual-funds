@@ -121,13 +121,8 @@
                                                  name:AllPositionsReloadedNotification
                                                object:nil];
     
-    if (self.tickerType == HGTickerTypeMyIndexes) {
-        self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myIndexes];
-    } else if (self.tickerType == HGTickerTypeMyWatchlist) {
-        self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myWatchlist];
-    } else {
-        self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myPositions];
-        
+    self.dataSource = [[MercuryData sharedData] arrayForTickerType:self.tickerType];
+    if (self.tickerType == HGTickerTypeMyPositions) {
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(myPositionsReloaded:)
                                                      name:MyPositionsReloadedNotification
@@ -298,7 +293,7 @@
 
 - (void)myPositionsReloaded:(NSNotification *)notification
 {
-    self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myPositions];
+    self.dataSource = [[NSMutableArray alloc] initWithArray:[[MercuryData sharedData] arrayForTickerType:HGTickerTypeMyPositions]];
     [self.tableView reloadData];
 }
 
@@ -330,18 +325,12 @@
     HGTicker *ticker = userInfo[@"ticker"];
     
     if (tickerType && ticker) {
-        if ([tickerType integerValue] == HGTickerTypeMyIndexes) {
-            [[MercuryData sharedData].myIndexes addObject:ticker];
-            self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myIndexes];
-        } else if ([tickerType integerValue] == HGTickerTypeMyWatchlist) {
-            [[MercuryData sharedData].myWatchlist addObject:ticker];
-            self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myWatchlist];
-        } else {
-            [[MercuryData sharedData].myPositions addObject:ticker];
-            self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myPositions];
+        if ([tickerType integerValue] == self.tickerType) {
+            NSMutableArray *array = [[MercuryData sharedData] arrayForTickerType:[tickerType integerValue]];
+            [array addObject:ticker];
+            self.dataSource = [NSMutableArray arrayWithArray:array];
+            [self.tableView reloadData];
         }
-        
-        [self.tableView reloadData];
     }
 }
 
@@ -369,8 +358,6 @@
     cell.changeLabel.text = [ticker priceAndPercentChange];
     
     cell.changeLabel.textColor = [ticker.position colorForChangeType];
-    
-    [cell setNeedsUpdateConstraints];
     
     return cell;
 }
@@ -408,16 +395,9 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
         [self.dataSource removeObjectAtIndex:indexPath.row];
+        [[MercuryData sharedData] removeTickerAtIndex:indexPath.row tickerType:self.tickerType];
         
         [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
-        
-        if (self.tickerType == HGTickerTypeMyIndexes) {
-            [[MercuryData sharedData].myIndexes removeObjectAtIndex:indexPath.row];
-        } else if (self.tickerType == HGTickerTypeMyWatchlist) {
-            [[MercuryData sharedData].myWatchlist removeObjectAtIndex:indexPath.row];
-        } else {
-            [[MercuryData sharedData].myPositions removeObjectAtIndex:indexPath.row];
-        }
         
         if (IsEmpty(self.dataSource)) {
             [self setEditing:NO animated:YES];
@@ -430,19 +410,12 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
       toIndexPath:(NSIndexPath *)toIndexPath
 {
     HGTicker *ticker = self.dataSource[fromIndexPath.row];
+    
     [self.dataSource removeObjectAtIndex:fromIndexPath.row];
     [self.dataSource insertObject:ticker atIndex:toIndexPath.row];
     
-    if (self.tickerType == HGTickerTypeMyIndexes) {
-        [[MercuryData sharedData].myIndexes removeObjectAtIndex:fromIndexPath.row];
-        [[MercuryData sharedData].myIndexes insertObject:ticker atIndex:toIndexPath.row];
-    } else if (self.tickerType == HGTickerTypeMyWatchlist) {
-        [[MercuryData sharedData].myWatchlist removeObjectAtIndex:fromIndexPath.row];
-        [[MercuryData sharedData].myWatchlist insertObject:ticker atIndex:toIndexPath.row];
-    } else {
-        [[MercuryData sharedData].myPositions removeObjectAtIndex:fromIndexPath.row];
-        [[MercuryData sharedData].myPositions insertObject:ticker atIndex:toIndexPath.row];
-    }
+    [[MercuryData sharedData] removeTickerAtIndex:fromIndexPath.row tickerType:self.tickerType];
+    [[MercuryData sharedData] insertTicker:ticker atIndex:toIndexPath.row tickerType:self.tickerType];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
@@ -470,17 +443,9 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             }
             
             PositionDetailViewControllerSaveBlock saveBlock = ^(HGTicker *ticker) {
-                if (self.tickerType == HGTickerTypeMyIndexes) {
-                    [[MercuryData sharedData].myIndexes addObject:ticker];
-                    self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myIndexes];
-                }
-                if (self.tickerType == HGTickerTypeMyWatchlist) {
-                    [[MercuryData sharedData].myWatchlist addObject:ticker];
-                    self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myWatchlist];
-                } else {
-                    [[MercuryData sharedData].myPositions addObject:ticker];
-                    self.dataSource = [[NSMutableArray alloc] initWithArray:[MercuryData sharedData].myPositions];
-                }
+                NSMutableArray *array = [[MercuryData sharedData] arrayForTickerType:self.tickerType];
+                [array addObject:ticker];
+                self.dataSource = [NSMutableArray arrayWithArray:array];
                 
                 [self.tableView reloadData];
                 [self.navigationController popViewControllerAnimated:YES];
@@ -507,13 +472,7 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         [self.dataSource removeAllObjects];
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
         
-        if (self.tickerType == HGTickerTypeMyIndexes) {
-            [[MercuryData sharedData].myIndexes removeAllObjects];
-        } else if (self.tickerType == HGTickerTypeMyWatchlist) {
-            [[MercuryData sharedData].myWatchlist removeAllObjects];
-        } else {
-            [[MercuryData sharedData].myPositions removeAllObjects];
-        }
+        [[MercuryData sharedData] removeAllTickersForTickerType:self.tickerType];
         
         [self setEditing:NO animated:YES];
     }

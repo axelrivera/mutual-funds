@@ -215,6 +215,10 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
                 title = @"Avoid";
                 description = @"Avoid this position! The 50 day SMA is moving below the 200 day SMA.";
                 color = HexColor(0xa40000);
+            } else {
+                title = @"Not Enouth Data";
+                description = @"There's not enough data to generate a signal.";
+                color = HexColor(0xedd400);
             }
             
             if (title && description) {
@@ -294,6 +298,8 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
 
         [self updateDataSourceWithSignals:YES reloadTable:YES animated:YES];
         
+        DLog(@"Chart Data: %@", self.chartLimitedDataSource);
+        
         if (!IsEmpty(self.chartView.chartData)) {
             [self.chartView.chartData removeAllObjects];
         }
@@ -304,7 +310,14 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
             NSDate *date = dictionary[@"date"];
             NSTimeInterval dateInterval = [date timeIntervalSince1970];
             
-            [self.chartView addPoint:dateInterval val:@[ dictionary[@"close"], dictionary[@"sma1"], dictionary[@"sma2"] ]];
+            id close = dictionary[@"close"];
+            id sma1 = dictionary[@"sma1"];
+            id sma2 = dictionary[@"sma2"];
+            
+            NSMutableArray *values = [@[ close ] mutableCopy];
+            [values addObject:sma1];
+            [values addObject:sma2];
+            [self.chartView addPoint:dateInterval val:values];
         }
         
         [self.chartView drawChart];
@@ -372,7 +385,7 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     
     [self.chartContainerView addSubview:self.chartLegendLabel];
 
-    self.chartView = [[NCISimpleChartView alloc]
+    self.chartView = [[NCIZoomChartView alloc]
                       initWithFrame:CGRectZero
                       andOptions: @{nciIsFill: @(NO),
                                     nciLineColors: @[[UIColor hg_closeColor], [UIColor hg_SMA1Color], [UIColor hg_SMA2Color]],

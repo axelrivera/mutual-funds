@@ -13,8 +13,11 @@
 @interface MercuryData ()
 
 - (void)setFetching:(BOOL)fetching tickerType:(HGTickerType)tickerType;
-- (NSMutableArray *)arrayForTickerType:(HGTickerType)tickerType;
 - (void)setArray:(NSArray *)array forTickerType:(HGTickerType)tickerType;
+
+- (NSMutableArray *)defaultMyPositions;
+- (NSMutableArray *)defaultMyWatchlist;
+- (NSMutableArray *)defaultMyIndexes;
 
 @end
 
@@ -24,22 +27,13 @@
 {
     self = [super init];
     if (self) {
-        _myIndexes = [@[] mutableCopy];
-        _myWatchlist = [@[] mutableCopy];
-        _myPositions = [@[] mutableCopy];
-        _fetchingMyIndexes = NO;
-        _fetchingMyWatchlist = NO;
+        _myPositions = [self defaultMyPositions];
+        _myWatchlist = [self defaultMyWatchlist];
+        _myIndexes = [self defaultMyIndexes];
         _fetchingMyPositions = NO;
-        
-        [_myIndexes addObject:[HGTicker tickerWithType:HGTickerTypeMyIndexes symbol:@"^GSPC"]];
-        [_myIndexes addObject:[HGTicker tickerWithType:HGTickerTypeMyIndexes symbol:@"^W5000"]];
-        
-        [_myWatchlist addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"RPG"]];
-        [_myWatchlist addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"OBEGX"]];
-        [_myWatchlist addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"SPY"]];
-        
-        [_myPositions addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"JSVAX"]];
-        [_myPositions addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"SWLSX"]];
+        _fetchingMyWatchlist = NO;
+        _fetchingMyIndexes = NO;
+
     }
     return self;
 }
@@ -64,6 +58,30 @@
     [coder encodeObject:self.myIndexes forKey:@"MercuryDataMyIndexes"];
     [coder encodeObject:self.myWatchlist forKey:@"MercuryDataMyWatchlist"];
     [coder encodeObject:self.myPositions forKey:@"MercuryDataMyPositions"];
+}
+
+- (void)addTicker:(HGTicker *)ticker tickerType:(HGTickerType)tickerType
+{
+    NSMutableArray *array = [self arrayForTickerType:tickerType];
+    [array addObject:ticker];
+}
+
+- (void)insertTicker:(HGTicker *)ticker atIndex:(NSInteger)index tickerType:(HGTickerType)tickerType
+{
+    NSMutableArray *array = [self arrayForTickerType:tickerType];
+    [array insertObject:ticker atIndex:index];
+}
+
+- (void)removeTickerAtIndex:(NSInteger)index tickerType:(HGTickerType)tickerType
+{
+    NSMutableArray *array = [self arrayForTickerType:tickerType];
+    [array removeObjectAtIndex:index];
+}
+
+- (void)removeAllTickersForTickerType:(HGTickerType)tickerType
+{
+    NSMutableArray *array = [self arrayForTickerType:tickerType];
+    [array removeAllObjects];
 }
 
 - (void)fetchAllPositionsWithCompletion:(HGAllPositionsCompletionBlock)completion
@@ -400,6 +418,37 @@
         default:
             break;
     }
+}
+
+- (NSMutableArray *)defaultMyPositions
+{
+    NSMutableArray *array = [@[] mutableCopy];
+    
+    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"JSVAX"]];
+    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"SWLSX"]];
+    
+    return array;
+}
+
+- (NSMutableArray *)defaultMyWatchlist
+{
+    NSMutableArray *array = [@[] mutableCopy];
+
+    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"RPG"]];
+    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"OBEGX"]];
+    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"SPY"]];
+    
+    return array;
+}
+
+- (NSMutableArray *)defaultMyIndexes
+{
+    NSMutableArray *array = [@[] mutableCopy];
+
+    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyIndexes symbol:@"^GSPC"]];
+    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyIndexes symbol:@"^W5000"]];
+    
+    return array;
 }
 
 #pragma mark - Singleton Methods

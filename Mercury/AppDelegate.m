@@ -29,19 +29,19 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.tintColor = [UIColor hg_highlightColor];
     
-    PositionsViewController *indexController = [[PositionsViewController alloc] initWithTickerType:HGTickerTypeMyIndexes];
-    UINavigationController *indexNavController = [[UINavigationController alloc] initWithRootViewController:indexController];
+    PositionsViewController *positionsController = [[PositionsViewController alloc] initWithTickerType:HGTickerTypeMyPositions];
+    UINavigationController *positionsNavController = [[UINavigationController alloc] initWithRootViewController:positionsController];
     
     PositionsViewController *watchlistController = [[PositionsViewController alloc] initWithTickerType:HGTickerTypeMyWatchlist];
     UINavigationController *watchlistNavController = [[UINavigationController alloc] initWithRootViewController:watchlistController];
     
-    PositionsViewController *positionsController = [[PositionsViewController alloc] initWithTickerType:HGTickerTypeMyPositions];
-    UINavigationController *positionsNavController = [[UINavigationController alloc] initWithRootViewController:positionsController];
+    PositionsViewController *indexController = [[PositionsViewController alloc] initWithTickerType:HGTickerTypeMyIndexes];
+    UINavigationController *indexNavController = [[UINavigationController alloc] initWithRootViewController:indexController];
     
     SettingsViewController *settingsController = [[SettingsViewController alloc] init];
     UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsController];
     
-    NSArray *viewControllers = @[ indexNavController, watchlistNavController, positionsNavController, settingsNavController ];
+    NSArray *viewControllers = @[ positionsNavController, watchlistNavController, indexNavController, settingsNavController ];
     
     self.tabBarController = [[UITabBarController alloc] init];
     self.tabBarController.viewControllers = viewControllers;
