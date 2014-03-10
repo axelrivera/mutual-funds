@@ -426,6 +426,7 @@
     
     [array addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"JSVAX"]];
     [array addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"SWLSX"]];
+    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"PBW"]];
     
     return array;
 }
@@ -437,6 +438,9 @@
     [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"RPG"]];
     [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"OBEGX"]];
     [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"SPY"]];
+    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"SWANX"]];
+    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"VEIEX"]];
+    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"RYURX"]];
     
     return array;
 }
@@ -447,6 +451,7 @@
 
     [array addObject:[HGTicker tickerWithType:HGTickerTypeMyIndexes symbol:@"^GSPC"]];
     [array addObject:[HGTicker tickerWithType:HGTickerTypeMyIndexes symbol:@"^W5000"]];
+    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"^RUT"]];
     
     return array;
 }

@@ -20,6 +20,11 @@
     return HexColor(0xCC0000);
 }
 
++ (UIColor *)hg_yellowColor
+{
+    return HexColor(0xEDD400);
+}
+
 + (UIColor *)hg_textColor
 {
     return HexColor(0x2E3436);
@@ -52,7 +57,7 @@
 
 + (UIColor *)hg_changeNoneColor
 {
-    return HexColor(0xEDD400);
+    return [UIColor hg_yellowColor];
 }
 
 + (UIColor *)hg_tableSeparatorColor

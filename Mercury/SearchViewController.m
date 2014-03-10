@@ -8,6 +8,7 @@
 
 #import "SearchViewController.h"
 
+#import "SearchCell.h"
 #import "PositionsViewController.h"
 #import "PositionDetailViewController.h"
 
@@ -44,7 +45,7 @@
     
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
     self.searchBar.tintColor = [UIColor hg_highlightColor];
-
+    
     self.searchController = [[UISearchDisplayController alloc]
                         initWithSearchBar:self.searchBar contentsController:self];
     
@@ -92,21 +93,27 @@
 {
     static NSString *CellIdentifier = @"Cell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    SearchCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        cell.textLabel.font = [UIFont systemFontOfSize:14.0];
-        cell.detailTextLabel.font = [UIFont systemFontOfSize:12.0];
-        cell.detailTextLabel.textColor = [UIColor grayColor];
+        cell = [[SearchCell alloc] initWithReuseIdentifier:CellIdentifier];
     }
     
     HGTicker *ticker = self.dataSource[indexPath.row];
     
-    cell.textLabel.text = ticker.tickerName;
-    cell.detailTextLabel.text = ticker.symbol;
+    cell.nameLabel.text = ticker.tickerName;
+    cell.symbolLabel.text = ticker.symbol;
+    cell.typeLabel.text = ticker.positionType;
     
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
+    if ([[ticker.positionType uppercaseString] isEqualToString:@"ETF"] ||
+        [[ticker.positionType uppercaseString] isEqualToString:@"FUND"])
+    {
+        cell.typeLabel.textColor = [UIColor hg_greenColor];
+    } else {
+        cell.typeLabel.textColor = [UIColor grayColor];
+    }
     
     return cell;
 }
@@ -154,6 +161,11 @@
         controller.saveBlock = saveBlock;        
         [self.navigationController pushViewController:controller animated:YES];
     }];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 54.0;
 }
 
 #pragma mark - UISearchDisplayDelegate

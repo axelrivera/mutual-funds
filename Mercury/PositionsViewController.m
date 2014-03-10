@@ -16,6 +16,7 @@
 @interface PositionsViewController () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate>
 
 @property (strong, nonatomic) UITableViewController *tableViewController;
+@property (strong, nonatomic) UIRefreshControl *refreshControl;
 
 @property (strong, nonatomic) UIBarButtonItem *addButton;
 @property (strong, nonatomic) UIBarButtonItem *editButton;
@@ -87,14 +88,16 @@
     self.tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
     [self addChildViewController:self.tableViewController];
     
-    self.tableViewController.refreshControl = [[UIRefreshControl alloc] init];
-    self.tableViewController.refreshControl.tintColor = [UIColor colorWithWhite:0.8 alpha:1.0];
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.tintColor = [UIColor colorWithWhite:0.8 alpha:1.0];
     
-    [self.tableViewController.refreshControl addTarget:self
-                                                action:@selector(reloadAction:)
-                                      forControlEvents:UIControlEventValueChanged];
+    [self.refreshControl addTarget:self
+                            action:@selector(reloadAction:)
+                  forControlEvents:UIControlEventValueChanged];
     
     self.tableViewController.tableView = self.tableView;
+    
+    self.tableViewController.refreshControl = self.refreshControl;
     
     self.editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
                                                                     target:self
@@ -149,8 +152,8 @@
     
     [self setEditing:NO animated:animated];
     
-    if ([self.tableViewController.refreshControl isRefreshing]) {
-        [self.tableViewController.refreshControl endRefreshing];
+    if ([self.refreshControl isRefreshing]) {
+        [self.refreshControl endRefreshing];
     }
 }
 
@@ -187,9 +190,11 @@
     [self.tableView setEditing:editing animated:animated];
     
     if (editing) {
+        self.tableViewController.refreshControl = nil;
         [self.navigationItem setLeftBarButtonItem:self.editDoneButton animated:YES];
         [self.navigationItem setRightBarButtonItem:self.clearButton animated:YES];
     } else {
+        self.tableViewController.refreshControl = self.refreshControl;
         [self.navigationItem setLeftBarButtonItem:self.editButton animated:YES];
         [self.navigationItem setRightBarButtonItem:self.addButton animated:YES];
     }
@@ -200,7 +205,7 @@
 - (void)reloadPositions
 {
     HGTickersCompletionBlock completionBlock = ^(NSArray *tickers, NSError *error) {
-        [self.tableViewController.refreshControl endRefreshing];
+        [self.refreshControl endRefreshing];
         
         if (error) {
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Mercury"
@@ -218,17 +223,17 @@
     
     if (self.tickerType == HGTickerTypeMyIndexes) {
         if ([MercuryData sharedData].isFetchingMyIndexes) {
-            [self.tableViewController.refreshControl endRefreshing];
+            [self.refreshControl endRefreshing];
             return;
         }
     } else if (self.tickerType == HGTickerTypeMyWatchlist) {
         if ([MercuryData sharedData].isFetchingMyWatchlist) {
-            [self.tableViewController.refreshControl endRefreshing];
+            [self.refreshControl endRefreshing];
             return;
         }
     } else {
         if ([MercuryData sharedData].isFetchingMyPositions) {
-            [self.tableViewController.refreshControl endRefreshing];
+            [self.refreshControl endRefreshing];
             return;
         }
     }
@@ -246,6 +251,7 @@
                                                object:nil];
     
     SearchViewController *searchController = [[SearchViewController alloc] initWithTickerType:self.tickerType];
+
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:searchController];
     
     [self.navigationController presentViewController:navController animated:YES completion:nil];

@@ -23,5 +23,6 @@
 - (BOOL)isJanuary;
 
 - (NSDate *)dateWithFirstDayOfTheMonth;
+- (NSDate *)dateWithFirstDayOfTheYear;
 
 @end

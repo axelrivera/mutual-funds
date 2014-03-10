@@ -107,16 +107,10 @@
         return;
     }
     
-    DLog(@"Total: %d", total);
-
     NSArray *tmpHistory = [history subarrayWithRange:NSMakeRange(0, total)];
     NSArray *tmpSMA1 = [SMA1 subarrayWithRange:NSMakeRange(0, total)];
     NSArray *tmpSMA2 = [SMA2 subarrayWithRange:NSMakeRange(0, total)];
     
-    DLog(@"History: %@", tmpHistory);
-    DLog(@"SMA1: %@", tmpSMA1);
-    DLog(@"SMA2: %@", tmpSMA2);
-
     if ([tmpHistory count] < 2) {
         block(NO, nil, nil, nil, nil);
         return;

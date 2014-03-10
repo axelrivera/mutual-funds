@@ -15,6 +15,7 @@
 #import "PositionSummaryCell.h"
 #import "SignalStatusCell.h"
 #import <LineChart.h>
+#import <MBProgressHUD.h>
 
 static const CGFloat ContainerChartPaddingTop = 10.0;
 static const CGFloat ContainerChartPaddingMiddle = 10.0;
@@ -33,6 +34,11 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
 @property (strong, nonatomic) UILabel *chartLabel;
 @property (strong, nonatomic) UILabel *chartLegendLabel;
 @property (strong, nonatomic) UIView *chartTopLine;
+
+@property (strong, nonatomic) NSLayoutConstraint *chartConstraint;
+@property (assign, nonatomic) CGFloat chartBottom;
+
+@property (strong, nonatomic) MBProgressHUD *hud;
 
 - (void)updateDataSourceWithSignals:(BOOL)signals reloadTable:(BOOL)reloadTable animated:(BOOL)animated;
 - (void)reloadChart;
@@ -82,13 +88,6 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     
     [self updateDataSourceWithSignals:NO reloadTable:NO animated:YES];
     
-    [[MercuryData sharedData] fetchHistoricalDataForTicker:self.ticker
-                                                completion:^(NSArray *history, NSError *error)
-    {
-        self.ticker.position.history = history;
-        [self reloadChart];
-    }];
-    
     if (self.allowSave) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
                                                                                                target:self
@@ -106,26 +105,36 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
                                                                                action:@selector(removeFromMyPositionsAction:)];
         }
     }
+    
+    self.chartBottom = -(ContainerHeight);
 
     [self setupChartContainerView];
+    
+    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
+    self.hud.labelText = @"Fetching Data";
+    [self.hud removeFromSuperViewOnHide];
+    
+    [[MercuryData sharedData] fetchHistoricalDataForTicker:self.ticker
+                                                completion:^(NSArray *history, NSError *error)
+     {
+         self.ticker.position.history = history;
+         [self reloadChart];
+     }];
 }
 
 - (void)viewDidLayoutSubviews
 {
-    [super viewDidLayoutSubviews];
-    
     [self.tableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
     
     UIEdgeInsets insets = self.tableView.contentInset;
     insets.top = self.topOrigin;
-    insets.bottom = ContainerHeight;
+    
+    if (self.chartBottom >= 0) {
+        insets.bottom = ContainerHeight;
+    }
     
     self.tableView.contentInset = insets;
     self.tableView.scrollIndicatorInsets = insets;
-    
-    [self.chartContainerView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0.0];
-    [self.chartContainerView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0.0];
-    [self.chartContainerView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0.0];
     
     [self.view layoutSubviews];
 }
@@ -268,24 +277,13 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     if (IsEmpty(self.ticker.position.history)) {
         return;
     }
-
+    
     [self.ticker.position historyForChartRange:self.chartRange
                                          block:^(NSArray *history, NSArray *SMA1, NSArray *SMA2)
     {
         if ([history count] < 2) {
             return;
         }
-        
-        [NSArray SMA_currentSignalForHistory:history SMA1:SMA1 SMA2:SMA2
-                                       block:^(BOOL available, NSString *signal, NSArray *pastSignals)
-        {
-            if (available) {
-                self.currentSignal = signal;
-                self.chartSignals = pastSignals;
-                
-                [self updateDataSourceWithSignals:YES reloadTable:YES animated:YES];
-            }
-        }];
         
         NSTimeInterval minX = [[(HGHistory *)history.lastObject date] timeIntervalSince1970];
         NSTimeInterval maxX = [[(HGHistory *)history.firstObject date] timeIntervalSince1970];
@@ -380,8 +378,41 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         self.chartView.drawsDataPoints = NO;
         self.chartView.scaleFont = [UIFont systemFontOfSize:8.0];
         self.chartView.ySteps = [NSArray hg_yStepsForDetailChartIncluding:history SMA1:SMA1 SMA2:SMA2];
-        self.chartView.xSteps = [NSArray hg_xStepsForHistory:history];
+        self.chartView.xSteps = [NSArray hg_xStepsInMonthsForHistory:history];
         self.chartView.data = chartData;
+        
+        self.hud.labelText = @"Loading Signals";
+        
+        dispatch_queue_t backgroundQueue = dispatch_queue_create(kMercuryDispatchQueue, NULL);
+        dispatch_async(backgroundQueue, ^{
+            [NSArray SMA_currentSignalForHistory:history SMA1:SMA1 SMA2:SMA2
+                                           block:^(BOOL available, NSString *signal, NSArray *pastSignals)
+             {
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     [self.hud hide:YES];
+                     
+                     if (available) {
+                         self.currentSignal = signal;
+                         self.chartSignals = pastSignals;
+                         [self updateDataSourceWithSignals:YES reloadTable:YES animated:YES];
+                         
+                         [self.view layoutIfNeeded];
+                         [UIView animateWithDuration:0.3 animations:^{
+                             self.chartBottom = 0.0;
+                             
+                             self.chartConstraint.constant = self.chartBottom;
+                             
+                             UIEdgeInsets insets = self.tableView.contentInset;
+                             insets.bottom = ContainerHeight;
+                             
+                             self.tableView.contentInset = insets;
+                             self.tableView.scrollIndicatorInsets = insets;
+                             [self.view layoutIfNeeded];
+                         }];
+                     }
+                 });
+             }];
+        });
         
     }];
 }
@@ -473,6 +504,10 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     [self.chartView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0.0];
     
     [self.view addSubview:self.chartContainerView];
+    
+    self.chartConstraint = [self.chartContainerView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:self.chartBottom];
+    [self.chartContainerView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0.0];
+    [self.chartContainerView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0.0];
 }
 
 #pragma mark - Selector Methods

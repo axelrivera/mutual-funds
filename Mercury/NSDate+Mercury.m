@@ -76,4 +76,15 @@
     return [gregorian dateFromComponents:components];
 }
 
+- (NSDate *)dateWithFirstDayOfTheYear
+{
+    NSCalendar *gregorian = [[NSCalendar alloc]initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *components = [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit) fromDate:self];
+    
+    [components setMonth:1];
+    [components setDay:1];
+    
+    return [gregorian dateFromComponents:components];
+}
+
 @end

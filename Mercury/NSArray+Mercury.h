@@ -19,8 +19,10 @@
 
 + (NSArray *)hg_sortedArrayForYStepsIncluding:(NSArray *)history SMA1:(NSArray *)SMA1 SMA2:(NSArray *)SMA2;
 + (NSArray *)hg_yStepsForDetailChartIncluding:(NSArray *)history SMA1:(NSArray *)SMA1 SMA2:(NSArray *)SMA2;
++ (NSArray *)hg_yStepsForFullscreenChartIncluding:(NSArray *)history SMA1:(NSArray *)SMA1 SMA2:(NSArray *)SMA2;
 
-+ (NSArray *)hg_xStepsForHistory:(NSArray *)history;
++ (NSArray *)hg_xStepsInMonthsForHistory:(NSArray *)history;
++ (NSArray *)hg_xStepsInYearsForHistory:(NSArray *)history;
 
 + (NSDictionary *)hg_minimumAndMaximumRangeForHistory:(NSArray *)history SMA1:(NSArray *)SMA1 SMA2:(NSArray *)SMA2;
 

@@ -24,6 +24,7 @@
 		160B3BC918BC1CF30075CC14 /* NSString+Yahoo.m in Sources */ = {isa = PBXBuildFile; fileRef = 160B3BC818BC1CF30075CC14 /* NSString+Yahoo.m */; };
 		160B3BCC18BC4EAA0075CC14 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 160B3BCA18BC4EAA0075CC14 /* iTunesArtwork */; };
 		160B3BCD18BC4EAA0075CC14 /* iTunesArtwork@2x in Resources */ = {isa = PBXBuildFile; fileRef = 160B3BCB18BC4EAA0075CC14 /* iTunesArtwork@2x */; };
+		1629AE8718CD590A00D92DBA /* SearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1629AE8618CD590A00D92DBA /* SearchCell.m */; };
 		1654ACCC18CB8CEB00D4D295 /* NSArray+HGPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 1654ACCB18CB8CEB00D4D295 /* NSArray+HGPosition.m */; };
 		1654ACCF18CBA42400D4D295 /* HGSMAValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1654ACCE18CBA42400D4D295 /* HGSMAValue.m */; };
 		167749A518C00B6F00C1647D /* NSDate+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749A418C00B6F00C1647D /* NSDate+Mercury.m */; };
@@ -99,6 +100,8 @@
 		160B3BC818BC1CF30075CC14 /* NSString+Yahoo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Yahoo.m"; sourceTree = "<group>"; };
 		160B3BCA18BC4EAA0075CC14 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		160B3BCB18BC4EAA0075CC14 /* iTunesArtwork@2x */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iTunesArtwork@2x"; sourceTree = "<group>"; };
+		1629AE8518CD590A00D92DBA /* SearchCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchCell.h; sourceTree = "<group>"; };
+		1629AE8618CD590A00D92DBA /* SearchCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCell.m; sourceTree = "<group>"; };
 		1654ACCA18CB8CEB00D4D295 /* NSArray+HGPosition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+HGPosition.h"; sourceTree = "<group>"; };
 		1654ACCB18CB8CEB00D4D295 /* NSArray+HGPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+HGPosition.m"; sourceTree = "<group>"; };
 		1654ACCD18CBA42400D4D295 /* HGSMAValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HGSMAValue.h; sourceTree = "<group>"; };
@@ -200,6 +203,8 @@
 				1605411918B91DE900C200C6 /* PositionSummaryCell.m */,
 				16B27B0A18C40B4100A355FF /* SignalStatusCell.h */,
 				16B27B0B18C40B4100A355FF /* SignalStatusCell.m */,
+				1629AE8518CD590A00D92DBA /* SearchCell.h */,
+				1629AE8618CD590A00D92DBA /* SearchCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -527,6 +532,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1629AE8718CD590A00D92DBA /* SearchCell.m in Sources */,
 				16B27B0618C38CF900A355FF /* SelectViewController.m in Sources */,
 				16A5C69418C37EFC0078EA01 /* HGSettings.m in Sources */,
 				167749A518C00B6F00C1647D /* NSDate+Mercury.m in Sources */,

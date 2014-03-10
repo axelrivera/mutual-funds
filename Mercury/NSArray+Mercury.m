@@ -106,16 +106,37 @@
                                                                                                      SMA2:SMA2]];
     NSInteger total = [numberSet count];
     
-    CGFloat third = [[numberSet objectAtIndex:total - 1] floatValue];
-    CGFloat second = [[numberSet objectAtIndex:(NSInteger)round(total / 2)] floatValue];
-    CGFloat first = [[numberSet objectAtIndex:0] floatValue];
+    CGFloat top = [[numberSet objectAtIndex:0] floatValue];
+    CGFloat middle = [[numberSet objectAtIndex:(NSInteger)round(total / 2)] floatValue];
+    CGFloat bottom = [[numberSet objectAtIndex:total - 1] floatValue];
     
-    return @[[NSString stringWithFormat:@"%.02f", first],
-             [NSString stringWithFormat:@"%.02f", second],
-             [NSString stringWithFormat:@"%.02f", third] ];
+    return @[[NSString stringWithFormat:@"%.02f", top],
+             [NSString stringWithFormat:@"%.02f", middle],
+             [NSString stringWithFormat:@"%.02f", bottom] ];
 }
 
-+ (NSArray *)hg_xStepsForHistory:(NSArray *)history
++ (NSArray *)hg_yStepsForFullscreenChartIncluding:(NSArray *)history SMA1:(NSArray *)SMA1 SMA2:(NSArray *)SMA2
+{
+    NSOrderedSet *numberSet = [NSOrderedSet orderedSetWithArray:[NSArray hg_sortedArrayForYStepsIncluding:history
+                                                                                                     SMA1:SMA1
+                                                                                                     SMA2:SMA2]];
+    NSInteger total = [numberSet count];
+    
+    CGFloat top = [[numberSet objectAtIndex:0] floatValue];
+    CGFloat topMiddle = [[numberSet objectAtIndex:(NSInteger)round(total * 0.25)] floatValue];
+    CGFloat middle = [[numberSet objectAtIndex:(NSInteger)round(total / 2)] floatValue];
+    CGFloat bottomMiddle = [[numberSet objectAtIndex:(NSInteger)round(total * 0.75)] floatValue];
+    CGFloat bottom = [[numberSet objectAtIndex:total - 1] floatValue];
+    
+    
+    return @[[NSString stringWithFormat:@"%.02f", top],
+             [NSString stringWithFormat:@"%.02f", topMiddle],
+             [NSString stringWithFormat:@"%.02f", middle],
+             [NSString stringWithFormat:@"%.02f", bottomMiddle],
+             [NSString stringWithFormat:@"%.02f", bottom] ];
+}
+
++ (NSArray *)hg_xStepsInMonthsForHistory:(NSArray *)history
 {
     NSMutableArray *dates = [@[] mutableCopy];
     NSMutableArray *months = [@[] mutableCopy];
@@ -141,6 +162,37 @@
     
     for (NSDate *date in dates) {
         [cleanDates addObject:[date dateWithFirstDayOfTheMonth]];
+    }
+    
+    return cleanDates;
+}
+
++ (NSArray *)hg_xStepsInYearsForHistory:(NSArray *)history
+{
+    NSMutableArray *dates = [@[] mutableCopy];
+    NSMutableArray *years = [@[] mutableCopy];
+    
+    NSArray *reversedHistory = [history hg_reversedArray];
+    
+    for (HGHistory *item in reversedHistory) {
+        NSDate *date = item.date;
+        NSString *year = [[NSDateFormatter hg_yearFormatter] stringFromDate:date];
+        
+        if (![years containsObject:year]) {
+            [years addObject:year];
+            [dates addObject:date];
+        }
+    }
+    
+    if ([dates count] > 2) {
+        [dates removeObjectAtIndex:0];
+        [dates removeLastObject];
+    }
+    
+    NSMutableArray *cleanDates = [@[] mutableCopy];
+    
+    for (NSDate *date in dates) {
+        [cleanDates addObject:[date dateWithFirstDayOfTheYear]];
     }
     
     return cleanDates;

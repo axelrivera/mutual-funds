@@ -10,6 +10,7 @@
 
 #import <UIView+AutoLayout.h>
 #import <LineChart.h>
+#import <MBProgressHUD.h>
 
 @interface PositionChartViewController ()
 
@@ -78,7 +79,7 @@
     [self.chartView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.footerView];
     
     [self.legendLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:15.0];
-    [self.legendLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:25.0];
+    [self.legendLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:40.0];
     
     [self.footerView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0.0];
     [self.footerView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0.0];
@@ -205,6 +206,9 @@
         return;
     }
     
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [hud setLabelText:@"Loading Chart"];
+    
     [self.ticker.position historyForChartRange:self.chartRange
                                          block:^(NSArray *history, NSArray *SMA1, NSArray *SMA2)
      {
@@ -303,6 +307,13 @@
                                                                         SMA1:SMA1
                                                                         SMA2:SMA2];
          
+         NSArray *xSteps = @[];
+         if ([self.chartRange isEqualToString:HGChartRangeTenYearWeekly]) {
+             xSteps = [NSArray hg_xStepsInYearsForHistory:history];
+         } else {
+             xSteps = [NSArray hg_xStepsInMonthsForHistory:history];
+         }
+         
          self.chartView.yMin = [yRange[@"min"] doubleValue];
          self.chartView.yMax = [yRange[@"max"] doubleValue];
          self.chartView.xMin = minX;
@@ -310,10 +321,13 @@
          self.chartView.smoothPlot = NO;
          self.chartView.drawsDataLines = YES;
          self.chartView.drawsDataPoints = NO;
+         self.chartView.enableIndicator = NO;
          self.chartView.scaleFont = [UIFont systemFontOfSize:8.0];
-         self.chartView.ySteps = [NSArray hg_yStepsForDetailChartIncluding:history SMA1:SMA1 SMA2:SMA2];
-         self.chartView.xSteps = [NSArray hg_xStepsForHistory:history];
+         self.chartView.ySteps = [NSArray hg_yStepsForFullscreenChartIncluding:history SMA1:SMA1 SMA2:SMA2];
+         self.chartView.xSteps = xSteps;
          self.chartView.data = chartData;
+         
+         [hud hide:YES];
          
      }];
 }
