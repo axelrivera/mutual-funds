@@ -59,4 +59,21 @@
     return weekday == 2 ? YES : NO; // Sun = 1, Sat = 7
 }
 
+- (BOOL)isJanuary
+{
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSInteger month = [[calendar components:NSMonthCalendarUnit fromDate:self] month];
+    return month == 1 ? YES : NO; // Jan = 1
+}
+
+- (NSDate *)dateWithFirstDayOfTheMonth
+{
+    NSCalendar *gregorian = [[NSCalendar alloc]initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *components = [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit) fromDate:self];
+    
+    [components setDay:1];
+    
+    return [gregorian dateFromComponents:components];
+}
+
 @end

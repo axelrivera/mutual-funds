@@ -24,6 +24,8 @@
 		160B3BC918BC1CF30075CC14 /* NSString+Yahoo.m in Sources */ = {isa = PBXBuildFile; fileRef = 160B3BC818BC1CF30075CC14 /* NSString+Yahoo.m */; };
 		160B3BCC18BC4EAA0075CC14 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 160B3BCA18BC4EAA0075CC14 /* iTunesArtwork */; };
 		160B3BCD18BC4EAA0075CC14 /* iTunesArtwork@2x in Resources */ = {isa = PBXBuildFile; fileRef = 160B3BCB18BC4EAA0075CC14 /* iTunesArtwork@2x */; };
+		1654ACCC18CB8CEB00D4D295 /* NSArray+HGPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 1654ACCB18CB8CEB00D4D295 /* NSArray+HGPosition.m */; };
+		1654ACCF18CBA42400D4D295 /* HGSMAValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1654ACCE18CBA42400D4D295 /* HGSMAValue.m */; };
 		167749A518C00B6F00C1647D /* NSDate+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749A418C00B6F00C1647D /* NSDate+Mercury.m */; };
 		167749A818C029EF00C1647D /* NSArray+SMA.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749A718C029EF00C1647D /* NSArray+SMA.m */; };
 		167749AB18C02B1D00C1647D /* NSDecimalNumber+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749AA18C02B1D00C1647D /* NSDecimalNumber+Mercury.m */; };
@@ -97,6 +99,10 @@
 		160B3BC818BC1CF30075CC14 /* NSString+Yahoo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Yahoo.m"; sourceTree = "<group>"; };
 		160B3BCA18BC4EAA0075CC14 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		160B3BCB18BC4EAA0075CC14 /* iTunesArtwork@2x */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iTunesArtwork@2x"; sourceTree = "<group>"; };
+		1654ACCA18CB8CEB00D4D295 /* NSArray+HGPosition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+HGPosition.h"; sourceTree = "<group>"; };
+		1654ACCB18CB8CEB00D4D295 /* NSArray+HGPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+HGPosition.m"; sourceTree = "<group>"; };
+		1654ACCD18CBA42400D4D295 /* HGSMAValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HGSMAValue.h; sourceTree = "<group>"; };
+		1654ACCE18CBA42400D4D295 /* HGSMAValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HGSMAValue.m; sourceTree = "<group>"; };
 		167749A318C00B6F00C1647D /* NSDate+Mercury.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Mercury.h"; sourceTree = "<group>"; };
 		167749A418C00B6F00C1647D /* NSDate+Mercury.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Mercury.m"; sourceTree = "<group>"; };
 		167749A618C029EF00C1647D /* NSArray+SMA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+SMA.h"; sourceTree = "<group>"; };
@@ -179,6 +185,8 @@
 				1605410818B843C000C200C6 /* HGPosition.m */,
 				1605412718B96A6000C200C6 /* HGHistory.h */,
 				1605412818B96A6000C200C6 /* HGHistory.m */,
+				1654ACCD18CBA42400D4D295 /* HGSMAValue.h */,
+				1654ACCE18CBA42400D4D295 /* HGSMAValue.m */,
 			);
 			name = "Model + Data";
 			sourceTree = "<group>";
@@ -268,6 +276,8 @@
 				167749AA18C02B1D00C1647D /* NSDecimalNumber+Mercury.m */,
 				167749A618C029EF00C1647D /* NSArray+SMA.h */,
 				167749A718C029EF00C1647D /* NSArray+SMA.m */,
+				1654ACCA18CB8CEB00D4D295 /* NSArray+HGPosition.h */,
+				1654ACCB18CB8CEB00D4D295 /* NSArray+HGPosition.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -522,6 +532,7 @@
 				167749A518C00B6F00C1647D /* NSDate+Mercury.m in Sources */,
 				1605410918B843C000C200C6 /* HGPosition.m in Sources */,
 				1605412618B9630000C200C6 /* NSDateFormatter+Mercury.m in Sources */,
+				1654ACCC18CB8CEB00D4D295 /* NSArray+HGPosition.m in Sources */,
 				1605413218B9965800C200C6 /* PositionChartViewController.m in Sources */,
 				16B27B0C18C40B4100A355FF /* SignalStatusCell.m in Sources */,
 				167749AB18C02B1D00C1647D /* NSDecimalNumber+Mercury.m in Sources */,
@@ -536,6 +547,7 @@
 				1605411A18B91DE900C200C6 /* PositionSummaryCell.m in Sources */,
 				167749A818C029EF00C1647D /* NSArray+SMA.m in Sources */,
 				1605412918B96A6000C200C6 /* HGHistory.m in Sources */,
+				1654ACCF18CBA42400D4D295 /* HGSMAValue.m in Sources */,
 				1605412018B92D0A00C200C6 /* MercuryData.m in Sources */,
 				16B98FB218BED58900A55122 /* NSString+Mercury.m in Sources */,
 				1605412F18B981DD00C200C6 /* NSArray+Mercury.m in Sources */,

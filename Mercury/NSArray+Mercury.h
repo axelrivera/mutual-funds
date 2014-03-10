@@ -10,10 +10,18 @@
 
 @interface NSArray (Mercury)
 
-- (NSArray *)reversedArray;
-- (NSDecimalNumber *)sumHistoryCloses;
-- (NSArray *)chartWeeklyArrayWithStartDate:(NSDate *)startDate;
-- (NSArray *)chartDailyArrayWithStartDate:(NSDate *)startDate;
-- (NSArray *)chartSubarrayWithStartDate:(NSDate *)startDate;
+- (NSArray *)hg_reversedArray;
+
+- (NSArray *)hg_weeklyArrayWithStartDate:(NSDate *)startDate;
+- (NSArray *)hg_dailyArrayWithStartDate:(NSDate *)startDate;
+- (NSArray *)hg_subarrayWithStartDate:(NSDate *)startDate;
+- (NSArray *)hg_subarrayForInterval:(NSUInteger)interval;
+
++ (NSArray *)hg_sortedArrayForYStepsIncluding:(NSArray *)history SMA1:(NSArray *)SMA1 SMA2:(NSArray *)SMA2;
++ (NSArray *)hg_yStepsForDetailChartIncluding:(NSArray *)history SMA1:(NSArray *)SMA1 SMA2:(NSArray *)SMA2;
+
++ (NSArray *)hg_xStepsForHistory:(NSArray *)history;
+
++ (NSDictionary *)hg_minimumAndMaximumRangeForHistory:(NSArray *)history SMA1:(NSArray *)SMA1 SMA2:(NSArray *)SMA2;
 
 @end

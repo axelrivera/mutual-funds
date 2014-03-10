@@ -20,5 +20,8 @@
 - (NSDate *)dateBySubtractingDays:(NSUInteger)days;
 
 - (BOOL)isMonday;
+- (BOOL)isJanuary;
+
+- (NSDate *)dateWithFirstDayOfTheMonth;
 
 @end

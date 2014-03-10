@@ -132,92 +132,46 @@
     return color;
 }
 
-- (void)calculateChartWithSMA1:(NSUInteger)SMA1
-                          SMA2:(NSUInteger)SMA2
-                    completion:(HGPositionChartCompletionBlock)completion
+- (void)historyForChartRange:(NSString *)chartRange block:(HGPositionHistoryBlock)block
 {
+    if (!block) {
+        return;
+    }
+
     dispatch_queue_t backgroundQueue = dispatch_queue_create(kMercuryDispatchQueue, NULL);
     dispatch_async(backgroundQueue, ^{
-        NSUInteger interval = HGChartPeriodTenYearInterval;
+        NSArray *tmpHistory = @[];
         
-        NSArray *SMA1Array = [self SMAArrayForInterval:SMA1 + interval period:SMA1];
-        NSArray *SMA2Array = [self SMAArrayForInterval:SMA2 + interval period:SMA2];
+        NSDate *tomorrow = [NSDate tomorrowAtMidnight];
+        NSDate *epochDate = [tomorrow dateBySubtractingDays:HGChartHistoricalStartInterval];
         
-        NSMutableArray *resultArray = [@[] mutableCopy];
+        if ([chartRange isEqualToString:HGChartRangeTenYearWeekly]) {
+            tmpHistory = [self.history hg_weeklyArrayWithStartDate:epochDate];
+        } else {
+            tmpHistory = [self.history hg_dailyArrayWithStartDate:epochDate];
+        }
         
-        NSInteger totalHistory = [self.history count];
-        NSInteger totalSMA1 = [SMA1Array count];
-        NSInteger totalSMA2 = [SMA2Array count];
-        
+        NSUInteger interval = [[HGSettings defaultSettings] intervalForChartRange:chartRange];
         NSDate *endDate = [NSDate chartEndDate];
         NSDate *startDate = [NSDate chartStartDateForEndDate:endDate interval:interval];
-        
-        DLog(@"Chart Data For Dates: %@ - %@", startDate, endDate);
-        
-        for (NSInteger i = 0; i < interval; i++) {
-            NSNumber *close = @0.00;
-            id SMA1Value = [NSNull null];
-            id SMA2Value = [NSNull null];
-            NSDate *date = [NSDate distantPast];
-            
-            if (i < totalHistory) {
-                HGHistory *history = self.history[i];
-                close = history.close;
-                date = history.date;
-            }
-            
-            if (i < totalSMA1) {
-                SMA1Value = SMA1Array[i];
-            }
-            
-            if (i < totalSMA2) {
-                SMA2Value = SMA2Array[i];
-            }
-            
-            [resultArray addObject:@{ @"date" : date, @"close" : close, @"sma1" : SMA1Value, @"sma2" : SMA2Value }];
-        }
-        
-        NSArray *reversedArray = [[resultArray chartSubarrayWithStartDate:startDate] reversedArray];
-                
+
+        NSUInteger SMA1Period = [[HGSettings defaultSettings] SMA1PeriodForChartRange:chartRange];
+        NSArray *SMA1Array = [tmpHistory SMA_arrayForPeriod:SMA1Period interval:interval];
+
+        NSUInteger SMA2Period = [[HGSettings defaultSettings] SMA2PeriodForChartRange:chartRange];
+        NSArray *SMA2Array = [tmpHistory SMA_arrayForPeriod:SMA2Period interval:interval];
+
+        NSArray *history = [tmpHistory hg_subarrayWithStartDate:startDate];
+        NSArray *SMA1 = [SMA1Array hg_subarrayWithStartDate:startDate];
+        NSArray *SMA2 = [SMA2Array hg_subarrayWithStartDate:startDate];
+
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (completion) {
-                completion(reversedArray);
+            if (block) {
+                block(history, SMA1, SMA2);
             }
         });
+
     });
-}
-
-#pragma mark - Private Methods
-
-- (NSArray *)SMAArrayForInterval:(NSUInteger)interval period:(NSUInteger)period
-{
-    NSArray *intervalArray = [self historySubarrayForInterval:interval];
-    
-    NSMutableArray *array = [@[] mutableCopy];
-    
-    for (NSInteger i = 0; i < [intervalArray count]; i++) {
-        id value = [NSNull null];
-        if (i + period < [intervalArray count]) {
-            NSDecimalNumber *decimalPeriod = [NSDecimalNumber decimalNumberWithDecimal:[[NSNumber numberWithInteger:period] decimalValue]];
-            NSMutableArray *collection = [[intervalArray subarrayWithRange:NSMakeRange(i, period)] mutableCopy];
-            value = [[collection sumHistoryCloses] decimalNumberByDividingBy:decimalPeriod];
-        }
-        
-        [array addObject:value];
-    }
-        
-    return array;
-}
-
-- (NSArray *)historySubarrayForInterval:(NSUInteger)interval
-{
-    NSArray *array = @[];
-    if ([self.history count] < interval) {
-        array = [NSArray arrayWithArray:self.history];
-    } else {
-        array = [self.history subarrayWithRange:NSMakeRange(0, interval)];
-    }
-    return array;
 }
 
 - (NSString *)description

@@ -18,19 +18,23 @@ PODS:
   - AFNetworking/UIKit (2.1.0):
     - AFNetworking/NSURLConnection
   - CHCSVParser (2.0.7)
-  - NCICharts (1.0.1)
+  - ios-linechart (1.2.1)
   - UIView+AutoLayout (1.1.0)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.0)
   - CHCSVParser (~> 2.0.7)
-  - NCICharts (~> 1.0.1)
+  - ios-linechart (from `../ios-linechart`)
   - UIView+AutoLayout
+
+EXTERNAL SOURCES:
+  ios-linechart:
+    :path: ../ios-linechart
 
 SPEC CHECKSUMS:
   AFNetworking: c7d7901a83f631414c7eda1737261f696101a5cd
   CHCSVParser: 30ac034cc0d37d9c783e7af96926270524836d70
-  NCICharts: 7f1c2b7ab51b6c424d5d99f4d0544d1eecde2c06
+  ios-linechart: 587138b6a93b3d302c4a4f871a72a3e36143d418
   UIView+AutoLayout: 94cea4d2f3ed095434afdf6ed2a6d288f7f2d611
 
 COCOAPODS: 0.29.0

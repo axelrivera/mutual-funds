@@ -7,30 +7,31 @@
 
 #import <Foundation/Foundation.h>
 
-#define kHGSettingsDetailChartPeriod @"HGSettingsDetailChartPeriod"
-#define kHGSettingsFullscreenChartPeriod @"HGSettingsFullscreenChartPeriod"
+#define kHGSettingsDetailChartRange @"HGSettingsDetailChartRange"
+#define kHGSettingsFullscreenChartRange @"HGSettingsFullscreenChartRange"
 
 FOUNDATION_EXPORT NSUInteger const HGChartHistoricalStartInterval;
 
-FOUNDATION_EXPORT NSUInteger const HGChartPeriodThreeMonthInterval;
-FOUNDATION_EXPORT NSUInteger const HGChartPeriodOneYearInterval;
-FOUNDATION_EXPORT NSUInteger const HGChartPeriodTenYearInterval;
+FOUNDATION_EXPORT NSUInteger const HGChartThreeMonthInterval;
+FOUNDATION_EXPORT NSUInteger const HGChartOneYearInterval;
+FOUNDATION_EXPORT NSUInteger const HGChartTenYearInterval;
 
-FOUNDATION_EXPORT NSString * const HGChartPeriodThreeMonthDaily;
-FOUNDATION_EXPORT NSString * const HGChartPeriodOneYearDaily;
-FOUNDATION_EXPORT NSString * const HGChartPeriodTenYearWeekly;
+FOUNDATION_EXPORT NSString * const HGChartRangeThreeMonthDaily;
+FOUNDATION_EXPORT NSString * const HGChartRangeOneYearDaily;
+FOUNDATION_EXPORT NSString * const HGChartRangeTenYearWeekly;
 
 @interface HGSettings : NSObject
 
-- (NSString *)detailChartPeriod;
-- (void)setDetailChartPeriod:(NSString *)chartPeriod;
+- (NSString *)detailChartRange;
+- (void)setDetailChartRange:(NSString *)chartRange;
 
-- (NSString *)fullscreenChartPeriod;
-- (void)setFullscreenChartPeriod:(NSString *)chartPeriod;
+- (NSString *)fullscreenChartRange;
+- (void)setFullscreenChartRange:(NSString *)chartRange;
 
-- (NSUInteger)intervalForChartPeriod:(NSString *)chartPeriod;
-- (NSUInteger)SMA1forChartPeriod:(NSString *)chartPeriod;
-- (NSUInteger)SMA2forChartPeriod:(NSString *)chartPeriod;
+- (NSUInteger)intervalForChartRange:(NSString *)chartRange;
+
+- (NSUInteger)SMA1PeriodForChartRange:(NSString *)chartRange;
+- (NSUInteger)SMA2PeriodForChartRange:(NSString *)chartRange;
 
 + (HGSettings *)defaultSettings;
 

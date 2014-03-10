@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@class NCISimpleChartView;
+@class LCLineChartView;
 
 @interface PositionChartViewController : UIViewController
 
-@property (strong, nonatomic) NCISimpleChartView *chartView;
+@property (strong, nonatomic) LCLineChartView *chartView;
 
 @property (strong, nonatomic) UIView *footerView;
 @property (strong, nonatomic) UISegmentedControl *segmentedControl;
@@ -20,12 +20,9 @@
 @property (strong, nonatomic) UILabel *dateLabel;
 
 @property (strong, nonatomic) HGTicker *ticker;
-@property (strong, nonatomic) NSArray *chartArray;
-@property (strong, nonatomic) NSArray *dataSource;
-@property (strong, nonatomic) NSString *currentPeriod;
 
 @property (copy, nonatomic) HGCompletionBlock completionBlock;
 
-- (instancetype)initWithTicker:(HGTicker *)ticker chartArray:(NSArray *)chartArray;
+- (instancetype)initWithTicker:(HGTicker *)ticker;
 
 @end

@@ -31,7 +31,6 @@
     [super viewDidLoad];
 
     self.tableView.backgroundColor = [UIColor hg_mainBackgroundColor];
-    self.currentDetailChartPeriod = [[HGSettings defaultSettings] detailChartPeriod];
     
     self.detailChartSegmentedControl = [[UISegmentedControl alloc] initWithItems:@[ @"3M", @"1Y" ]];
     [self.detailChartSegmentedControl setWidth:50.0 forSegmentAtIndex:0];
@@ -56,16 +55,19 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+
+    self.currentDetailChartRange = [[HGSettings defaultSettings] detailChartRange];
+    self.currentFullscreenChartRange = [[HGSettings defaultSettings] fullscreenChartRange];
     
-    if ([[[HGSettings defaultSettings] detailChartPeriod] isEqualToString:HGChartPeriodThreeMonthDaily]) {
+    if ([self.currentDetailChartRange isEqualToString:HGChartRangeThreeMonthDaily]) {
         self.detailChartSegmentedControl.selectedSegmentIndex = 0;
     } else {
         self.detailChartSegmentedControl.selectedSegmentIndex = 1;
     }
     
-    if ([[[HGSettings defaultSettings] fullscreenChartPeriod] isEqualToString:HGChartPeriodThreeMonthDaily]) {
+    if ([self.currentFullscreenChartRange isEqualToString:HGChartRangeThreeMonthDaily]) {
         self.fullscreenChartSegmentedControl.selectedSegmentIndex = 0;
-    } else if ([[[HGSettings defaultSettings] fullscreenChartPeriod] isEqualToString:HGChartPeriodOneYearDaily]) {
+    } else if ([self.currentFullscreenChartRange isEqualToString:HGChartRangeOneYearDaily]) {
         self.fullscreenChartSegmentedControl.selectedSegmentIndex = 1;
     } else {
         self.fullscreenChartSegmentedControl.selectedSegmentIndex = 2;
@@ -96,7 +98,7 @@
     NSMutableArray *sections = [@[] mutableCopy];
     NSMutableArray *rows = [@[] mutableCopy];
     
-    dictionary = @{ @"text" : @"Default Period",
+    dictionary = @{ @"text" : @"Default Range",
                     @"key" : @"detail_chart" };
     
     [rows addObject:dictionary];
@@ -105,7 +107,7 @@
     
     rows = [@[] mutableCopy];
     
-    dictionary = @{ @"text" : @"Default Period",
+    dictionary = @{ @"text" : @"Default Range",
                     @"key" : @"fullscreen_chart" };
     
     [rows addObject:dictionary];
@@ -119,28 +121,30 @@
 
 - (void)detailSegmentedControlChanged:(UISegmentedControl *)segmentedControl
 {
-    NSString *chartPeriod = nil;
+    NSString *chartRange = nil;
     if (segmentedControl.selectedSegmentIndex == 0) {
-        chartPeriod = HGChartPeriodThreeMonthDaily;
+        chartRange = HGChartRangeThreeMonthDaily;
     } else {
-        chartPeriod = HGChartPeriodOneYearDaily;
+        chartRange = HGChartRangeOneYearDaily;
     }
-    
-    [[HGSettings defaultSettings] setDetailChartPeriod:chartPeriod];
+
+    self.currentDetailChartRange = chartRange;
+    [[HGSettings defaultSettings] setDetailChartRange:self.currentDetailChartRange];
 }
 
 - (void)fullscreenChartSegmentedControlChanged:(UISegmentedControl *)segmentedControl
 {
-    NSString *chartPeriod = nil;
+    NSString *chartRange = nil;
     if (segmentedControl.selectedSegmentIndex == 0) {
-        chartPeriod = HGChartPeriodThreeMonthDaily;
+        chartRange = HGChartRangeThreeMonthDaily;
     } else if (segmentedControl.selectedSegmentIndex == 1) {
-        chartPeriod = HGChartPeriodOneYearDaily;
+        chartRange = HGChartRangeOneYearDaily;
     } else {
-        chartPeriod = HGChartPeriodTenYearWeekly;
+        chartRange = HGChartRangeTenYearWeekly;
     }
-    
-    [[HGSettings defaultSettings] setFullscreenChartPeriod:chartPeriod];
+
+    self.currentFullscreenChartRange = chartRange;
+    [[HGSettings defaultSettings] setFullscreenChartRange:self.currentFullscreenChartRange];
 }
 
 #pragma mark - Table view data source

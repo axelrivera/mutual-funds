@@ -12,82 +12,82 @@ NSUInteger const HGSingleYearInterval = 365;
 
 NSUInteger const HGChartHistoricalStartInterval = HGSingleYearInterval * 11; // 11 years in days
 
-NSUInteger const HGChartPeriodThreeMonthInterval = 90; // 90 days
-NSUInteger const HGChartPeriodOneYearInterval = HGSingleYearInterval;  // 365 days
-NSUInteger const HGChartPeriodTenYearInterval = HGSingleYearInterval * 10; // 10 years in days
+NSUInteger const HGChartThreeMonthInterval = 90; // 90 days
+NSUInteger const HGChartOneYearInterval = HGSingleYearInterval;  // 365 days
+NSUInteger const HGChartTenYearInterval = HGSingleYearInterval * 10; // 10 years in days
 
-NSString * const HGChartPeriodThreeMonthDaily = @"HGChartPeriodThreeMonthDaily";
-NSString * const HGChartPeriodOneYearDaily = @"HGChartPeriodOneYearDaily";
-NSString * const HGChartPeriodTenYearWeekly = @"HGChartPeriodTenYearWeekly";
+NSString * const HGChartRangeThreeMonthDaily = @"HGChartRangeThreeMonthDaily";
+NSString * const HGChartRangeOneYearDaily = @"HGChartRangeOneYearDaily";
+NSString * const HGChartRangeTenYearWeekly = @"HGChartRangeTenYearWeekly";
 
 @implementation HGSettings
 
 #pragma mark - Singleton Methods
 
-- (NSString *)detailChartPeriod
+- (NSString *)detailChartRange
 {
-    NSString *period = [[NSUserDefaults standardUserDefaults] objectForKey:kHGSettingsDetailChartPeriod];
+    NSString *period = [[NSUserDefaults standardUserDefaults] objectForKey:kHGSettingsDetailChartRange];
     if (IsEmpty(period)) {
-        period = HGChartPeriodThreeMonthDaily;
+        period = HGChartRangeThreeMonthDaily;
     }
     return period;
 }
 
-- (void)setDetailChartPeriod:(NSString *)chartPeriod
+- (void)setDetailChartRange:(NSString *)chartRange
 {
-    [[NSUserDefaults standardUserDefaults] setObject:chartPeriod forKey:kHGSettingsDetailChartPeriod];
+    [[NSUserDefaults standardUserDefaults] setObject:chartRange forKey:kHGSettingsDetailChartRange];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (NSString *)fullscreenChartPeriod
+- (NSString *)fullscreenChartRange
 {
-    NSString *period = [[NSUserDefaults standardUserDefaults] objectForKey:kHGSettingsFullscreenChartPeriod];
+    NSString *period = [[NSUserDefaults standardUserDefaults] objectForKey:kHGSettingsFullscreenChartRange];
     if (IsEmpty(period)) {
-        period = HGChartPeriodOneYearDaily;
+        period = HGChartRangeOneYearDaily;
     }
     return period;
 }
 
-- (void)setFullscreenChartPeriod:(NSString *)chartPeriod
+- (void)setFullscreenChartRange:(NSString *)chartRange
 {
-    [[NSUserDefaults standardUserDefaults] setObject:chartPeriod forKey:kHGSettingsFullscreenChartPeriod];
+    [[NSUserDefaults standardUserDefaults] setObject:chartRange forKey:kHGSettingsFullscreenChartRange];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (NSUInteger)intervalForChartPeriod:(NSString *)chartPeriod
+- (NSUInteger)intervalForChartRange:(NSString *)chartPeriod
 {
-    NSUInteger period = HGChartPeriodOneYearInterval;
-    if ([chartPeriod isEqualToString:HGChartPeriodThreeMonthDaily]) {
-        period = HGChartPeriodThreeMonthInterval;
-    } else if ([chartPeriod isEqualToString:HGChartPeriodOneYearDaily]) {
-        period = HGChartPeriodOneYearInterval;
-    } else if ([chartPeriod isEqualToString:HGChartPeriodTenYearWeekly]) {
-        period = HGChartPeriodTenYearInterval;
+    NSUInteger period = HGChartOneYearInterval;
+    if ([chartPeriod isEqualToString:HGChartRangeThreeMonthDaily]) {
+        period = HGChartThreeMonthInterval;
+    } else if ([chartPeriod isEqualToString:HGChartRangeOneYearDaily]) {
+        period = HGChartOneYearInterval;
+    } else if ([chartPeriod isEqualToString:HGChartRangeTenYearWeekly]) {
+        period = HGChartTenYearInterval;
     }
     return period;
 }
 
-- (NSUInteger)SMA1forChartPeriod:(NSString *)chartPeriod
+- (NSUInteger)SMA1PeriodForChartRange:(NSString *)chartRange
 {
     NSUInteger sma = 50;
-    if ([chartPeriod isEqualToString:HGChartPeriodThreeMonthDaily] ||
-        [chartPeriod isEqualToString:HGChartPeriodOneYearDaily])
+    if ([chartRange isEqualToString:HGChartRangeThreeMonthDaily] ||
+        [chartRange isEqualToString:HGChartRangeOneYearDaily])
     {
         sma = 50;
-    } else if ([chartPeriod isEqualToString:HGChartPeriodTenYearWeekly]) {
+    } else if ([chartRange isEqualToString:HGChartRangeTenYearWeekly]) {
         sma = 10;
     }
     return sma;
 }
 
-- (NSUInteger)SMA2forChartPeriod:(NSString *)chartPeriod
+- (NSUInteger)SMA2PeriodForChartRange:(NSString *)chartRange
 {
     NSUInteger sma = 200;
-    if ([chartPeriod isEqualToString:HGChartPeriodThreeMonthDaily] ||
-        [chartPeriod isEqualToString:HGChartPeriodOneYearDaily])
+    if ([chartRange isEqualToString:HGChartRangeThreeMonthDaily] ||
+        [chartRange isEqualToString:HGChartRangeOneYearDaily])
     {
         sma = 200;
-    } else if ([chartPeriod isEqualToString:HGChartPeriodTenYearWeekly]) {
+    } else if ([chartRange isEqualToString:HGChartRangeTenYearWeekly]) {
         sma = 40;
     }
     return sma;

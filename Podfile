@@ -5,5 +5,5 @@ link_with [ "Mercury", "MercuryTests" ]
 
 pod "AFNetworking", "~> 2.0"
 pod "UIView+AutoLayout"
-pod 'NCICharts', '~> 1.0.1'
+pod 'ios-linechart', :path => '../ios-linechart'
 pod 'CHCSVParser', '~> 2.0.7'

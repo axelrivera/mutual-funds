@@ -14,7 +14,7 @@ typedef NS_ENUM(NSInteger, HGPositionChangeType) {
     HGPositionChangeTypeNegative
 };
 
-typedef void(^HGPositionChartCompletionBlock)(NSArray *chartArray);
+typedef void(^HGPositionHistoryBlock)(NSArray *history, NSArray *SMA1, NSArray *SMA2);
 
 @interface HGPosition : NSObject <NSCoding>
 
@@ -47,8 +47,6 @@ typedef void(^HGPositionChartCompletionBlock)(NSArray *chartArray);
 - (HGPositionChangeType)changeType;
 - (UIColor *)colorForChangeType;
 
-- (void)calculateChartWithSMA1:(NSUInteger)SMA1
-                          SMA2:(NSUInteger)SMA2
-                    completion:(HGPositionChartCompletionBlock)completion;
+- (void)historyForChartRange:(NSString *)chartRange block:(HGPositionHistoryBlock)block;
 
 @end

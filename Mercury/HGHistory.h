@@ -12,6 +12,8 @@
 
 @property (copy, nonatomic) NSDate *date;
 @property (copy, nonatomic) NSDecimalNumber *close;
+@property (copy, nonatomic) NSDecimalNumber *sma1;
+@property (copy, nonatomic) NSDecimalNumber *sma2;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 

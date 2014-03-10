@@ -9,30 +9,30 @@
 #import "PositionChartViewController.h"
 
 #import <UIView+AutoLayout.h>
-#import <NCIChartView.h>
+#import <LineChart.h>
 
 @interface PositionChartViewController ()
 
 @property (strong, nonatomic) UILabel *legendLabel;
 
-@property (strong, nonatomic) NSString *chartPeriod;
+@property (strong, nonatomic) NSString *chartRange;
 
 - (void)setupFooterView;
 
+- (void)reloadChart;
 - (void)updateLegend;
 - (void)updateName;
-- (void)updateDate;
+- (void)updateDateWithStart:(NSDate *)startDate end:(NSDate *)endDate;
 
 @end
 
 @implementation PositionChartViewController
 
-- (instancetype)initWithTicker:(HGTicker *)ticker chartArray:(NSArray *)chartArray
+- (instancetype)initWithTicker:(HGTicker *)ticker
 {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         _ticker = ticker;
-        _chartArray = chartArray;
     }
     return self;
 }
@@ -47,56 +47,9 @@
 {
     [super viewDidLoad];
     
-    NSString *(^SelectionRenderBlock)(double, NSArray *) = ^(double argument, NSArray *values) {
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970:argument];
-        NSString *dateStr = [[NSDateFormatter hg_lastTradeDateFormatter] stringFromDate:date];
-        
-        NSString *close = @"N/A";
-        NSString *sma1 = @"N/A";
-        NSString *sma2 = @"N/A";
-        
-        if ([values[0] isKindOfClass:[NSNumber class]]) {
-            close = [NSString stringWithFormat:@"%.2f", [values[0] floatValue]];
-        }
-        
-        if ([values[1] isKindOfClass:[NSNumber class]]) {
-            sma1 = [NSString stringWithFormat:@"%.2f", [values[1] floatValue]];
-        }
-        
-        if ([values[2] isKindOfClass:[NSNumber class]]) {
-            sma2 = [NSString stringWithFormat:@"%.2f", [values[2] floatValue]];
-        }
-        
-        NSUInteger sma1Interval = [[HGSettings defaultSettings] SMA1forChartPeriod:self.chartPeriod];
-        NSUInteger sma2Interval = [[HGSettings defaultSettings] SMA2forChartPeriod:self.chartPeriod];
-        
-        NSString *sma1Pfx = [NSString stringWithFormat:@"sma(%lu)", (unsigned long)sma1Interval];
-        NSString *sma2Pfx = [NSString stringWithFormat:@"sma(%lu)", (unsigned long)sma2Interval];
-        
-        return [NSString stringWithFormat:@"close = %@, %@ = %@, %@ = %@, %@",
-                close, sma1Pfx, sma1, sma2Pfx, sma2, dateStr];
-    };
-    
-	self.chartView = [[NCISimpleChartView alloc]
-                      initWithFrame:CGRectZero
-                      andOptions: @{nciIsFill: @(NO),
-                                    nciLineColors: @[[UIColor hg_closeColor], [UIColor hg_SMA1Color], [UIColor hg_SMA2Color]],
-                                    nciLineWidths: @[@1, [NSNull null]],
-                                    nciUseDateFormatter: @(YES),
-                                    nciHasSelection: @(YES),
-                                    nciXLabelsDistance: @100,
-                                    nciGridTopMargin: @44,
-                                    nciGridLeftMargin: @40,
-                                    nciSelPointSizes: @[@5, [NSNull null]],
-                                    nciSelPointColors: @[ [[UIColor hg_closeColor] colorWithAlphaComponent:0.7], [[UIColor hg_SMA1Color] colorWithAlphaComponent:0.7], [[UIColor hg_SMA2Color] colorWithAlphaComponent:0.7] ],
-                                    nciSelPointFont: [UIFont systemFontOfSize:10.0],
-                                    nciSelPointFontColor: [UIColor darkGrayColor],
-                                    nciSelPointTextRenderer:SelectionRenderBlock,
-                                    nciXLabelsFont: [UIFont systemFontOfSize:8.0],
-                                    nciYLabelsFont: [UIFont systemFontOfSize:8.0],
-                                    nciGridHorizontal: [[NCILine alloc] initWithWidth:0.5 color:[UIColor colorWithWhite:0.5 alpha:0.3] andDashes:@[@1, @1]],
-                                    nciGridVertical: [[NCILine alloc] initWithWidth:0.0 color:[UIColor clearColor] andDashes:nil]}];
+    self.chartView = [[LCLineChartView alloc] initWithFrame:CGRectZero];
     self.chartView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.chartView showLegend:NO animated:NO];
     
     [self.view addSubview:self.chartView];
     
@@ -121,7 +74,7 @@
     
     [self.chartView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0.0];
     [self.chartView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0.0];
-    [self.chartView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10.0];
+    [self.chartView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0.0];
     [self.chartView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.footerView];
     
     [self.legendLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:15.0];
@@ -139,9 +92,9 @@
     [super viewWillAppear:animated];
     [UIApplication sharedApplication].statusBarHidden = YES;
     
-    if ([[[HGSettings defaultSettings] fullscreenChartPeriod] isEqualToString:HGChartPeriodThreeMonthDaily]) {
+    if ([[[HGSettings defaultSettings] fullscreenChartRange] isEqualToString:HGChartRangeThreeMonthDaily]) {
         self.segmentedControl.selectedSegmentIndex = 0;
-    } else if ([[[HGSettings defaultSettings] fullscreenChartPeriod] isEqualToString:HGChartPeriodOneYearDaily]) {
+    } else if ([[[HGSettings defaultSettings] fullscreenChartRange] isEqualToString:HGChartRangeOneYearDaily]) {
         self.segmentedControl.selectedSegmentIndex = 1;
     } else {
         self.segmentedControl.selectedSegmentIndex = 2;
@@ -246,10 +199,129 @@
     [self.view addSubview:self.footerView];
 }
 
+- (void)reloadChart
+{
+    if (IsEmpty(self.ticker.position.history)) {
+        return;
+    }
+    
+    [self.ticker.position historyForChartRange:self.chartRange
+                                         block:^(NSArray *history, NSArray *SMA1, NSArray *SMA2)
+     {
+         if ([history count] < 2) {
+             return;
+         }
+         
+         [self updateLegend];
+         
+         NSDate *startDate = [(HGHistory *)history.lastObject date];
+         NSDate *endDate = [(HGHistory *)history.firstObject date];
+         
+         [self updateDateWithStart:startDate end:endDate];
+         
+         NSTimeInterval minX = [startDate timeIntervalSince1970];
+         NSTimeInterval maxX = [endDate timeIntervalSince1970];
+         
+         NSMutableArray *chartData = [@[] mutableCopy];
+         
+         LCLineChartData *closeData = [[LCLineChartData alloc] init];
+         closeData.title = self.ticker.symbol;
+         closeData.color = [UIColor hg_closeColor];
+         closeData.lineWidth = 0.75;
+         closeData.xMin = minX;
+         closeData.xMax = maxX;
+         closeData.itemCount = [history count];
+         
+         closeData.getData = ^(NSUInteger item) {
+             HGHistory *current = history[item];
+             NSDate *date = current.date;
+             NSTimeInterval dateInterval = [date timeIntervalSince1970];
+             
+             return [LCLineChartDataItem dataItemWithX:dateInterval
+                                                     y:[current.close floatValue]
+                                                xLabel:[[NSDateFormatter hg_lastTradeDateFormatter] stringFromDate:date]
+                                             dataLabel:[NSString stringWithFormat:@"%.02f", [current.close floatValue]]];
+         };
+         
+         [chartData addObject:closeData];
+         
+         if (!IsEmpty(SMA1)) {
+             NSString *title = [NSString stringWithFormat:@"sma(%ld)",
+                                (unsigned long)[[HGSettings defaultSettings] SMA1PeriodForChartRange:HGChartRangeOneYearDaily]];
+             
+             LCLineChartData *SMAData = [[LCLineChartData alloc] init];
+             SMAData.title = title;
+             SMAData.color = [UIColor hg_SMA1Color];
+             SMAData.smoothPlot = YES;
+             SMAData.lineWidth = 0.75;
+             SMAData.xMin = minX;
+             SMAData.xMax = maxX;
+             SMAData.itemCount = [SMA1 count];
+             
+             SMAData.getData = ^(NSUInteger item) {
+                 HGSMAValue *current = SMA1[item];
+                 NSDate *date = current.date;
+                 NSTimeInterval dateInterval = [date timeIntervalSince1970];
+                 
+                 return [LCLineChartDataItem dataItemWithX:dateInterval
+                                                         y:[current.SMA floatValue]
+                                                    xLabel:[[NSDateFormatter hg_lastTradeDateFormatter] stringFromDate:date]
+                                                 dataLabel:[NSString stringWithFormat:@"%.02f", [current.SMA floatValue]]];
+             };
+             
+             [chartData addObject:SMAData];
+         }
+         
+         if (!IsEmpty(SMA2)) {
+             NSString *title = [NSString stringWithFormat:@"sma(%ld)",
+                                (unsigned long)[[HGSettings defaultSettings] SMA2PeriodForChartRange:HGChartRangeOneYearDaily]];
+             
+             LCLineChartData *SMAData = [[LCLineChartData alloc] init];
+             SMAData.title = title;
+             SMAData.color = [UIColor hg_SMA2Color];
+             SMAData.smoothPlot = YES;
+             SMAData.lineWidth = 0.75;
+             SMAData.xMin = minX;
+             SMAData.xMax = maxX;
+             SMAData.itemCount = [SMA2 count];
+             
+             SMAData.getData = ^(NSUInteger item) {
+                 HGSMAValue *current = SMA2[item];
+                 NSDate *date = current.date;
+                 NSTimeInterval dateInterval = [date timeIntervalSince1970];
+                 
+                 return [LCLineChartDataItem dataItemWithX:dateInterval
+                                                         y:[current.SMA floatValue]
+                                                    xLabel:[[NSDateFormatter hg_lastTradeDateFormatter] stringFromDate:date]
+                                                 dataLabel:[NSString stringWithFormat:@"%.02f", [current.SMA floatValue]]];
+             };
+             
+             [chartData addObject:SMAData];
+         }
+         
+         NSDictionary *yRange = [NSArray hg_minimumAndMaximumRangeForHistory:history
+                                                                        SMA1:SMA1
+                                                                        SMA2:SMA2];
+         
+         self.chartView.yMin = [yRange[@"min"] doubleValue];
+         self.chartView.yMax = [yRange[@"max"] doubleValue];
+         self.chartView.xMin = minX;
+         self.chartView.xMax = maxX;
+         self.chartView.smoothPlot = NO;
+         self.chartView.drawsDataLines = YES;
+         self.chartView.drawsDataPoints = NO;
+         self.chartView.scaleFont = [UIFont systemFontOfSize:8.0];
+         self.chartView.ySteps = [NSArray hg_yStepsForDetailChartIncluding:history SMA1:SMA1 SMA2:SMA2];
+         self.chartView.xSteps = [NSArray hg_xStepsForHistory:history];
+         self.chartView.data = chartData;
+         
+     }];
+}
+
 - (void)updateLegend
 {
-    NSUInteger sma1Interval = [[HGSettings defaultSettings] SMA1forChartPeriod:self.chartPeriod];
-    NSUInteger sma2Interval = [[HGSettings defaultSettings] SMA2forChartPeriod:self.chartPeriod];
+    NSUInteger sma1Interval = [[HGSettings defaultSettings] SMA1PeriodForChartRange:self.chartRange];
+    NSUInteger sma2Interval = [[HGSettings defaultSettings] SMA2PeriodForChartRange:self.chartRange];
     
     NSString *sma1 = [NSString stringWithFormat:@"sma(%lu)", (unsigned long)sma1Interval];
     NSString *sma2 = [NSString stringWithFormat:@"sma(%lu)", (unsigned long)sma2Interval];
@@ -270,18 +342,15 @@
     self.nameLabel.text = [NSString stringWithFormat:@"%@ (%@)", self.ticker.position.name, self.ticker.position.symbol];
 }
 
-- (void)updateDate
+- (void)updateDateWithStart:(NSDate *)startDate end:(NSDate *)endDate
 {
-    if (!IsEmpty(self.dataSource) && [self.dataSource count] >= 2) {
-        NSDate *startDate = self.dataSource.firstObject[@"date"];
-        NSDate *endDate = self.dataSource.lastObject[@"date"];
-        
+    if (startDate && endDate) {
         NSString *startDateStr = [[NSDateFormatter hg_chartDateFormatter] stringFromDate:startDate];
         NSString *endDateStr = [[NSDateFormatter hg_chartDateFormatter] stringFromDate:endDate];
         
         self.dateLabel.text = [NSString stringWithFormat:@"%@ to %@", startDateStr, endDateStr];
     } else {
-        self.dateLabel.text = @"";
+       self.dateLabel.text = @"";
     }
 }
 
@@ -289,43 +358,15 @@
 
 - (void)segmentedControlChanged:(UISegmentedControl *)segmentedControl
 {
-    dispatch_queue_t backgroundQueue = dispatch_queue_create(kMercuryDispatchQueue, NULL);
-    dispatch_async(backgroundQueue, ^{
-        NSDate *startDate = nil;
-        if (segmentedControl.selectedSegmentIndex == 0) {
-            self.chartPeriod = HGChartPeriodThreeMonthDaily;
-            startDate = [NSDate chartStartDateForInterval:[[HGSettings defaultSettings] intervalForChartPeriod:self.chartPeriod]];
-            self.dataSource = [self.chartArray chartDailyArrayWithStartDate:startDate];
-        } else if (segmentedControl.selectedSegmentIndex == 1) {
-            self.chartPeriod = HGChartPeriodOneYearDaily;
-            startDate = [NSDate chartStartDateForInterval:[[HGSettings defaultSettings] intervalForChartPeriod:self.chartPeriod]];
-            self.dataSource = [self.chartArray chartDailyArrayWithStartDate:startDate];
-        } else {
-            self.chartPeriod = HGChartPeriodTenYearWeekly;
-            startDate = [NSDate chartStartDateForInterval:[[HGSettings defaultSettings] intervalForChartPeriod:self.chartPeriod]];
-            self.dataSource = [self.chartArray chartWeeklyArrayWithStartDate:startDate];
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self updateDate];
-            [self updateLegend];
-            
-            if (!IsEmpty(self.chartView.chartData)) {
-                [self.chartView.chartData removeAllObjects];
-            }
-            
-            for (NSInteger i = 0; i < [self.dataSource count]; i++) {
-                NSDictionary *dictionary = self.dataSource[i];
-                
-                NSDate *date = dictionary[@"date"];
-                NSTimeInterval dateInterval = [date timeIntervalSince1970];
-                
-                [self.chartView addPoint:dateInterval val:@[ dictionary[@"close"], dictionary[@"sma1"], dictionary[@"sma2"] ]];
-            }
-            
-            [self.chartView drawChart];
-        });
-    });
+    if (segmentedControl.selectedSegmentIndex == 0) {
+        self.chartRange = HGChartRangeThreeMonthDaily;
+    } else if (segmentedControl.selectedSegmentIndex == 1) {
+        self.chartRange = HGChartRangeOneYearDaily;
+    } else {
+        self.chartRange = HGChartRangeTenYearWeekly;
+    }
+    
+    [self reloadChart];
 }
 
 @end
