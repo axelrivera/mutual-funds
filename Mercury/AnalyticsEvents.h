@@ -16,6 +16,8 @@
 #define kAnalyticsSelectFullChartRange @"SELECT_FULL_CHART_RANGE"
 #define kAnalyticsSettingsSelectPositionRange @"SETTINGS_SELECT_POSITION_RANGE"
 #define kAnalyticsSettingsSelectFullChartRange @"SETTINGS_SELECT_FULL_CHART_RANGE"
+#define kAnalyticsFullChartLoaded @"FULL_CHART_LOADED"
+#define kAnalyticsPositionDetailSelected @"POSITION_DETAIL_SELECTED"
 
 // Errors
 

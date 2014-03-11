@@ -140,6 +140,12 @@
                     NSDictionary *userInfo = @{ @"ticker_type" : [NSNumber numberWithInteger:self.tickerType],
                                                 @"ticker" : ticker };
                     
+                    NSString *description = IsEmpty(ticker.positionType) ? @"" : ticker.positionType;
+                    
+                    [Flurry logEvent:kAnalyticsSavePosition
+                      withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:ticker.tickerType],
+                                        @"DESCRIPTION" : description }];
+                    
                     [[NSNotificationCenter defaultCenter] postNotificationName:PositionSavedNotification
                                                                         object:nil
                                                                       userInfo:userInfo];
@@ -155,7 +161,12 @@
         
         PositionDetailViewController *controller = [[PositionDetailViewController alloc] initWithTicker:ticker
                                                                                               allowSave:YES];
-        controller.saveBlock = saveBlock;        
+        controller.saveBlock = saveBlock;
+        
+        [Flurry logEvent:kAnalyticsPositionDetailSelected
+          withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:self.tickerType],
+                            @"SEARCH" : @"YES" }];
+        
         [self.navigationController pushViewController:controller animated:YES];
     }];
 }

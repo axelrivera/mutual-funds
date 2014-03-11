@@ -162,6 +162,7 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         [navController setNavigationBarHidden:YES];
         
         [Flurry logAllPageViews:navController];
+        [Flurry logEvent:kAnalyticsFullChartLoaded];
         
         [self.navigationController presentViewController:navController animated:YES completion:nil];
     }

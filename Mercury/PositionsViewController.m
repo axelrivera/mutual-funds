@@ -382,6 +382,10 @@
     HGTicker *ticker = self.dataSource[indexPath.row];
     PositionDetailViewController *detailController = [[PositionDetailViewController alloc] initWithTicker:ticker];
     detailController.hidesBottomBarWhenPushed = YES;
+    
+    [Flurry logEvent:kAnalyticsPositionDetailSelected
+      withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:self.tickerType],
+                        @"SEARCH" : @"NO" }];
 
     [self.navigationController pushViewController:detailController animated:YES];
 }
@@ -453,9 +457,6 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             }
             
             PositionDetailViewControllerSaveBlock saveBlock = ^(HGTicker *ticker) {
-                [Flurry logEvent:kAnalyticsSavePosition
-                  withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:ticker.tickerType] }];
-                
                 NSMutableArray *array = [[MercuryData sharedData] arrayForTickerType:self.tickerType];
                 [array addObject:ticker];
                 self.dataSource = [NSMutableArray arrayWithArray:array];
