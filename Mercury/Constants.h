@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Axel Rivera. All rights reserved.
 //
 
+#define FLURRY_API_KEY @"6D2RMYWBGPSMR7JJNHRR"
+
 #define kYahooQuotesURL @"http://download.finance.yahoo.com/d/quotes.csv"
 //#define kYahooQuotesURL @"http://localhost:4000/quotes.csv"
 //#define kYahooQuotesURL @"https://mercury-sharingan.fwd.wf/quotes.csv"

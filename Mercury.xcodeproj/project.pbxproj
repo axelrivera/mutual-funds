@@ -51,6 +51,8 @@
 		16B27B0C18C40B4100A355FF /* SignalStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B27B0B18C40B4100A355FF /* SignalStatusCell.m */; };
 		16B98FAF18BEBC6300A55122 /* NSNumberFormatter+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B98FAE18BEBC6300A55122 /* NSNumberFormatter+Mercury.m */; };
 		16B98FB218BED58900A55122 /* NSString+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B98FB118BED58900A55122 /* NSString+Mercury.m */; };
+		16E7471418CEC47E00A74152 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16E7471318CEC47E00A74152 /* SystemConfiguration.framework */; };
+		16E7471618CEC48C00A74152 /* libFlurry_4.3.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16E7471518CEC48C00A74152 /* libFlurry_4.3.2.a */; };
 		16F0797218BA835F00497607 /* HGTicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 16F0797118BA835F00497607 /* HGTicker.m */; };
 		62F5EDAA2D6B47D7AB50AF79 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 290F2EA80FAD4BA6878CC57A /* libPods.a */; };
 		C6736770D1B24F91851CF9C7 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 290F2EA80FAD4BA6878CC57A /* libPods.a */; };
@@ -147,6 +149,9 @@
 		16B98FAE18BEBC6300A55122 /* NSNumberFormatter+Mercury.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumberFormatter+Mercury.m"; sourceTree = "<group>"; };
 		16B98FB018BED58900A55122 /* NSString+Mercury.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Mercury.h"; sourceTree = "<group>"; };
 		16B98FB118BED58900A55122 /* NSString+Mercury.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Mercury.m"; sourceTree = "<group>"; };
+		16E7471318CEC47E00A74152 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		16E7471518CEC48C00A74152 /* libFlurry_4.3.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFlurry_4.3.2.a; path = Vendor/Flurry/libFlurry_4.3.2.a; sourceTree = "<group>"; };
+		16E7471718CEC4FB00A74152 /* AnalyticsEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalyticsEvents.h; sourceTree = "<group>"; };
 		16F0797018BA835F00497607 /* HGTicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HGTicker.h; sourceTree = "<group>"; };
 		16F0797118BA835F00497607 /* HGTicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HGTicker.m; sourceTree = "<group>"; };
 		290F2EA80FAD4BA6878CC57A /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -158,6 +163,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16E7471618CEC48C00A74152 /* libFlurry_4.3.2.a in Frameworks */,
+				16E7471418CEC47E00A74152 /* SystemConfiguration.framework in Frameworks */,
 				169A0DA118B82ABD00E42D1A /* CoreGraphics.framework in Frameworks */,
 				169A0DA318B82ABD00E42D1A /* UIKit.framework in Frameworks */,
 				169A0D9F18B82ABD00E42D1A /* Foundation.framework in Frameworks */,
@@ -233,6 +240,7 @@
 			children = (
 				169A0DD018B82E9A00E42D1A /* Constants.h */,
 				1605410A18B8452C00C200C6 /* Mercury.h */,
+				16E7471718CEC4FB00A74152 /* AnalyticsEvents.h */,
 			);
 			name = Constants;
 			sourceTree = "<group>";
@@ -310,6 +318,8 @@
 		169A0D9D18B82ABD00E42D1A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				16E7471518CEC48C00A74152 /* libFlurry_4.3.2.a */,
+				16E7471318CEC47E00A74152 /* SystemConfiguration.framework */,
 				169A0D9E18B82ABD00E42D1A /* Foundation.framework */,
 				169A0DA018B82ABD00E42D1A /* CoreGraphics.framework */,
 				169A0DA218B82ABD00E42D1A /* UIKit.framework */,
@@ -413,7 +423,7 @@
 		169A0D9318B82ABD00E42D1A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Axel Rivera";
 				TargetAttributes = {
 					169A0D9A18B82ABD00E42D1A = {
@@ -610,7 +620,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -635,6 +644,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Vendor\"/**";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = AdHoc;
@@ -649,6 +659,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mercury/Mercury-Prefix.pch";
 				INFOPLIST_FILE = "Mercury/Mercury-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/arn/Dropbox/Projects/iOS/Mercury/Vendor/Flurry,
+				);
 				PRODUCT_NAME = "Mutual Funds";
 				PROVISIONING_PROFILE = "DBE39C2B-385C-4110-BA22-C1161429D45C";
 				WRAPPER_EXTENSION = app;
@@ -659,7 +673,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9CDE19C2F9074FD4B20E637F /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Mercury.app/Mercury";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -679,7 +692,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -711,6 +723,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Vendor\"/**";
 			};
 			name = Debug;
 		};
@@ -718,7 +731,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -743,6 +755,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Vendor\"/**";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -757,6 +770,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mercury/Mercury-Prefix.pch";
 				INFOPLIST_FILE = "Mercury/Mercury-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/arn/Dropbox/Projects/iOS/Mercury/Vendor/Flurry,
+				);
 				PRODUCT_NAME = "Mutual Funds";
 				WRAPPER_EXTENSION = app;
 			};
@@ -772,6 +789,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mercury/Mercury-Prefix.pch";
 				INFOPLIST_FILE = "Mercury/Mercury-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/arn/Dropbox/Projects/iOS/Mercury/Vendor/Flurry,
+				);
 				PRODUCT_NAME = "Mutual Funds";
 				WRAPPER_EXTENSION = app;
 			};
@@ -781,7 +802,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9CDE19C2F9074FD4B20E637F /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Mercury.app/Mercury";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -805,7 +825,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9CDE19C2F9074FD4B20E637F /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Mercury.app/Mercury";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",

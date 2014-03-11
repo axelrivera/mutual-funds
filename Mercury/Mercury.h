@@ -11,6 +11,8 @@
 
 typedef void(^HGCompletionBlock)(void);
 
+#import "Flurry.h"
+#import "AnalyticsEvents.h"
 #import "HGSettings.h"
 #import "FileHelpers.h"
 #import "UIColor+Mercury.h"

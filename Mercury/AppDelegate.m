@@ -19,6 +19,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [Flurry setCrashReportingEnabled:YES];
+    [Flurry startSession:FLURRY_API_KEY];
+
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     [[MercuryData sharedData] loadData];
     

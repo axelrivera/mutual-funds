@@ -124,7 +124,7 @@
                                                  name:AllPositionsReloadedNotification
                                                object:nil];
     
-    self.dataSource = [[MercuryData sharedData] arrayForTickerType:self.tickerType];
+    self.dataSource = [NSMutableArray arrayWithArray:[[MercuryData sharedData] arrayForTickerType:self.tickerType]];
     if (self.tickerType == HGTickerTypeMyPositions) {
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(myPositionsReloaded:)
@@ -143,7 +143,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.tableView reloadData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -403,7 +402,9 @@
         [self.dataSource removeObjectAtIndex:indexPath.row];
         [[MercuryData sharedData] removeTickerAtIndex:indexPath.row tickerType:self.tickerType];
         
-        [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
+        [tableView beginUpdates];
+        [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [tableView endUpdates];
         
         if (IsEmpty(self.dataSource)) {
             [self setEditing:NO animated:YES];
