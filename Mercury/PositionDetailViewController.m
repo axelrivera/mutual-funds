@@ -131,7 +131,7 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     [self.tableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
     
     UIEdgeInsets insets = self.tableView.contentInset;
-    insets.top = self.topOrigin;
+    //insets.top = self.topOrigin;
     
     if (self.chartBottom >= 0) {
         insets.bottom = ContainerHeight;

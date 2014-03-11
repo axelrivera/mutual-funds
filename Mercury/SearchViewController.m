@@ -46,7 +46,7 @@
     
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
     self.searchBar.tintColor = [UIColor hg_highlightColor];
-    //self.searchBar.prompt = @"Enter Name or Symbol";
+    self.searchBar.prompt = @"Enter Name or Symbol";
     
     self.searchController = [[UISearchDisplayController alloc]
                         initWithSearchBar:self.searchBar contentsController:self];
