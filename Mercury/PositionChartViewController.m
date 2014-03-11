@@ -33,6 +33,7 @@
 {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
+        self.title = @"Fullscreen Chart";
         _ticker = ticker;
     }
     return self;
@@ -379,6 +380,8 @@
     } else {
         self.chartRange = HGChartRangeTenYearWeekly;
     }
+    
+    [Flurry logEvent:kAnalyticsSelectFullChartRange withParameters:@{ kAnalyticsParameterKeyType : self.chartRange }];
     
     [self reloadChart];
 }

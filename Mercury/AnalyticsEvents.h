@@ -9,7 +9,7 @@
 #define kAnalyticsAddPosition @"ADD_POSITION"
 #define kAnalyticsRemovePosition @"REMOVE_POSITION"
 #define kAnalyticsEditPositions @"EDIT_POSITIONS"
-#define kAnalyticsDeleteAllPositions @"DELETE_ALL_POSITIONS"
+#define kAnalyticsRemoveAllPositions @"REMOVE_ALL_POSITIONS"
 #define kAnalyticsSavePosition @"SAVE_POSITION"
 #define kAnalyticsRefreshPositions @"REFRESH_POSITIONS"
 #define kAnalyticsRefreshAllPositions @"REFRESH_ALL_POSITIONS"

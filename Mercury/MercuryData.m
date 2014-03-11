@@ -23,6 +23,21 @@
 
 @implementation MercuryData
 
++ (NSString *)keyForTickerType:(HGTickerType)tickerType
+{
+    NSString *key = nil;
+    if (tickerType == HGTickerTypeMyPositions) {
+        key = @"MY_POSITIONS";
+    } else if (tickerType == HGTickerTypeMyWatchlist) {
+        key = @"MY_WATCHLIST";
+    } else if (tickerType == HGTickerTypeMyIndexes) {
+        key = @"MY_INDEXES";
+    } else {
+        key = @"INVALID_TICKER_TYPE";
+    }
+    return key;
+}
+
 - (instancetype)init
 {
     self = [super init];

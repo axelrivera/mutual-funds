@@ -203,16 +203,14 @@
 
 - (void)reloadPositions
 {
+    [Flurry logEvent:kAnalyticsRefreshPositions
+      withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:self.tickerType] }];
+    
     HGTickersCompletionBlock completionBlock = ^(NSArray *tickers, NSError *error) {
         [self.refreshControl endRefreshing];
         
         if (error) {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Mercury"
-                                                                message:@"Error loading positions"
-                                                               delegate:self
-                                                      cancelButtonTitle:@"OK"
-                                                      otherButtonTitles:nil];
-            [alertView show];
+            [Flurry logError:kAnalyticsPositionsRefreshError message:nil error:error];
             return;
         }
         
@@ -249,9 +247,14 @@
                                                  name:PositionSavedNotification
                                                object:nil];
     
+    [Flurry logEvent:kAnalyticsAddPosition
+      withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:self.tickerType] }];
+    
     SearchViewController *searchController = [[SearchViewController alloc] initWithTickerType:self.tickerType];
 
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:searchController];
+    
+    [Flurry logAllPageViews:navController];
     
     [self.navigationController presentViewController:navController animated:YES completion:nil];
     
@@ -272,6 +275,9 @@
 
 - (void)editWatchlistAction:(id)sender
 {
+    [Flurry logEvent:kAnalyticsEditPositions
+      withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:self.tickerType] }];
+    
     [self setEditing:YES animated:YES];
 }
 
@@ -398,6 +404,8 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+        [Flurry logEvent:kAnalyticsRemovePosition
+          withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:self.tickerType] }];
         
         [self.dataSource removeObjectAtIndex:indexPath.row];
         [[MercuryData sharedData] removeTickerAtIndex:indexPath.row tickerType:self.tickerType];
@@ -440,16 +448,14 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
         
         [[MercuryData sharedData] fetchPositionForSymbol:symbol completion:^(HGPosition *position, NSError *error) {
             if (error) {
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error searching symbol"
-                                                                    message:@"Error searching symbol"
-                                                                   delegate:nil
-                                                          cancelButtonTitle:@"OK"
-                                                          otherButtonTitles:nil];
-                [alertView show];
+                [Flurry logError:kAnalyticsPositionFetchError message:nil error:error];
                 return;
             }
             
             PositionDetailViewControllerSaveBlock saveBlock = ^(HGTicker *ticker) {
+                [Flurry logEvent:kAnalyticsSavePosition
+                  withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:ticker.tickerType] }];
+                
                 NSMutableArray *array = [[MercuryData sharedData] arrayForTickerType:self.tickerType];
                 [array addObject:ticker];
                 self.dataSource = [NSMutableArray arrayWithArray:array];
@@ -476,6 +482,9 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 0) {
+        [Flurry logEvent:kAnalyticsRemoveAllPositions
+          withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:self.tickerType] }];
+        
         [self.dataSource removeAllObjects];
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
         

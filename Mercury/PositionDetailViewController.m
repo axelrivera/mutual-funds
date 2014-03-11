@@ -117,6 +117,10 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     [[MercuryData sharedData] fetchHistoricalDataForTicker:self.ticker
                                                 completion:^(NSArray *history, NSError *error)
      {
+         if (error) {
+             [Flurry logError:kAnalyticsPositionHistoryFetchError message:nil error:error];
+             return;
+         }
          self.ticker.position.history = history;
          [self reloadChart];
      }];
@@ -157,7 +161,9 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         [navController setNavigationBarHidden:YES];
         
-        [self.tabBarController presentViewController:navController animated:YES completion:nil];
+        [Flurry logAllPageViews:navController];
+        
+        [self.navigationController presentViewController:navController animated:YES completion:nil];
     }
     return NO;
 }

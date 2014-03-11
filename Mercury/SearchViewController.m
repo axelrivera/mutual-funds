@@ -11,6 +11,7 @@
 #import "SearchCell.h"
 #import "PositionsViewController.h"
 #import "PositionDetailViewController.h"
+#import <MBProgressHUD.h>
 
 @interface SearchViewController () <UISearchDisplayDelegate>
 
@@ -45,6 +46,7 @@
     
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
     self.searchBar.tintColor = [UIColor hg_highlightColor];
+    //self.searchBar.prompt = @"Enter Name or Symbol";
     
     self.searchController = [[UISearchDisplayController alloc]
                         initWithSearchBar:self.searchBar contentsController:self];
@@ -128,12 +130,7 @@
     
     [[MercuryData sharedData] fetchPositionForSymbol:searchTicker.symbol completion:^(HGPosition *position, NSError *error) {
         if (error) {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error searching symbol"
-                                                                message:@"Error searching symbol"
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"OK"
-                                                      otherButtonTitles:nil];
-            [alertView show];
+            [Flurry logError:kAnalyticsPositionSearchError message:nil error:error];
             return;
         }
         
@@ -192,5 +189,6 @@
 {
     
 }
+
 
 @end

@@ -23,6 +23,8 @@ typedef void(^HGPositionCompletionBlock)(HGPosition *position, NSError *error);
 @property (assign, atomic, getter = isFetchingMyWatchlist) BOOL fetchingMyWatchlist;
 @property (assign, atomic, getter = isFetchingMyPositions) BOOL fetchingMyPositions;
 
++ (NSString *)keyForTickerType:(HGTickerType)tickerType;
+
 - (NSMutableArray *)arrayForTickerType:(HGTickerType)tickerType;
 - (void)addTicker:(HGTicker *)ticker tickerType:(HGTickerType)tickerType;
 - (void)insertTicker:(HGTicker *)ticker atIndex:(NSInteger)index tickerType:(HGTickerType)tickerType;

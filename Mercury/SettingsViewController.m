@@ -127,6 +127,8 @@
     } else {
         chartRange = HGChartRangeOneYearDaily;
     }
+    
+    [Flurry logEvent:kAnalyticsSettingsSelectPositionRange withParameters:@{ kAnalyticsParameterKeyType : chartRange }];
 
     self.currentDetailChartRange = chartRange;
     [[HGSettings defaultSettings] setDetailChartRange:self.currentDetailChartRange];
@@ -142,6 +144,8 @@
     } else {
         chartRange = HGChartRangeTenYearWeekly;
     }
+    
+    [Flurry logEvent:kAnalyticsSettingsSelectFullChartRange withParameters:@{ kAnalyticsParameterKeyType : chartRange }];
 
     self.currentFullscreenChartRange = chartRange;
     [[HGSettings defaultSettings] setFullscreenChartRange:self.currentFullscreenChartRange];
