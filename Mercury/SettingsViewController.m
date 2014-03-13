@@ -8,6 +8,8 @@
 
 #import "SettingsViewController.h"
 
+#import "IntroViewController.h"
+
 @interface SettingsViewController ()
 
 @end
@@ -114,6 +116,20 @@
     
     [sections addObject:@{ @"title" : @"Fullscreen Chart" , @"rows" : rows }];
     
+    rows = [@[] mutableCopy];
+    
+    dictionary = @{ @"text" : @"Disclaimer And Guide",
+                    @"key" : @"disclaimer",
+                    @"type" : @"button" };
+    
+    [rows addObject:dictionary];
+    
+    
+    NSString *versionStr = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    
+    [sections addObject:@{ @"rows" : rows,
+                           @"footer" : [NSString stringWithFormat:@"Mutual Fund Signals (%@)", versionStr] }];
+    
     self.dataSource = sections;
 }
 
@@ -167,9 +183,23 @@
 {
     static NSString *ChartDetaiIdentifier = @"ChartDetailCell";
     static NSString *FullscreenChartIdentifier = @"FullscreenChartcell";
+    static NSString *ButtonIdentifier = @"ButtonCell";
     
     NSDictionary *dictionary = self.dataSource[indexPath.section][@"rows"][indexPath.row];
     NSString *key = dictionary[@"key"];
+    NSString *type = dictionary[@"type"];
+    
+    if ([type isEqualToString:@"button"]) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ButtonIdentifier];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ButtonIdentifier];
+            cell.textLabel.textAlignment = NSTextAlignmentCenter;
+        }
+        
+        cell.textLabel.text = dictionary[@"text"];
+        
+        return cell;
+    }
     
     if ([key isEqualToString:@"detail_chart"]) {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ChartDetaiIdentifier];
@@ -205,12 +235,30 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    NSDictionary *dictionary = self.dataSource[indexPath.section][@"rows"][indexPath.row];
+    NSString *key = dictionary[@"key"];
+    
+    if ([key isEqualToString:@"disclaimer"]) {
+        IntroViewController *introViewController = [[IntroViewController alloc] init];
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:introViewController];
+        navController.navigationBarHidden = YES;
+        navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+        
+        [self.navigationController presentViewController:navController animated:NO completion:nil];
+    }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     NSDictionary *dictionary = self.dataSource[section];
     return dictionary[@"title"];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
+{
+    NSDictionary *dictionary = self.dataSource[section];
+    return dictionary[@"footer"];
 }
 
 @end

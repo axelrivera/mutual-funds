@@ -12,6 +12,7 @@
 #import "SearchViewController.h"
 #import "PositionDetailViewController.h"
 #import "PositionDisplayCell.h"
+#import "IntroViewController.h"
 
 @interface PositionsViewController () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate>
 
@@ -130,6 +131,15 @@
                                                  selector:@selector(myPositionsReloaded:)
                                                      name:MyPositionsReloadedNotification
                                                    object:nil];
+    }
+    
+    if (![[HGSettings defaultSettings] disclaimerShown]) {
+        IntroViewController *introViewController = [[IntroViewController alloc] init];
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:introViewController];
+        navController.navigationBarHidden = YES;
+        navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+        
+        [self.navigationController presentViewController:navController animated:NO completion:nil];
     }
 }
 
@@ -258,6 +268,8 @@
     
     [self.navigationController presentViewController:navController animated:YES completion:nil];
     
+
+
 //    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Ticker Search"
 //                                                        message:nil
 //                                                       delegate:self

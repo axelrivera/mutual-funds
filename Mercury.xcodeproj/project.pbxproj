@@ -27,6 +27,10 @@
 		1629AE8718CD590A00D92DBA /* SearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1629AE8618CD590A00D92DBA /* SearchCell.m */; };
 		1654ACCC18CB8CEB00D4D295 /* NSArray+HGPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 1654ACCB18CB8CEB00D4D295 /* NSArray+HGPosition.m */; };
 		1654ACCF18CBA42400D4D295 /* HGSMAValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1654ACCE18CBA42400D4D295 /* HGSMAValue.m */; };
+		16558B1D18CFEDB10094CB9C /* IntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16558B1C18CFEDB10094CB9C /* IntroViewController.m */; };
+		16558B2718D002130094CB9C /* libFlurry_4.3.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16558B2118D002130094CB9C /* libFlurry_4.3.2.a */; };
+		16558B2818D002130094CB9C /* GHWalkThroughPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 16558B2418D002130094CB9C /* GHWalkThroughPageCell.m */; };
+		16558B2918D002130094CB9C /* GHWalkThroughView.m in Sources */ = {isa = PBXBuildFile; fileRef = 16558B2618D002130094CB9C /* GHWalkThroughView.m */; };
 		167749A518C00B6F00C1647D /* NSDate+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749A418C00B6F00C1647D /* NSDate+Mercury.m */; };
 		167749A818C029EF00C1647D /* NSArray+SMA.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749A718C029EF00C1647D /* NSArray+SMA.m */; };
 		167749AB18C02B1D00C1647D /* NSDecimalNumber+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749AA18C02B1D00C1647D /* NSDecimalNumber+Mercury.m */; };
@@ -108,6 +112,14 @@
 		1654ACCB18CB8CEB00D4D295 /* NSArray+HGPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+HGPosition.m"; sourceTree = "<group>"; };
 		1654ACCD18CBA42400D4D295 /* HGSMAValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HGSMAValue.h; sourceTree = "<group>"; };
 		1654ACCE18CBA42400D4D295 /* HGSMAValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HGSMAValue.m; sourceTree = "<group>"; };
+		16558B1B18CFEDB10094CB9C /* IntroViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntroViewController.h; sourceTree = "<group>"; };
+		16558B1C18CFEDB10094CB9C /* IntroViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntroViewController.m; sourceTree = "<group>"; };
+		16558B2018D002130094CB9C /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
+		16558B2118D002130094CB9C /* libFlurry_4.3.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_4.3.2.a; sourceTree = "<group>"; };
+		16558B2318D002130094CB9C /* GHWalkThroughPageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GHWalkThroughPageCell.h; sourceTree = "<group>"; };
+		16558B2418D002130094CB9C /* GHWalkThroughPageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHWalkThroughPageCell.m; sourceTree = "<group>"; };
+		16558B2518D002130094CB9C /* GHWalkThroughView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GHWalkThroughView.h; sourceTree = "<group>"; };
+		16558B2618D002130094CB9C /* GHWalkThroughView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHWalkThroughView.m; sourceTree = "<group>"; };
 		167749A318C00B6F00C1647D /* NSDate+Mercury.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Mercury.h"; sourceTree = "<group>"; };
 		167749A418C00B6F00C1647D /* NSDate+Mercury.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Mercury.m"; sourceTree = "<group>"; };
 		167749A618C029EF00C1647D /* NSArray+SMA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+SMA.h"; sourceTree = "<group>"; };
@@ -169,6 +181,7 @@
 				169A0DA318B82ABD00E42D1A /* UIKit.framework in Frameworks */,
 				169A0D9F18B82ABD00E42D1A /* Foundation.framework in Frameworks */,
 				C6736770D1B24F91851CF9C7 /* libPods.a in Frameworks */,
+				16558B2718D002130094CB9C /* libFlurry_4.3.2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,6 +244,8 @@
 				16B27B0518C38CF900A355FF /* SelectViewController.m */,
 				16A53C1018C6B72E009E795E /* SearchViewController.h */,
 				16A53C1118C6B72E009E795E /* SearchViewController.m */,
+				16558B1B18CFEDB10094CB9C /* IntroViewController.h */,
+				16558B1C18CFEDB10094CB9C /* IntroViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -295,10 +310,41 @@
 			name = Helpers;
 			sourceTree = "<group>";
 		};
+		16558B1E18D002130094CB9C /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				16558B1F18D002130094CB9C /* Flurry */,
+				16558B2218D002130094CB9C /* GHWalkThrough */,
+			);
+			name = Vendor;
+			path = Mercury/Vendor;
+			sourceTree = "<group>";
+		};
+		16558B1F18D002130094CB9C /* Flurry */ = {
+			isa = PBXGroup;
+			children = (
+				16558B2018D002130094CB9C /* Flurry.h */,
+				16558B2118D002130094CB9C /* libFlurry_4.3.2.a */,
+			);
+			path = Flurry;
+			sourceTree = "<group>";
+		};
+		16558B2218D002130094CB9C /* GHWalkThrough */ = {
+			isa = PBXGroup;
+			children = (
+				16558B2318D002130094CB9C /* GHWalkThroughPageCell.h */,
+				16558B2418D002130094CB9C /* GHWalkThroughPageCell.m */,
+				16558B2518D002130094CB9C /* GHWalkThroughView.h */,
+				16558B2618D002130094CB9C /* GHWalkThroughView.m */,
+			);
+			path = GHWalkThrough;
+			sourceTree = "<group>";
+		};
 		169A0D9218B82ABD00E42D1A = {
 			isa = PBXGroup;
 			children = (
 				169A0DA418B82ABE00E42D1A /* Mercury */,
+				16558B1E18D002130094CB9C /* Vendor */,
 				169A0DBD18B82ABE00E42D1A /* MercuryTests */,
 				169A0D9D18B82ABD00E42D1A /* Frameworks */,
 				169A0D9C18B82ABD00E42D1A /* Products */,
@@ -565,9 +611,12 @@
 				1605412918B96A6000C200C6 /* HGHistory.m in Sources */,
 				1654ACCF18CBA42400D4D295 /* HGSMAValue.m in Sources */,
 				1605412018B92D0A00C200C6 /* MercuryData.m in Sources */,
+				16558B2818D002130094CB9C /* GHWalkThroughPageCell.m in Sources */,
+				16558B1D18CFEDB10094CB9C /* IntroViewController.m in Sources */,
 				16B98FB218BED58900A55122 /* NSString+Mercury.m in Sources */,
 				1605412F18B981DD00C200C6 /* NSArray+Mercury.m in Sources */,
 				16A53C1218C6B72E009E795E /* SearchViewController.m in Sources */,
+				16558B2918D002130094CB9C /* GHWalkThroughView.m in Sources */,
 				1605411D18B922C100C200C6 /* YahooAPIClient.m in Sources */,
 				16F0797218BA835F00497607 /* HGTicker.m in Sources */,
 				1605413518B99C5500C200C6 /* UITabBarController+AutoRotation.m in Sources */,
@@ -619,7 +668,7 @@
 		1630357818C6D3BB00803DD2 /* AdHoc */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -662,9 +711,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/arn/Dropbox/Projects/iOS/Mercury/Vendor/Flurry,
+					"$(PROJECT_DIR)/Mercury/Vendor/Flurry",
 				);
 				PRODUCT_NAME = "Mutual Funds";
-				PROVISIONING_PROFILE = "DBE39C2B-385C-4110-BA22-C1161429D45C";
+				PROVISIONING_PROFILE = "178C157E-4003-4B43-B3D3-E25C455BF3AC";
 				WRAPPER_EXTENSION = app;
 			};
 			name = AdHoc;
@@ -691,7 +741,7 @@
 		169A0DC518B82ABE00E42D1A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -730,7 +780,7 @@
 		169A0DC618B82ABE00E42D1A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -773,6 +823,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/arn/Dropbox/Projects/iOS/Mercury/Vendor/Flurry,
+					"$(PROJECT_DIR)/Mercury/Vendor/Flurry",
 				);
 				PRODUCT_NAME = "Mutual Funds";
 				WRAPPER_EXTENSION = app;
@@ -792,6 +843,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/arn/Dropbox/Projects/iOS/Mercury/Vendor/Flurry,
+					"$(PROJECT_DIR)/Mercury/Vendor/Flurry",
 				);
 				PRODUCT_NAME = "Mutual Funds";
 				WRAPPER_EXTENSION = app;

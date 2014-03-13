@@ -109,21 +109,6 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     self.chartBottom = -(ContainerHeight);
 
     [self setupChartContainerView];
-    
-    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:NO];
-    self.hud.labelText = @"Fetching Data";
-    [self.hud removeFromSuperViewOnHide];
-    
-    [[MercuryData sharedData] fetchHistoricalDataForTicker:self.ticker
-                                                completion:^(NSArray *history, NSError *error)
-     {
-         if (error) {
-             [Flurry logError:kAnalyticsPositionHistoryFetchError message:nil error:error];
-             return;
-         }
-         self.ticker.position.history = history;
-         [self reloadChart];
-     }];
 }
 
 - (void)viewDidLayoutSubviews
@@ -148,13 +133,35 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     [super viewWillAppear:animated];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if ([self isMovingToParentViewController]) {
+        self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:animated];
+        self.hud.labelText = @"Fetching Data";
+        [self.hud removeFromSuperViewOnHide];
+        
+        [[MercuryData sharedData] fetchHistoricalDataForTicker:self.ticker
+                                                    completion:^(NSArray *history, NSError *error)
+         {
+             if (error) {
+                 [Flurry logError:kAnalyticsPositionHistoryFetchError message:nil error:error];
+                 return;
+             }
+             self.ticker.position.history = history;
+             [self reloadChart];
+         }];
+    }
+}
+
 - (BOOL)shouldAutorotate
 {
     if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
         PositionChartViewController *chartController = [[PositionChartViewController alloc] initWithTicker:self.ticker];
         
         chartController.completionBlock = ^{
-            [self.tabBarController dismissViewControllerAnimated:YES completion:nil];
+            [self.navigationController dismissViewControllerAnimated:YES completion:nil];
         };
         
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:chartController];
@@ -434,9 +441,9 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     
     self.chartTopLine = [[UIView alloc] initWithFrame:CGRectZero];
     self.chartTopLine.translatesAutoresizingMaskIntoConstraints = NO;
-    self.chartTopLine.backgroundColor = [UIColor hg_tableSeparatorColor];
+    self.chartTopLine.backgroundColor = [UIColor colorWithWhite:0.85 alpha:1.0];
     
-    [self.chartTopLine autoSetDimension:ALDimensionHeight toSize:1.0];
+    [self.chartTopLine autoSetDimension:ALDimensionHeight toSize:2.0];
     
     [self.chartContainerView addSubview:self.chartTopLine];
     
