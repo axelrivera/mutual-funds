@@ -39,13 +39,7 @@
     if (self) {
         _tickerType = tickerType;
         
-        if (tickerType == HGTickerTypeMyIndexes) {
-            self.title = @"Indexes";
-        } else if (tickerType == HGTickerTypeMyWatchlist) {
-            self.title = @"Watchlist";
-        } else {
-            self.title = @"My Positions";
-        }
+        self.title = [MercuryData titleForTickerType:tickerType];
 
         NSString *imageName = nil;
         NSString *selectedImageName = nil;
@@ -56,7 +50,7 @@
         } else if (tickerType == HGTickerTypeMyWatchlist) {
             imageName = @"graph";
             selectedImageName = @"graph-selected";
-        } else {
+        } else if (tickerType == HGTickerTypeMyPositions) {
             imageName = @"top-list";
             selectedImageName = @"top-list-selected";
         }
@@ -77,6 +71,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    DLog(@"View Did Load: %@", [MercuryData keyForTickerType:self.tickerType]);
     
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -103,11 +99,11 @@
     self.editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
                                                                     target:self
                                                                     action:@selector(editWatchlistAction:)];
-    
+
     self.addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                     target:self
                                                                     action:@selector(addAction:)];
-    
+
     self.editDoneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                         target:self
                                                                         action:@selector(editDoneAction:)];
@@ -124,14 +120,13 @@
                                              selector:@selector(allPositionsReloaded:)
                                                  name:AllPositionsReloadedNotification
                                                object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(positionSaved:)
+                                                 name:PositionSavedNotification
+                                               object:nil];
     
     self.dataSource = [NSMutableArray arrayWithArray:[[MercuryData sharedData] arrayForTickerType:self.tickerType]];
-    if (self.tickerType == HGTickerTypeMyPositions) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(myPositionsReloaded:)
-                                                     name:MyPositionsReloadedNotification
-                                                   object:nil];
-    }
     
     if (![[HGSettings defaultSettings] disclaimerShown]) {
         IntroViewController *introViewController = [[IntroViewController alloc] init];
@@ -185,10 +180,7 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:AllPositionsReloadedNotification object:nil];
-    
-    if (self.tickerType == HGTickerTypeMyPositions) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:MyPositionsReloadedNotification object:nil];
-    }
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PositionSavedNotification object:nil];
 }
 
 #pragma mark - Public methods
@@ -252,11 +244,6 @@
 
 - (void)addAction:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(positionSaved:)
-                                                 name:PositionSavedNotification
-                                               object:nil];
-    
     [Flurry logEvent:kAnalyticsAddPosition
       withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:self.tickerType] }];
     
@@ -323,35 +310,29 @@
 - (void)allPositionsReloaded:(NSNotification *)notification
 {
     NSDictionary *userInfo = notification.userInfo;
-    NSMutableArray *array = nil;
+    NSMutableArray *array = [@[] mutableCopy];
     if (self.tickerType == HGTickerTypeMyIndexes) {
-        array = IsEmpty(userInfo[kHGMyIndexes]) ? @[] : userInfo[kHGMyIndexes];
+        array = IsEmpty(userInfo[HGTickerTypeMyIndexesKey]) ? @[] : userInfo[HGTickerTypeMyIndexesKey];
     } else if (self.tickerType == HGTickerTypeMyWatchlist) {
-        array = IsEmpty(userInfo[kHGMyWatchlist]) ? @[] : userInfo[kHGMyWatchlist];
-    } else {
-        array = IsEmpty(userInfo[kHGMyPositions]) ? @[] : userInfo[kHGMyPositions];
+        array = IsEmpty(userInfo[HGTickerTypeMyWatchlistKey]) ? @[] : userInfo[HGTickerTypeMyWatchlistKey];
+    } else if (self.tickerType == HGTickerTypeMyPositions) {
+        array = IsEmpty(userInfo[HGTickerTypeMyPositionsKey]) ? @[] : userInfo[HGTickerTypeMyPositionsKey];
     }
     
     self.dataSource = [[NSMutableArray alloc] initWithArray:array];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableView reloadData];
-    });
+    [self.tableView reloadData];
 }
 
 - (void)positionSaved:(NSNotification *)notification
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:PositionSavedNotification object:nil];
-    
     NSDictionary *userInfo = notification.userInfo;
-    NSNumber *tickerType = userInfo[@"ticker_type"];
+    NSString *tickerKey = userInfo[@"ticker_key"];
     HGTicker *ticker = userInfo[@"ticker"];
     
-    if (tickerType && ticker) {
-        if ([tickerType integerValue] == self.tickerType) {
-            NSMutableArray *array = [[MercuryData sharedData] arrayForTickerType:[tickerType integerValue]];
-            [array addObject:ticker];
-            self.dataSource = [NSMutableArray arrayWithArray:array];
+    if (tickerKey && ticker) {
+        if ([tickerKey isEqualToString:[MercuryData keyForTickerType:self.tickerType]]) {
+            self.dataSource = [NSMutableArray arrayWithArray:[[MercuryData sharedData] arrayForTickerType:self.tickerType]];
             [self.tableView reloadData];
         }
     }
@@ -469,9 +450,8 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
             }
             
             PositionDetailViewControllerSaveBlock saveBlock = ^(HGTicker *ticker) {
-                NSMutableArray *array = [[MercuryData sharedData] arrayForTickerType:self.tickerType];
-                [array addObject:ticker];
-                self.dataSource = [NSMutableArray arrayWithArray:array];
+                [[MercuryData sharedData] addTicker:ticker tickerType:self.tickerType];
+                self.dataSource = [NSMutableArray arrayWithArray:[[MercuryData sharedData] arrayForTickerType:self.tickerType]];
                 
                 [self.tableView reloadData];
                 [self.navigationController popViewControllerAnimated:YES];

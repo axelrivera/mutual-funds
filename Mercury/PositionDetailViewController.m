@@ -26,10 +26,11 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
                                         ContainerChartPaddingMiddle +
                                         ContainerChartHeight);
 
-@interface PositionDetailViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface PositionDetailViewController () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 
-@property (strong, nonatomic) UIBarButtonItem *addToMyPositionsButton;
-@property (strong, nonatomic) UIBarButtonItem *removeFromMyPositionsButton;
+@property (strong, nonatomic) UIBarButtonItem *nextItem;
+@property (strong, nonatomic) UIBarButtonItem *prevItem;
+
 @property (strong, nonatomic) UIView *chartContainerView;
 @property (strong, nonatomic) UILabel *chartLabel;
 @property (strong, nonatomic) UILabel *chartLegendLabel;
@@ -44,6 +45,8 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
 - (void)reloadChart;
 
 - (void)setupChartContainerView;
+- (void)updatePreviousNext;
+- (void)updateViewControllers;
 
 @end
 
@@ -64,6 +67,7 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         _dataSource = @[];
         _chartSignals = @[];
         _chartView = nil;
+        _currentIndex = -1;
     }
     return self;
 }
@@ -93,17 +97,17 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
                                                                                                target:self
                                                                                                action:@selector(saveAction:)];
     } else {
-        if (self.ticker.tickerType == HGTickerTypeMyWatchlist) {
-            self.addToMyPositionsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"star"]
-                                                                           style:UIBarButtonItemStylePlain
-                                                                          target:self
-                                                                          action:@selector(addToMyPositionsAction:)];
-            
-            self.removeFromMyPositionsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"star-selected"]
-                                                                                style:UIBarButtonItemStylePlain
-                                                                               target:self
-                                                                               action:@selector(removeFromMyPositionsAction:)];
-        }
+        self.nextItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrow-right"]
+                                                         style:UIBarButtonItemStylePlain
+                                                        target:self
+                                                        action:@selector(nextAction:)];
+
+        self.prevItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrow-left"]
+                                                         style:UIBarButtonItemStylePlain
+                                                        target:self
+                                                        action:@selector(prevAction:)];
+
+        [self.navigationItem setRightBarButtonItems:@[ self.nextItem, self.prevItem ] animated:NO];
     }
     
     self.chartBottom = -(ContainerHeight);
@@ -131,6 +135,11 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+
+    if (!self.allowSave) {
+        self.currentIndex = [[MercuryData sharedData] indexOfTicker:self.ticker];
+        [self updatePreviousNext];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -260,6 +269,72 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         
         if (!IsEmpty(rows)) {
             [sections addObject:@{ @"title" : @"Recent Signals", @"rows" : rows }];
+        }
+    }
+
+    if (!self.allowSave) {
+        NSArray *myPositions = [[MercuryData sharedData] arrayForTickerType:HGTickerTypeMyPositions];
+        NSArray *myWatchlist = [[MercuryData sharedData] arrayForTickerType:HGTickerTypeMyWatchlist];
+        NSArray *myIndexes = [[MercuryData sharedData] arrayForTickerType:HGTickerTypeMyIndexes];
+
+        BOOL myPositionsEnabled = ![myPositions containsObject:self.ticker];
+        BOOL myWatchlistEnabled = ![myWatchlist containsObject:self.ticker];
+        BOOL myIndexesEnabled = ![myIndexes containsObject:self.ticker];
+
+        if (self.ticker.tickerType == HGTickerTypeMyPositions) {
+            rows = [@[] mutableCopy];
+
+            dictionary = @{ @"text" : @"Add to Watchlist",
+                            @"target" : HGTickerTypeMyWatchlistKey,
+                            @"type" : @"button",
+                            @"enabled" : [NSNumber numberWithBool:myWatchlistEnabled] };
+
+            [rows addObject:dictionary];
+
+            dictionary = @{ @"text" : @"Add to Indexes",
+                            @"target" : HGTickerTypeMyIndexesKey,
+                            @"type" : @"button",
+                            @"enabled" : [NSNumber numberWithBool:myIndexesEnabled] };
+
+            [rows addObject:dictionary];
+
+            [sections addObject:@{ @"rows" : rows }];
+        } else if (self.ticker.tickerType == HGTickerTypeMyWatchlist) {
+            rows = [@[] mutableCopy];
+
+            dictionary = @{ @"text" : @"Add to My Positions",
+                            @"target" : HGTickerTypeMyPositionsKey,
+                            @"type" : @"button",
+                            @"enabled" : [NSNumber numberWithBool:myPositionsEnabled]};
+
+            [rows addObject:dictionary];
+
+            dictionary = @{ @"text" : @"Add to Indexes",
+                            @"target" : HGTickerTypeMyIndexesKey,
+                            @"type" : @"button",
+                            @"enabled" : [NSNumber numberWithBool:myIndexesEnabled]};
+
+            [rows addObject:dictionary];
+
+            [sections addObject:@{ @"rows" : rows }];
+        } else if (self.ticker.tickerType == HGTickerTypeMyIndexes) {
+            rows = [@[] mutableCopy];
+
+            dictionary = @{ @"text" : @"Add to My Positions",
+                            @"target" : HGTickerTypeMyPositionsKey,
+                            @"type" : @"button",
+                            @"enabled" : [NSNumber numberWithBool:myPositionsEnabled] };
+
+            [rows addObject:dictionary];
+
+            dictionary = @{ @"text" : @"Add to Watchlist",
+                            @"target" : HGTickerTypeMyWatchlistKey,
+                            @"type" : @"button",
+                            @"enabled" : [NSNumber numberWithBool:myWatchlistEnabled] };
+            
+            [rows addObject:dictionary];
+            
+            [sections addObject:@{ @"rows" : rows }];
         }
     }
     
@@ -524,42 +599,96 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     [self.chartContainerView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0.0];
 }
 
+- (void)updatePreviousNext
+{
+    NSInteger total = [[[MercuryData sharedData] arrayForTickerType:self.ticker.tickerType] count];
+    if (self.currentIndex < 0) {
+        self.prevItem.enabled = NO;
+        self.nextItem.enabled = NO;
+        return;
+    } else if (self.currentIndex == 0) {
+        self.prevItem.enabled = NO;
+        self.nextItem.enabled = YES;
+    } else if (self.currentIndex == total - 1) {
+        self.prevItem.enabled = YES;
+        self.nextItem.enabled = NO;
+    } else {
+        self.prevItem.enabled = YES;
+        self.nextItem.enabled = YES;
+    }
+}
+
+- (void)updateViewControllers
+{
+    NSArray *array = [[MercuryData sharedData] arrayForTickerType:self.ticker.tickerType];
+    DLog(@"Update Controllers: %@", array);
+
+    HGTicker *ticker = array[self.currentIndex];
+
+    NSMutableArray *viewControllers = [[NSMutableArray alloc] initWithArray:self.navigationController.viewControllers];
+    [viewControllers removeLastObject];
+
+    PositionDetailViewController *detailController = [[PositionDetailViewController alloc] initWithTicker:ticker];
+    detailController.hidesBottomBarWhenPushed = YES;
+
+    [viewControllers addObject:detailController];
+
+    [self.navigationController setViewControllers:viewControllers animated:YES];
+}
+
 #pragma mark - Selector Methods
 
 - (void)saveAction:(id)sender
 {
-    if (self.saveBlock) {
-        self.saveBlock(self.ticker);
+    if ([[self.ticker.positionType uppercaseString] isEqualToString:@"FUND"] ||
+        [[self.ticker.positionType uppercaseString] isEqualToString:@"ETF"] ||
+        [[self.ticker.positionType uppercaseString] isEqualToString:@"INDEX"])
+    {
+        if (self.saveBlock) {
+            self.saveBlock(self.ticker);
+        }
+    } else {
+        NSString *message = [NSString stringWithFormat:@"You are about to save a position of type \"%@\" "
+                             "but our signals are only recommended for Mutual Funds, ETFs and Indexes. "
+                             "Are you sure you want to do this?", self.ticker.positionType];
+
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Warning"
+                                                            message:message
+                                                           delegate:self
+                                                  cancelButtonTitle:@"Cancel"
+                                                  otherButtonTitles:@"Save", nil];
+        [alertView show];
     }
 }
 
-- (void)addToMyPositionsAction:(id)sender
+- (void)nextAction:(id)sender
 {
-    HGTicker *ticker = [HGTicker tickerWithType:HGTickerTypeMyPositions symbol:self.ticker.symbol];
-    ticker.position = self.ticker.position;
-    
-    [[MercuryData sharedData].myPositions addObject:ticker];
+    if (self.currentIndex < 0) {
+        return;
+    }
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:MyPositionsReloadedNotification
-                                                        object:nil
-                                                      userInfo:nil];
+    NSArray *array = [[MercuryData sharedData] arrayForTickerType:self.ticker.tickerType];
 
-    [self.navigationItem setRightBarButtonItem:self.removeFromMyPositionsButton animated:YES];
+    if (self.currentIndex >= [array count] - 1) {
+        return;
+    }
 
-    NSString *message = [NSString stringWithFormat:@"%@ was added to your positions.", self.ticker.symbol];
-
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Mercury"
-                                                        message:message
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-    [alertView show];
+    self.currentIndex++;
+    [self updateViewControllers];
 }
 
-- (void)removeFromMyPositionsAction:(id)sender
+- (void)prevAction:(id)sender
 {
-    [[MercuryData sharedData] removePositionWithSymbol:self.ticker.symbol];
-    [self.navigationItem setRightBarButtonItem:self.addToMyPositionsButton animated:YES];
+    if (self.currentIndex < 0) {
+        return;
+    }
+
+    if (self.currentIndex == 0) {
+        return;
+    }
+
+    self.currentIndex--;
+    [self updateViewControllers];
 }
 
 #pragma mark - Table view data source
@@ -579,9 +708,27 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     static NSString *SummaryIdentifier = @"SummaryCell";
     static NSString *CurrentSignalIdentifier = @"CurrentSignalCell";
     static NSString *SignalIdentifier = @"SignalCell";
+    static NSString *ButtonIdentifier = @"ButtonCell";
     
     NSDictionary *dictionary = self.dataSource[indexPath.section][@"rows"][indexPath.row];
     NSString *rowType = dictionary[@"type"];
+
+    if ([rowType isEqualToString:@"button"]) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ButtonIdentifier];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ButtonIdentifier];
+            cell.textLabel.textAlignment = NSTextAlignmentCenter;
+        }
+
+        BOOL enabled = [dictionary[@"enabled"] boolValue];
+
+        cell.textLabel.text = dictionary[@"text"];
+        cell.textLabel.textColor = enabled ? [UIColor hg_highlightColor] : [UIColor lightGrayColor];
+        cell.selectionStyle = enabled ? UITableViewCellSelectionStyleDefault : UITableViewCellSelectionStyleNone;
+        cell.accessoryType = UITableViewCellAccessoryNone;
+
+        return cell;
+    }
 
     if ([rowType isEqualToString:@"ticker"]) {
         PositionSummaryCell *cell = [tableView dequeueReusableCellWithIdentifier:SummaryIdentifier];
@@ -646,6 +793,40 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+    NSDictionary *dictionary = self.dataSource[indexPath.section][@"rows"][indexPath.row];
+    NSString *rowType = dictionary[@"type"];
+    NSString *target = dictionary[@"target"];
+    BOOL enabled = [dictionary[@"enabled"] boolValue];
+
+    if ([rowType isEqualToString:@"button"] && enabled) {
+        HGTickerType tickerType = [MercuryData typeForTickerKey:target];
+
+        HGTicker *ticker = [HGTicker tickerWithType:tickerType symbol:self.ticker.symbol];
+        ticker.position = self.ticker.position;
+
+        [[MercuryData sharedData] addTicker:ticker tickerType:tickerType];
+
+        [self updateDataSourceWithSignals:YES reloadTable:YES animated:NO];
+
+        NSDictionary *userInfo = @{ @"ticker" : ticker,
+                                    @"ticker_key" : target };
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:PositionSavedNotification
+                                                            object:nil
+                                                          userInfo:userInfo];
+
+        NSString *message = [NSString stringWithFormat:@"Position %@ was saved to %@.",
+                             ticker.symbol,
+                             [MercuryData titleForTickerType:tickerType]];
+
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Position Saved"
+                                                            message:message
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+        [alertView show];
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -672,6 +853,17 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     title = dictionary[@"title"];
     
     return title;
+}
+
+#pragma mark - UIAlertViewDelegate Methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        if (self.saveBlock) {
+            self.saveBlock(self.ticker);
+        }
+    }
 }
 
 @end

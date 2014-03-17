@@ -84,6 +84,25 @@
     [coder encodeObject:self.history forKey:@"HGPositionHistory"];
 }
 
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) {
+        return YES;
+    }
+
+    if ([object respondsToSelector:@selector(symbol)]) {
+		NSString *myStr = [self symbol];
+		NSString *theirStr = [object symbol];
+		return myStr && theirStr ? [myStr isEqualToString:theirStr] : NO;
+	}
+	return NO;
+}
+
+- (NSUInteger)hash
+{
+    return [self symbol] ? [[self symbol] hash] : [super hash];
+}
+
 - (NSString *)priceAndPercentageChange
 {
     return [NSString stringWithFormat:@"%@ (%@)", self.change, self.percentageChange];

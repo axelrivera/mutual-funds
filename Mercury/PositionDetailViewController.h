@@ -25,6 +25,8 @@ typedef void(^PositionDetailViewControllerSaveBlock)(HGTicker *ticker);
 @property (copy, nonatomic) PositionDetailViewControllerSaveBlock saveBlock;
 @property (strong, nonatomic) NSString *chartRange;
 
+@property (assign, nonatomic) NSInteger currentIndex;
+
 - (instancetype)initWithTicker:(HGTicker *)ticker;
 - (instancetype)initWithTicker:(HGTicker *)ticker allowSave:(BOOL)allowSave;
 

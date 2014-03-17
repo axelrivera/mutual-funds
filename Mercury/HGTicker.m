@@ -50,6 +50,25 @@
     [coder encodeObject:self.position forKey:@"HGTickerPosition"];
 }
 
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) {
+        return YES;
+    }
+
+    if ([object respondsToSelector:@selector(symbol)]) {
+		NSString *myStr = [self symbol];
+		NSString *theirStr = [object symbol];
+		return myStr && theirStr ? [myStr isEqualToString:theirStr] : NO;
+	}
+	return NO;
+}
+
+- (NSUInteger)hash
+{
+    return [self symbol] ? [[self symbol] hash] : [super hash];
+}
+
 - (NSString *)name
 {
     return self.position == nil ? @"" : self.position.name;
@@ -63,6 +82,12 @@
 - (NSString *)priceAndPercentChange
 {
     return self.position == nil ? @"" : [self.position priceAndPercentageChange];
+}
+
+- (NSString *)description
+{
+    NSString *tickerType = [MercuryData keyForTickerType:self.tickerType];
+    return [NSString stringWithFormat:@"Ticker: %@, Type: %@", self.symbol, tickerType];
 }
 
 @end

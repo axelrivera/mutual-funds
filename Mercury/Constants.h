@@ -40,12 +40,6 @@
 #define MyPositionsReloadedNotification @"HGMyPositionsReloadedNotification"
 #define PositionSavedNotification @"HGPositionSavedNotification"
 
-// Convenience Keys
-
-#define kHGMyIndexes @"myIndexes"
-#define kHGMyWatchlist @"myWatchlist"
-#define kHGMyPositions @"myPositions"
-
 // Helper Macro Functions
 
 #define NSStringFromBOOL(value) value ? @"YES" : @"NO"

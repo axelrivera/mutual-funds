@@ -10,6 +10,10 @@
 
 #import "NSString+Yahoo.h"
 
+NSString * const HGTickerTypeMyPositionsKey = @"MY_POSITIONS";
+NSString * const HGTickerTypeMyWatchlistKey = @"MY_WATCHLIST";
+NSString * const HGTickerTypeMyIndexesKey = @"MY_INDEXES";
+
 @interface MercuryData ()
 
 - (void)setFetching:(BOOL)fetching tickerType:(HGTickerType)tickerType;
@@ -25,17 +29,41 @@
 
 + (NSString *)keyForTickerType:(HGTickerType)tickerType
 {
-    NSString *key = nil;
+    NSString *key = @"INVALID_TICKER_TYPE";
     if (tickerType == HGTickerTypeMyPositions) {
-        key = @"MY_POSITIONS";
+        key = HGTickerTypeMyPositionsKey;
     } else if (tickerType == HGTickerTypeMyWatchlist) {
-        key = @"MY_WATCHLIST";
+        key = HGTickerTypeMyWatchlistKey;
     } else if (tickerType == HGTickerTypeMyIndexes) {
-        key = @"MY_INDEXES";
-    } else {
-        key = @"INVALID_TICKER_TYPE";
+        key = HGTickerTypeMyIndexesKey;
     }
     return key;
+}
+
++ (HGTickerType)typeForTickerKey:(NSString *)tickerKey
+{
+    HGTickerType tickerType = -1;
+    if ([tickerKey isEqualToString:HGTickerTypeMyPositionsKey]) {
+        tickerType = HGTickerTypeMyPositions;
+    } else if ([tickerKey isEqualToString:HGTickerTypeMyWatchlistKey]) {
+        tickerType = HGTickerTypeMyWatchlist;
+    } else if ([tickerKey isEqualToString:HGTickerTypeMyIndexesKey]) {
+        tickerType = HGTickerTypeMyIndexes;
+    }
+    return tickerType;
+}
+
++ (NSString *)titleForTickerType:(HGTickerType)tickerType
+{
+    NSString *title = @"No Title";
+    if (tickerType == HGTickerTypeMyPositions) {
+        title = @"My Positions";
+    } else if (tickerType == HGTickerTypeMyWatchlist) {
+        title = @"Watchlist";
+    } else if (tickerType == HGTickerTypeMyIndexes) {
+        title = @"Indexes";
+    }
+    return title;
 }
 
 - (instancetype)init
@@ -78,7 +106,9 @@
 - (void)addTicker:(HGTicker *)ticker tickerType:(HGTickerType)tickerType
 {
     NSMutableArray *array = [self arrayForTickerType:tickerType];
-    [array addObject:ticker];
+    if (![array containsObject:ticker]) {
+        [array addObject:ticker];
+    }
 }
 
 - (void)insertTicker:(HGTicker *)ticker atIndex:(NSInteger)index tickerType:(HGTickerType)tickerType
@@ -97,6 +127,19 @@
 {
     NSMutableArray *array = [self arrayForTickerType:tickerType];
     [array removeAllObjects];
+}
+
+- (NSInteger)indexOfTicker:(HGTicker *)ticker
+{
+    NSInteger index = -1;
+    if (!ticker) {
+        return index;
+    }
+
+    NSMutableArray *array = [self arrayForTickerType:ticker.tickerType];
+    index = [array indexOfObject:ticker];
+
+    return index;
 }
 
 - (void)fetchAllPositionsWithCompletion:(HGAllPositionsCompletionBlock)completion
@@ -171,15 +214,15 @@
                 }
             }
             
-            NSDictionary *userInfo = @{ kHGMyIndexes : self.myIndexes,
-                                        kHGMyWatchlist : self.myWatchlist,
-                                        kHGMyPositions : self.myPositions };
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:AllPositionsReloadedNotification
-                                                                object:nil
-                                                              userInfo:userInfo];
-            
             dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *userInfo = @{ HGTickerTypeMyIndexesKey : self.myIndexes,
+                                            HGTickerTypeMyWatchlistKey : self.myWatchlist,
+                                            HGTickerTypeMyPositionsKey : self.myPositions };
+
+                [[NSNotificationCenter defaultCenter] postNotificationName:AllPositionsReloadedNotification
+                                                                    object:nil
+                                                                  userInfo:userInfo];
+
                 if (completion) {
                     completion(userInfo, nil);
                 }
@@ -422,13 +465,13 @@
     
     switch (tickerType) {
         case HGTickerTypeMyIndexes:
-            self.myIndexes = [array mutableCopy];
+            self.myIndexes = [NSMutableArray arrayWithArray:array];
             break;
         case HGTickerTypeMyWatchlist:
-            self.myWatchlist = [array mutableCopy];
+            self.myWatchlist = [NSMutableArray arrayWithArray:array];
             break;
         case HGTickerTypeMyPositions:
-            self.myPositions = [array mutableCopy];
+            self.myPositions = [NSMutableArray arrayWithArray:array];
             break;
         default:
             break;
@@ -441,7 +484,7 @@
     
     [array addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"JSVAX"]];
     [array addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"SWLSX"]];
-    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"PBW"]];
+    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"PBW"]];
     
     return array;
 }
@@ -466,7 +509,7 @@
 
     [array addObject:[HGTicker tickerWithType:HGTickerTypeMyIndexes symbol:@"^GSPC"]];
     [array addObject:[HGTicker tickerWithType:HGTickerTypeMyIndexes symbol:@"^W5000"]];
-    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"^RUT"]];
+    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyIndexes symbol:@"^RUT"]];
     
     return array;
 }

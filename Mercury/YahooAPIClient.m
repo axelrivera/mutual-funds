@@ -17,6 +17,7 @@
     self = [super initWithBaseURL:url];
     if (self) {
         self.responseSerializer = [AFHTTPResponseSerializer serializer];
+        self.requestSerializer.timeoutInterval = 15.0;
     }
     return self;
 }

@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+FOUNDATION_EXPORT NSString * const HGTickerTypeMyPositionsKey;
+FOUNDATION_EXPORT NSString * const HGTickerTypeMyWatchlistKey;
+FOUNDATION_EXPORT NSString * const HGTickerTypeMyIndexesKey;
+
 typedef void(^HGTickersCompletionBlock)(NSArray *tickers, NSError *error);
 typedef void(^HGAllPositionsCompletionBlock)(NSDictionary *tickerDictionary, NSError *error);
 typedef void(^HGHistoryCompletionBlock)(NSArray *history, NSError *error);
@@ -24,12 +28,15 @@ typedef void(^HGPositionCompletionBlock)(HGPosition *position, NSError *error);
 @property (assign, atomic, getter = isFetchingMyPositions) BOOL fetchingMyPositions;
 
 + (NSString *)keyForTickerType:(HGTickerType)tickerType;
++ (HGTickerType)typeForTickerKey:(NSString *)tickerKey;
++ (NSString *)titleForTickerType:(HGTickerType)tickerType;
 
 - (NSMutableArray *)arrayForTickerType:(HGTickerType)tickerType;
 - (void)addTicker:(HGTicker *)ticker tickerType:(HGTickerType)tickerType;
 - (void)insertTicker:(HGTicker *)ticker atIndex:(NSInteger)index tickerType:(HGTickerType)tickerType;
 - (void)removeTickerAtIndex:(NSInteger)index tickerType:(HGTickerType)tickerType;
 - (void)removeAllTickersForTickerType:(HGTickerType)tickerType;
+- (NSInteger)indexOfTicker:(HGTicker *)ticker;
 
 - (void)fetchAllPositionsWithCompletion:(HGAllPositionsCompletionBlock)completion;
 - (void)fetchTickerType:(HGTickerType)tickerType completion:(HGTickersCompletionBlock)completion;

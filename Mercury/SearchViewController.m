@@ -137,13 +137,17 @@
         PositionDetailViewControllerSaveBlock saveBlock = ^(HGTicker *ticker) {
             if (ticker) {
                 [self.navigationController dismissViewControllerAnimated:YES completion:^{
-                    NSDictionary *userInfo = @{ @"ticker_type" : [NSNumber numberWithInteger:self.tickerType],
-                                                @"ticker" : ticker };
+                    [[MercuryData sharedData] addTicker:ticker tickerType:ticker.tickerType];
                     
+                    NSString *tickerKey = [MercuryData keyForTickerType:ticker.tickerType];
+                    NSDictionary *userInfo = @{ @"ticker_key" : tickerKey,
+                                                @"ticker" : ticker };
+
+
                     NSString *description = IsEmpty(ticker.positionType) ? @"" : ticker.positionType;
                     
                     [Flurry logEvent:kAnalyticsSavePosition
-                      withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:ticker.tickerType],
+                      withParameters:@{ kAnalyticsParameterKeyType : tickerKey,
                                         @"DESCRIPTION" : description }];
                     
                     [[NSNotificationCenter defaultCenter] postNotificationName:PositionSavedNotification

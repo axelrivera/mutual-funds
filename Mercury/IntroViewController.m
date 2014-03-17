@@ -115,7 +115,7 @@
         title = @"DISCLAIMER";
         desc =
         @"Trading any type of securities always carries an element of risk. Mutual Fund Signals does not recommend buying or "
-        "selling of particular securities, but assists in making a desicion. ALWAYS supplement the given signals with "
+        "selling of particular securities, but assists in making a decision. ALWAYS supplement the given signals with "
         "additional research to get optimal returns. THE DEVELOPER IS NOT LIABLE FOR ANY DAMAGES INCURRED FROM THE USE OR "
         "THE INABILITY TO USE THE APP.";
         cell.titlePositionY = 400.0;
