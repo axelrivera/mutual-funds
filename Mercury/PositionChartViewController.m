@@ -14,12 +14,14 @@
 
 @interface PositionChartViewController ()
 
+@property (strong, nonatomic) MBProgressHUD *hud;
 @property (strong, nonatomic) UILabel *legendLabel;
 
 @property (strong, nonatomic) NSString *chartRange;
 
 - (void)setupFooterView;
 
+- (void)fetchData;
 - (void)reloadChart;
 - (void)updateLegend;
 - (void)updateName;
@@ -35,6 +37,9 @@
     if (self) {
         self.title = @"Fullscreen Chart";
         _ticker = ticker;
+        _history = @[];
+        _SMA1 = @[];
+        _SMA2 = @[];
     }
     return self;
 }
@@ -201,136 +206,141 @@
     [self.view addSubview:self.footerView];
 }
 
-- (void)reloadChart
+- (void)fetchData
 {
-    if (IsEmpty(self.ticker.position.history)) {
-        return;
-    }
-    
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [hud setLabelText:@"Loading Chart"];
+    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [self.hud setLabelText:@"Loading Chart"];
     
     [self.ticker.position historyForChartRange:self.chartRange
                                          block:^(NSArray *history, NSArray *SMA1, NSArray *SMA2)
      {
          if ([history count] < 2) {
+             [self.hud hide:YES];
              return;
          }
          
-         [self updateLegend];
+         self.history = history;
+         self.SMA1 = SMA1;
+         self.SMA2 = SMA2;
          
-         NSDate *startDate = [(HGHistory *)history.lastObject date];
-         NSDate *endDate = [(HGHistory *)history.firstObject date];
-         
-         [self updateDateWithStart:startDate end:endDate];
-         
-         NSTimeInterval minX = [startDate timeIntervalSince1970];
-         NSTimeInterval maxX = [endDate timeIntervalSince1970];
-         
-         NSMutableArray *chartData = [@[] mutableCopy];
-         
-         LCLineChartData *closeData = [[LCLineChartData alloc] init];
-         closeData.title = self.ticker.symbol;
-         closeData.color = [UIColor hg_closeColor];
-         closeData.lineWidth = 0.75;
-         closeData.xMin = minX;
-         closeData.xMax = maxX;
-         closeData.itemCount = [history count];
-         
-         closeData.getData = ^(NSUInteger item) {
-             HGHistory *current = history[item];
-             NSDate *date = current.date;
-             NSTimeInterval dateInterval = [date timeIntervalSince1970];
-             
-             return [LCLineChartDataItem dataItemWithX:dateInterval
-                                                     y:[current.close floatValue]
-                                                xLabel:[[NSDateFormatter hg_lastTradeDateFormatter] stringFromDate:date]
-                                             dataLabel:[NSString stringWithFormat:@"%.02f", [current.close floatValue]]];
-         };
-         
-         [chartData addObject:closeData];
-         
-         if (!IsEmpty(SMA1)) {
-             NSString *title = [NSString stringWithFormat:@"sma(%ld)",
-                                (unsigned long)[[HGSettings defaultSettings] SMA1PeriodForChartRange:HGChartRangeOneYearDaily]];
-             
-             LCLineChartData *SMAData = [[LCLineChartData alloc] init];
-             SMAData.title = title;
-             SMAData.color = [UIColor hg_SMA1Color];
-             SMAData.smoothPlot = YES;
-             SMAData.lineWidth = 0.75;
-             SMAData.xMin = minX;
-             SMAData.xMax = maxX;
-             SMAData.itemCount = [SMA1 count];
-             
-             SMAData.getData = ^(NSUInteger item) {
-                 HGSMAValue *current = SMA1[item];
-                 NSDate *date = current.date;
-                 NSTimeInterval dateInterval = [date timeIntervalSince1970];
-                 
-                 return [LCLineChartDataItem dataItemWithX:dateInterval
-                                                         y:[current.SMA floatValue]
-                                                    xLabel:[[NSDateFormatter hg_lastTradeDateFormatter] stringFromDate:date]
-                                                 dataLabel:[NSString stringWithFormat:@"%.02f", [current.SMA floatValue]]];
-             };
-             
-             [chartData addObject:SMAData];
-         }
-         
-         if (!IsEmpty(SMA2)) {
-             NSString *title = [NSString stringWithFormat:@"sma(%ld)",
-                                (unsigned long)[[HGSettings defaultSettings] SMA2PeriodForChartRange:HGChartRangeOneYearDaily]];
-             
-             LCLineChartData *SMAData = [[LCLineChartData alloc] init];
-             SMAData.title = title;
-             SMAData.color = [UIColor hg_SMA2Color];
-             SMAData.smoothPlot = YES;
-             SMAData.lineWidth = 0.75;
-             SMAData.xMin = minX;
-             SMAData.xMax = maxX;
-             SMAData.itemCount = [SMA2 count];
-             
-             SMAData.getData = ^(NSUInteger item) {
-                 HGSMAValue *current = SMA2[item];
-                 NSDate *date = current.date;
-                 NSTimeInterval dateInterval = [date timeIntervalSince1970];
-                 
-                 return [LCLineChartDataItem dataItemWithX:dateInterval
-                                                         y:[current.SMA floatValue]
-                                                    xLabel:[[NSDateFormatter hg_lastTradeDateFormatter] stringFromDate:date]
-                                                 dataLabel:[NSString stringWithFormat:@"%.02f", [current.SMA floatValue]]];
-             };
-             
-             [chartData addObject:SMAData];
-         }
-         
-         NSDictionary *yRange = [NSArray hg_minimumAndMaximumRangeForHistory:history
-                                                                        SMA1:SMA1
-                                                                        SMA2:SMA2];
-         
-         NSArray *xSteps = @[];
-         if ([self.chartRange isEqualToString:HGChartRangeTenYearWeekly]) {
-             xSteps = [NSArray hg_xStepsInYearsForHistory:history];
-         } else {
-             xSteps = [NSArray hg_xStepsInMonthsForHistory:history];
-         }
-         
-         self.chartView.yMin = [yRange[@"min"] doubleValue];
-         self.chartView.yMax = [yRange[@"max"] doubleValue];
-         self.chartView.xMin = minX;
-         self.chartView.xMax = maxX;
-         self.chartView.smoothPlot = NO;
-         self.chartView.drawsDataLines = YES;
-         self.chartView.drawsDataPoints = NO;
-         self.chartView.enableIndicator = NO;
-         self.chartView.scaleFont = [UIFont systemFontOfSize:8.0];
-         self.chartView.ySteps = [NSArray hg_yStepsForFullscreenChartIncluding:history SMA1:SMA1 SMA2:SMA2];
-         self.chartView.xSteps = xSteps;
-         self.chartView.data = chartData;
-         
-         [hud hide:YES];
-         
+         [self reloadChart];
      }];
+}
+
+- (void)reloadChart
+{
+    [self updateLegend];
+    
+    NSDate *startDate = [(HGHistory *)self.history.lastObject date];
+    NSDate *endDate = [(HGHistory *)self.history.firstObject date];
+    
+    [self updateDateWithStart:startDate end:endDate];
+    
+    NSTimeInterval minX = [startDate timeIntervalSince1970];
+    NSTimeInterval maxX = [endDate timeIntervalSince1970];
+    
+    NSMutableArray *chartData = [@[] mutableCopy];
+    
+    LCLineChartData *closeData = [[LCLineChartData alloc] init];
+    closeData.title = self.ticker.symbol;
+    closeData.color = [UIColor hg_closeColor];
+    closeData.lineWidth = 0.75;
+    closeData.xMin = minX;
+    closeData.xMax = maxX;
+    closeData.itemCount = [self.history count];
+    
+    closeData.getData = ^(NSUInteger item) {
+        HGHistory *current = self.history[item];
+        NSDate *date = current.date;
+        NSTimeInterval dateInterval = [date timeIntervalSince1970];
+        
+        return [LCLineChartDataItem dataItemWithX:dateInterval
+                                                y:[current.close floatValue]
+                                           xLabel:[[NSDateFormatter hg_lastTradeDateFormatter] stringFromDate:date]
+                                        dataLabel:[NSString stringWithFormat:@"%.02f", [current.close floatValue]]];
+    };
+    
+    [chartData addObject:closeData];
+    
+    if (!IsEmpty(self.SMA1)) {
+        NSString *title = [NSString stringWithFormat:@"sma(%ld)",
+                           (unsigned long)[[HGSettings defaultSettings] SMA1PeriodForChartRange:HGChartRangeOneYearDaily]];
+        
+        LCLineChartData *SMAData = [[LCLineChartData alloc] init];
+        SMAData.title = title;
+        SMAData.color = [UIColor hg_SMA1Color];
+        SMAData.smoothPlot = YES;
+        SMAData.lineWidth = 0.75;
+        SMAData.xMin = minX;
+        SMAData.xMax = maxX;
+        SMAData.itemCount = [self.SMA1 count];
+        
+        SMAData.getData = ^(NSUInteger item) {
+            HGSMAValue *current = self.SMA1[item];
+            NSDate *date = current.date;
+            NSTimeInterval dateInterval = [date timeIntervalSince1970];
+            
+            return [LCLineChartDataItem dataItemWithX:dateInterval
+                                                    y:[current.SMA floatValue]
+                                               xLabel:[[NSDateFormatter hg_lastTradeDateFormatter] stringFromDate:date]
+                                            dataLabel:[NSString stringWithFormat:@"%.02f", [current.SMA floatValue]]];
+        };
+        
+        [chartData addObject:SMAData];
+    }
+    
+    if (!IsEmpty(self.SMA2)) {
+        NSString *title = [NSString stringWithFormat:@"sma(%ld)",
+                           (unsigned long)[[HGSettings defaultSettings] SMA2PeriodForChartRange:HGChartRangeOneYearDaily]];
+        
+        LCLineChartData *SMAData = [[LCLineChartData alloc] init];
+        SMAData.title = title;
+        SMAData.color = [UIColor hg_SMA2Color];
+        SMAData.smoothPlot = YES;
+        SMAData.lineWidth = 0.75;
+        SMAData.xMin = minX;
+        SMAData.xMax = maxX;
+        SMAData.itemCount = [self.SMA2 count];
+        
+        SMAData.getData = ^(NSUInteger item) {
+            HGSMAValue *current = self.SMA2[item];
+            NSDate *date = current.date;
+            NSTimeInterval dateInterval = [date timeIntervalSince1970];
+            
+            return [LCLineChartDataItem dataItemWithX:dateInterval
+                                                    y:[current.SMA floatValue]
+                                               xLabel:[[NSDateFormatter hg_lastTradeDateFormatter] stringFromDate:date]
+                                            dataLabel:[NSString stringWithFormat:@"%.02f", [current.SMA floatValue]]];
+        };
+        
+        [chartData addObject:SMAData];
+    }
+    
+    NSDictionary *yRange = [NSArray hg_minimumAndMaximumRangeForHistory:self.history
+                                                                   SMA1:self.SMA1
+                                                                   SMA2:self.SMA2];
+    
+    NSArray *xSteps = @[];
+    if ([self.chartRange isEqualToString:HGChartRangeTenYearWeekly]) {
+        xSteps = [NSArray hg_xStepsInYearsForHistory:self.history];
+    } else {
+        xSteps = [NSArray hg_xStepsInMonthsForHistory:self.history];
+    }
+    
+    self.chartView.yMin = [yRange[@"min"] doubleValue];
+    self.chartView.yMax = [yRange[@"max"] doubleValue];
+    self.chartView.xMin = minX;
+    self.chartView.xMax = maxX;
+    self.chartView.smoothPlot = NO;
+    self.chartView.drawsDataLines = YES;
+    self.chartView.drawsDataPoints = NO;
+    self.chartView.enableIndicator = NO;
+    self.chartView.scaleFont = [UIFont systemFontOfSize:8.0];
+    self.chartView.ySteps = [NSArray hg_yStepsForFullscreenChartIncluding:self.history SMA1:self.SMA1 SMA2:self.SMA2];
+    self.chartView.xSteps = xSteps;
+    self.chartView.data = chartData;
+    
+    [self.hud hide:YES];
 }
 
 - (void)updateLegend
@@ -383,7 +393,7 @@
     
     [Flurry logEvent:kAnalyticsSelectFullChartRange withParameters:@{ kAnalyticsParameterKeyType : self.chartRange }];
     
-    [self reloadChart];
+    [self fetchData];
 }
 
 @end

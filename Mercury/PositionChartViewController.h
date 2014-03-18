@@ -21,6 +21,10 @@
 
 @property (strong, nonatomic) HGTicker *ticker;
 
+@property (strong, nonatomic) NSArray *history;
+@property (strong, nonatomic) NSArray *SMA1;
+@property (strong, nonatomic) NSArray *SMA2;
+
 @property (copy, nonatomic) HGCompletionBlock completionBlock;
 
 - (instancetype)initWithTicker:(HGTicker *)ticker;
