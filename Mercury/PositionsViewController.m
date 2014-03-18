@@ -14,7 +14,7 @@
 #import "PositionDisplayCell.h"
 #import "IntroViewController.h"
 
-@interface PositionsViewController () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate>
+@interface PositionsViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate>
 
 @property (strong, nonatomic) UITableViewController *tableViewController;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
@@ -254,22 +254,6 @@
     [Flurry logAllPageViews:navController];
     
     [self.navigationController presentViewController:navController animated:YES completion:nil];
-    
-
-
-//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Ticker Search"
-//                                                        message:nil
-//                                                       delegate:self
-//                                              cancelButtonTitle:@"Cancel"
-//                                              otherButtonTitles:@"Search", nil];
-//    alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
-//    
-//    UITextField *textField = [alertView textFieldAtIndex:0];
-//    textField.autocapitalizationType = UITextAutocapitalizationTypeAllCharacters;
-//    textField.keyboardType = UIKeyboardTypeASCIICapable;
-//    textField.autocorrectionType = UITextAutocorrectionTypeNo;
-//    
-//    [alertView show];
 }
 
 - (void)editWatchlistAction:(id)sender
@@ -333,7 +317,7 @@
     if (tickerKey && ticker) {
         if ([tickerKey isEqualToString:[MercuryData keyForTickerType:self.tickerType]]) {
             self.dataSource = [NSMutableArray arrayWithArray:[[MercuryData sharedData] arrayForTickerType:self.tickerType]];
-            [self.tableView reloadData];
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
     }
 }
@@ -433,41 +417,6 @@ moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return YES;
-}
-
-#pragma mark - UITextFieldDelegate Methods
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 1) {
-        UITextField *textField = [alertView textFieldAtIndex:0];
-        NSString *symbol = [textField.text uppercaseString];
-        
-        [[MercuryData sharedData] fetchPositionForSymbol:symbol completion:^(HGPosition *position, NSError *error) {
-            if (error) {
-                [Flurry logError:kAnalyticsPositionFetchError message:nil error:error];
-                return;
-            }
-            
-            PositionDetailViewControllerSaveBlock saveBlock = ^(HGTicker *ticker) {
-                [[MercuryData sharedData] addTicker:ticker tickerType:self.tickerType];
-                self.dataSource = [NSMutableArray arrayWithArray:[[MercuryData sharedData] arrayForTickerType:self.tickerType]];
-                
-                [self.tableView reloadData];
-                [self.navigationController popViewControllerAnimated:YES];
-            };
-                        
-            HGTicker *ticker = [HGTicker tickerWithType:self.tickerType symbol:symbol];
-            ticker.position = position;
-            
-            PositionDetailViewController *controller = [[PositionDetailViewController alloc] initWithTicker:ticker
-                                                                                                  allowSave:YES];
-            controller.saveBlock = saveBlock;
-            controller.hidesBottomBarWhenPushed = YES;
-            
-            [self.navigationController pushViewController:controller animated:YES];
-        }];
-    }
 }
 
 #pragma mark - UIActionSheetDelegate Methods
