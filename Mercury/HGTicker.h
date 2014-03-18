@@ -29,6 +29,9 @@ typedef NS_ENUM(NSInteger, HGTickerType) {
 @property (strong, nonatomic) HGPosition *position;
 
 + (instancetype)tickerWithType:(HGTickerType)tickerType symbol:(NSString *)symbol;
++ (instancetype)fundTickerWithType:(HGTickerType)tickerType symbol:(NSString *)symbol;
++ (instancetype)ETFTickerWithType:(HGTickerType)tickerType symbol:(NSString *)symbol;
++ (instancetype)indexTickerWithType:(HGTickerType)tickerType symbol:(NSString *)symbol;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 

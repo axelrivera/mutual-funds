@@ -250,6 +250,7 @@
     SearchViewController *searchController = [[SearchViewController alloc] initWithTickerType:self.tickerType];
 
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:searchController];
+    navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     
     [Flurry logAllPageViews:navController];
     

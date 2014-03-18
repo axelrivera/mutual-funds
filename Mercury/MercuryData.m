@@ -482,9 +482,9 @@ NSString * const HGTickerTypeMyIndexesKey = @"MY_INDEXES";
 {
     NSMutableArray *array = [@[] mutableCopy];
     
-    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"JSVAX"]];
-    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"SWLSX"]];
-    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyPositions symbol:@"PBW"]];
+    [array addObject:[HGTicker fundTickerWithType:HGTickerTypeMyPositions symbol:@"JSVAX"]];
+    [array addObject:[HGTicker fundTickerWithType:HGTickerTypeMyPositions symbol:@"SWLSX"]];
+    [array addObject:[HGTicker ETFTickerWithType:HGTickerTypeMyPositions symbol:@"PBW"]];
     
     return array;
 }
@@ -493,12 +493,10 @@ NSString * const HGTickerTypeMyIndexesKey = @"MY_INDEXES";
 {
     NSMutableArray *array = [@[] mutableCopy];
 
-    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"RPG"]];
-    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"OBEGX"]];
-    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"SPY"]];
-    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"SWANX"]];
-    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"VEIEX"]];
-    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyWatchlist symbol:@"RYURX"]];
+    [array addObject:[HGTicker ETFTickerWithType:HGTickerTypeMyWatchlist symbol:@"SPY"]];
+    [array addObject:[HGTicker fundTickerWithType:HGTickerTypeMyWatchlist symbol:@"OBEGX"]];
+    [array addObject:[HGTicker fundTickerWithType:HGTickerTypeMyWatchlist symbol:@"SWANX"]];
+    [array addObject:[HGTicker fundTickerWithType:HGTickerTypeMyWatchlist symbol:@"RYURX"]];
     
     return array;
 }
@@ -507,9 +505,9 @@ NSString * const HGTickerTypeMyIndexesKey = @"MY_INDEXES";
 {
     NSMutableArray *array = [@[] mutableCopy];
 
-    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyIndexes symbol:@"^GSPC"]];
-    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyIndexes symbol:@"^W5000"]];
-    [array addObject:[HGTicker tickerWithType:HGTickerTypeMyIndexes symbol:@"^RUT"]];
+    [array addObject:[HGTicker indexTickerWithType:HGTickerTypeMyIndexes symbol:@"^GSPC"]];
+    [array addObject:[HGTicker indexTickerWithType:HGTickerTypeMyIndexes symbol:@"^W5000"]];
+    [array addObject:[HGTicker indexTickerWithType:HGTickerTypeMyIndexes symbol:@"^RUT"]];
     
     return array;
 }

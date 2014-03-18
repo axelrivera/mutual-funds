@@ -34,6 +34,12 @@
 #define kHGSelectKey @"key"
 #define kHGSelectTitle @"title"
 
+// Helper Strings
+
+#define kHGPositionTypeFund @"Fund"
+#define kHGPositionTypeETF @"ETF"
+#define kHGPositionTypeIndex @"Index"
+
 // Notifications
 
 #define AllPositionsReloadedNotification @"HGAllPositionsReloadedNotification"

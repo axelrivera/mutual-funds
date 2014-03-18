@@ -20,6 +20,27 @@
     return ticker;
 }
 
++ (instancetype)fundTickerWithType:(HGTickerType)tickerType symbol:(NSString *)symbol
+{
+    HGTicker *ticker = [[self class] tickerWithType:tickerType symbol:symbol];
+    ticker.positionType = kHGPositionTypeFund;
+    return ticker;
+}
+
++ (instancetype)ETFTickerWithType:(HGTickerType)tickerType symbol:(NSString *)symbol
+{
+    HGTicker *ticker = [[self class] tickerWithType:tickerType symbol:symbol];
+    ticker.positionType = kHGPositionTypeETF;
+    return ticker;
+}
+
++ (instancetype)indexTickerWithType:(HGTickerType)tickerType symbol:(NSString *)symbol
+{
+    HGTicker *ticker = [[self class] tickerWithType:tickerType symbol:symbol];
+    ticker.positionType = kHGPositionTypeIndex;
+    return ticker;
+}
+
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary
 {
     self = [super init];
@@ -38,6 +59,9 @@
     if (self) {
         _tickerType = [coder decodeIntegerForKey:@"HGTickerTickerType"];
         _symbol = [[coder decodeObjectForKey:@"HGTickerSymbol"] copy];
+        _tickerName = [[coder decodeObjectForKey:@"HGTickerTickerName"] copy];
+        _exchange = [[coder decodeObjectForKey:@"HGTickerExchange"] copy];
+        _positionType = [[coder decodeObjectForKey:@"HGTickerPositionType"] copy];
         _position = [coder decodeObjectForKey:@"HGTickerPosition"];
     }
     return self;
@@ -47,6 +71,9 @@
 {
     [coder encodeInteger:self.tickerType forKey:@"HGTickerTickerType"];
     [coder encodeObject:self.symbol forKey:@"HGTickerSymbol"];
+    [coder encodeObject:self.tickerName forKey:@"HGTickerTickerName"];
+    [coder encodeObject:self.exchange forKey:@"HGTickerExchange"];
+    [coder encodeObject:self.positionType forKey:@"HGTickerPositionType"];
     [coder encodeObject:self.position forKey:@"HGTickerPosition"];
 }
 
@@ -71,7 +98,18 @@
 
 - (NSString *)name
 {
-    return self.position == nil ? @"" : self.position.name;
+    NSString *name = nil;
+    if (self.position) {
+        name = self.position.name;
+    } else {
+        if (!IsEmpty(self.tickerName)) {
+            name = self.tickerName;
+        } else {
+            name = @"";
+        }
+    }
+    
+    return name;
 }
 
 - (NSString *)close
