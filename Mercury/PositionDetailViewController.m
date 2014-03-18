@@ -156,6 +156,7 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
                                                     completion:^(NSArray *history, NSError *error)
          {
              if (error) {
+                 [self.hud hide:YES];
                  [Flurry logError:kAnalyticsPositionHistoryFetchError message:nil error:error];
                  return;
              }
@@ -376,6 +377,7 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
 - (void)reloadChart
 {
     if (IsEmpty(self.ticker.position.history)) {
+        [self.hud hide:YES];
         return;
     }
     
@@ -383,6 +385,7 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
                                          block:^(NSArray *history, NSArray *SMA1, NSArray *SMA2)
     {
         if ([history count] < 2) {
+            [self.hud hide:YES];
             return;
         }
         
