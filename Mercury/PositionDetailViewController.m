@@ -64,6 +64,7 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         self.title = @"Details";
         _ticker = ticker;
         _allowSave = allowSave;
+        _currentSignal = nil;
         _dataSource = @[];
         _chartSignals = @[];
         _chartView = nil;
@@ -209,7 +210,18 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     [sections addObject:@{ @"rows" : rows }];
 
     if (signals) {
-        if (!IsEmpty(self.currentSignal)) {
+        if (IsEmpty(self.currentSignal)) {
+            rows = [@[] mutableCopy];
+            
+            dictionary = @{ @"text" : @"Not Available",
+                            @"detail" : @"There's not enough data to generate a signal.",
+                            @"text_color" : HexColor(0xedd400),
+                            @"type" : @"current_signal" };
+            
+            [rows addObject:dictionary];
+            
+            [sections addObject:@{ @"title" : @"Latest Signal", @"rows" : rows }];
+        } else {
             NSString *signal = self.currentSignal;
             
             NSString *title = nil;
@@ -241,7 +253,7 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
                 description = @"Avoid this position! The 50 day SMA is moving below the 200 day SMA.";
                 color = HexColor(0xa40000);
             } else {
-                title = @"Not Enouth Data";
+                title = @"Not Available";
                 description = @"There's not enough data to generate a signal.";
                 color = HexColor(0xedd400);
             }
@@ -256,18 +268,18 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
             }
         }
         
-        rows = [@[] mutableCopy];
-
-        for (NSDictionary *signal in self.chartSignals) {
-            NSString *text = signal[@"signal"];
-            NSString *dateStr = [[NSDateFormatter hg_signalDateFormatter] stringFromDate:signal[@"date"]];
-            dictionary = @{ @"text" : text,
-                            @"detail" : dateStr,
-                            @"type" : @"signal" };
-            [rows addObject:dictionary];
-        }
-        
-        if (!IsEmpty(rows)) {
+        if (!IsEmpty(self.chartSignals)) {
+            rows = [@[] mutableCopy];
+            
+            for (NSDictionary *signal in self.chartSignals) {
+                NSString *text = signal[@"signal"];
+                NSString *dateStr = [[NSDateFormatter hg_signalDateFormatter] stringFromDate:signal[@"date"]];
+                dictionary = @{ @"text" : text,
+                                @"detail" : dateStr,
+                                @"type" : @"signal" };
+                [rows addObject:dictionary];
+            }
+            
             [sections addObject:@{ @"title" : @"Recent Signals", @"rows" : rows }];
         }
     }
@@ -373,6 +385,15 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         if ([history count] < 2) {
             return;
         }
+        
+        DLog(@"History: %@", history);
+        DLog(@"History: Count: %d", [history count]);
+        
+        DLog(@"SMA 1: %@", SMA1);
+        DLog(@"SMA 1 Count: %d", [SMA1 count]);
+        
+        DLog(@"SMA 2: %@", SMA2);
+        DLog(@"SMA 2 Count: %d", [SMA2 count]);
         
         NSTimeInterval minX = [[(HGHistory *)history.lastObject date] timeIntervalSince1970];
         NSTimeInterval maxX = [[(HGHistory *)history.firstObject date] timeIntervalSince1970];
@@ -483,22 +504,23 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
                      if (available) {
                          self.currentSignal = signal;
                          self.chartSignals = pastSignals;
+                     }
+                     
+                     [self.view layoutIfNeeded];
+                     [UIView animateWithDuration:0.3 animations:^{
                          [self updateDataSourceWithSignals:YES reloadTable:YES animated:YES];
                          
+                         self.chartBottom = 0.0;
+                         
+                         self.chartConstraint.constant = self.chartBottom;
+                         
+                         UIEdgeInsets insets = self.tableView.contentInset;
+                         insets.bottom = ContainerHeight;
+                         
+                         self.tableView.contentInset = insets;
+                         self.tableView.scrollIndicatorInsets = insets;
                          [self.view layoutIfNeeded];
-                         [UIView animateWithDuration:0.3 animations:^{
-                             self.chartBottom = 0.0;
-                             
-                             self.chartConstraint.constant = self.chartBottom;
-                             
-                             UIEdgeInsets insets = self.tableView.contentInset;
-                             insets.bottom = ContainerHeight;
-                             
-                             self.tableView.contentInset = insets;
-                             self.tableView.scrollIndicatorInsets = insets;
-                             [self.view layoutIfNeeded];
-                         }];
-                     }
+                     }];
                  });
              }];
         });
