@@ -832,27 +832,46 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         HGTicker *ticker = [HGTicker tickerWithType:tickerType symbol:self.ticker.symbol];
         ticker.position = self.ticker.position;
 
-        [[MercuryData sharedData] addTicker:ticker tickerType:tickerType];
-
-        [self updateDataSourceWithSignals:YES reloadTable:YES animated:NO];
-
-        NSDictionary *userInfo = @{ @"ticker" : ticker,
-                                    @"ticker_key" : target };
-
-        [[NSNotificationCenter defaultCenter] postNotificationName:PositionSavedNotification
-                                                            object:nil
-                                                          userInfo:userInfo];
-
-        NSString *message = [NSString stringWithFormat:@"Position %@ was saved to %@.",
-                             ticker.symbol,
-                             [MercuryData titleForTickerType:tickerType]];
-
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Position Saved"
-                                                            message:message
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-        [alertView show];
+        [[MercuryData sharedData] addTicker:ticker
+                                 tickerType:tickerType
+                                 completion:^(BOOL succeded, NSError *error)
+        {
+            if (error && error.code == kMercuryErrorCodeMaximumPositions) {
+                NSString *message = [NSString stringWithFormat:@"You have reached the maximum limit of positions in %@. "
+                                     "Please remove other positions to continue.", [MercuryData titleForTickerType:ticker.tickerType]];
+                
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[MercuryData titleForTickerType:ticker.tickerType]
+                                                                    message:message
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"OK"
+                                                          otherButtonTitles:nil];
+                [alertView show];
+            }
+            
+            if (!succeded) {
+                return;
+            }
+            
+            [self updateDataSourceWithSignals:YES reloadTable:YES animated:NO];
+            
+            NSDictionary *userInfo = @{ @"ticker" : ticker,
+                                        @"ticker_key" : target };
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:PositionSavedNotification
+                                                                object:nil
+                                                              userInfo:userInfo];
+            
+            NSString *message = [NSString stringWithFormat:@"Position %@ was saved to %@.",
+                                 ticker.symbol,
+                                 [MercuryData titleForTickerType:tickerType]];
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Position Saved"
+                                                                message:message
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+        }];
     }
 }
 

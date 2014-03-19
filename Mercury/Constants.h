@@ -18,8 +18,10 @@
 
 #define kYahooAutocompleteURL @"http://autoc.finance.yahoo.com/autoc"
 
-// Five Minutes in Seconds
-#define kNetworkRequestTimeLimit 60
+// Constants
+#define kHGNetworkTimeout 15.0
+#define kHGMaxPositions 200
+#define kHGAllPositionsSearchLimit 150
 
 // Mercury Data File
 #define kMercuryDataFile @"MercuryData.data"
@@ -29,6 +31,8 @@
 
 // Error Domain
 #define kMercuryErrorDomain @"me.axelrivera.mercury.error"
+
+#define kMercuryErrorCodeMaximumPositions 1000
 
 // Select Keys
 #define kHGSelectKey @"key"

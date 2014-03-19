@@ -16,6 +16,7 @@ typedef void(^HGTickersCompletionBlock)(NSArray *tickers, NSError *error);
 typedef void(^HGAllPositionsCompletionBlock)(NSDictionary *tickerDictionary, NSError *error);
 typedef void(^HGHistoryCompletionBlock)(NSArray *history, NSError *error);
 typedef void(^HGPositionCompletionBlock)(HGPosition *position, NSError *error);
+typedef void(^HGPositionSaveCompletionBlock)(BOOL succeded, NSError *error);
 
 @interface MercuryData : NSObject <NSCoding>
 
@@ -32,7 +33,7 @@ typedef void(^HGPositionCompletionBlock)(HGPosition *position, NSError *error);
 + (NSString *)titleForTickerType:(HGTickerType)tickerType;
 
 - (NSMutableArray *)arrayForTickerType:(HGTickerType)tickerType;
-- (void)addTicker:(HGTicker *)ticker tickerType:(HGTickerType)tickerType;
+- (void)addTicker:(HGTicker *)ticker tickerType:(HGTickerType)tickerType completion:(HGPositionSaveCompletionBlock)completion;
 - (void)insertTicker:(HGTicker *)ticker atIndex:(NSInteger)index tickerType:(HGTickerType)tickerType;
 - (void)removeTickerAtIndex:(NSInteger)index tickerType:(HGTickerType)tickerType;
 - (void)removeAllTickersForTickerType:(HGTickerType)tickerType;

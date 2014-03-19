@@ -19,6 +19,9 @@ NSString * const HGTickerTypeMyIndexesKey = @"MY_INDEXES";
 - (void)setFetching:(BOOL)fetching tickerType:(HGTickerType)tickerType;
 - (void)setArray:(NSArray *)array forTickerType:(HGTickerType)tickerType;
 
+- (void)fetchAllPositionSingleRequestWithCompletion:(HGAllPositionsCompletionBlock)completion;
+- (void)fetchAllPositionsMultipleRequestsWithCompletion:(HGAllPositionsCompletionBlock)completion;
+
 - (NSMutableArray *)defaultMyPositions;
 - (NSMutableArray *)defaultMyWatchlist;
 - (NSMutableArray *)defaultMyIndexes;
@@ -103,11 +106,32 @@ NSString * const HGTickerTypeMyIndexesKey = @"MY_INDEXES";
     [coder encodeObject:self.myPositions forKey:@"MercuryDataMyPositions"];
 }
 
-- (void)addTicker:(HGTicker *)ticker tickerType:(HGTickerType)tickerType
+- (void)addTicker:(HGTicker *)ticker tickerType:(HGTickerType)tickerType completion:(HGPositionSaveCompletionBlock)completion
 {
     NSMutableArray *array = [self arrayForTickerType:tickerType];
-    if (![array containsObject:ticker]) {
-        [array addObject:ticker];
+    
+    if ([array count] + 1 > kHGMaxPositions) {
+        if (completion) {
+            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"Maximum limit of positions reached. Please remove other positions." };
+            NSError *error = [NSError errorWithDomain:kMercuryErrorDomain
+                                                 code:kMercuryErrorCodeMaximumPositions
+                                             userInfo:userInfo];
+            completion(NO, error);
+        }
+        return;
+    }
+    
+    if ([array containsObject:ticker]) {
+        if (completion) {
+            completion(NO, [NSError errorWithDomain:kMercuryErrorDomain code:0 userInfo:nil]);
+        }
+        return;
+    }
+    
+    [array addObject:ticker];
+    
+    if (completion) {
+        completion(YES, nil);
     }
 }
 
@@ -144,91 +168,12 @@ NSString * const HGTickerTypeMyIndexesKey = @"MY_INDEXES";
 
 - (void)fetchAllPositionsWithCompletion:(HGAllPositionsCompletionBlock)completion
 {
-    [self setFetching:YES tickerType:HGTickerTypeMyIndexes];
-    [self setFetching:YES tickerType:HGTickerTypeMyWatchlist];
-    [self setFetching:YES tickerType:HGTickerTypeMyPositions];
-    
-    NSMutableArray *symbols = [@[] mutableCopy];
-    
-    for (HGTicker *ticker in self.myIndexes) {
-        [symbols addObject:ticker.symbol];
+    NSInteger totalPositions = [self.myPositions count] + [self.myWatchlist count] + [self.myIndexes count];
+    if (totalPositions <= kHGAllPositionsSearchLimit) {
+        [self fetchAllPositionSingleRequestWithCompletion:completion];
+    } else {
+        [self fetchAllPositionsMultipleRequestsWithCompletion:completion];
     }
-    
-    for (HGTicker *ticker in self.myWatchlist) {
-        [symbols addObject:ticker.symbol];
-    }
-    
-    for (HGTicker *ticker in self.myPositions) {
-        [symbols addObject:ticker.symbol];
-    }
-    
-    NSSet *symbolsSet = [NSSet setWithArray:symbols];
-    
-    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:[symbolsSet allObjects] completion:^(NSString *positionsData, NSError *error) {
-        [self setFetching:NO tickerType:HGTickerTypeMyIndexes];
-        [self setFetching:NO tickerType:HGTickerTypeMyWatchlist];
-        [self setFetching:NO tickerType:HGTickerTypeMyPositions];
-        
-        if (error) {
-            if (completion) {
-                completion(nil, error);
-            }
-            return;
-        }
-        
-        dispatch_queue_t backgroundQueue = dispatch_queue_create(kMercuryDispatchQueue, NULL);
-        dispatch_async(backgroundQueue, ^{
-            NSArray *quotesRaw = [positionsData hg_arrayOfQuoteDictionaries];
-            
-            NSMutableArray *positions = [@[] mutableCopy];
-            
-            for (NSDictionary *dictionary in quotesRaw) {
-                HGPosition *position = [[HGPosition alloc] initWithDictionary:dictionary];
-                [positions addObject:position];
-            }
-            
-            for (HGTicker *ticker in self.myIndexes) {
-                for (HGPosition *position in positions) {
-                    if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
-                        ticker.position = position;
-                        break;
-                    }
-                }
-            }
-            
-            for (HGTicker *ticker in self.myWatchlist) {
-                for (HGPosition *position in positions) {
-                    if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
-                        ticker.position = position;
-                        break;
-                    }
-                }
-            }
-            
-            for (HGTicker *ticker in self.myPositions) {
-                for (HGPosition *position in positions) {
-                    if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
-                        ticker.position = position;
-                        break;
-                    }
-                }
-            }
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSDictionary *userInfo = @{ HGTickerTypeMyIndexesKey : self.myIndexes,
-                                            HGTickerTypeMyWatchlistKey : self.myWatchlist,
-                                            HGTickerTypeMyPositionsKey : self.myPositions };
-
-                [[NSNotificationCenter defaultCenter] postNotificationName:AllPositionsReloadedNotification
-                                                                    object:nil
-                                                                  userInfo:userInfo];
-
-                if (completion) {
-                    completion(userInfo, nil);
-                }
-            });
-        });
-    }];
 }
 
 - (void)fetchTickerType:(HGTickerType)tickerType completion:(HGTickersCompletionBlock)completion
@@ -420,6 +365,149 @@ NSString * const HGTickerTypeMyIndexesKey = @"MY_INDEXES";
 }
 
 #pragma mark - Private Methods
+
+- (void)fetchAllPositionSingleRequestWithCompletion:(HGAllPositionsCompletionBlock)completion
+{
+    [self setFetching:YES tickerType:HGTickerTypeMyIndexes];
+    [self setFetching:YES tickerType:HGTickerTypeMyWatchlist];
+    [self setFetching:YES tickerType:HGTickerTypeMyPositions];
+    
+    NSMutableArray *symbols = [@[] mutableCopy];
+    
+    for (HGTicker *ticker in self.myIndexes) {
+        [symbols addObject:ticker.symbol];
+    }
+    
+    for (HGTicker *ticker in self.myWatchlist) {
+        [symbols addObject:ticker.symbol];
+    }
+    
+    for (HGTicker *ticker in self.myPositions) {
+        [symbols addObject:ticker.symbol];
+    }
+    
+    NSSet *symbolsSet = [NSSet setWithArray:symbols];
+    
+    [[YahooAPIClient sharedClient] fetchPositionsForSymbols:[symbolsSet allObjects] completion:^(NSString *positionsData, NSError *error) {
+        [self setFetching:NO tickerType:HGTickerTypeMyIndexes];
+        [self setFetching:NO tickerType:HGTickerTypeMyWatchlist];
+        [self setFetching:NO tickerType:HGTickerTypeMyPositions];
+        
+        if (error) {
+            if (completion) {
+                completion(nil, error);
+            }
+            return;
+        }
+        
+        dispatch_queue_t backgroundQueue = dispatch_queue_create(kMercuryDispatchQueue, NULL);
+        dispatch_async(backgroundQueue, ^{
+            NSArray *quotesRaw = [positionsData hg_arrayOfQuoteDictionaries];
+            
+            NSMutableArray *positions = [@[] mutableCopy];
+            
+            for (NSDictionary *dictionary in quotesRaw) {
+                HGPosition *position = [[HGPosition alloc] initWithDictionary:dictionary];
+                [positions addObject:position];
+            }
+            
+            for (HGTicker *ticker in self.myIndexes) {
+                for (HGPosition *position in positions) {
+                    if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
+                        ticker.position = position;
+                        break;
+                    }
+                }
+            }
+            
+            for (HGTicker *ticker in self.myWatchlist) {
+                for (HGPosition *position in positions) {
+                    if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
+                        ticker.position = position;
+                        break;
+                    }
+                }
+            }
+            
+            for (HGTicker *ticker in self.myPositions) {
+                for (HGPosition *position in positions) {
+                    if ([[ticker.symbol uppercaseString] isEqualToString:[position.symbol uppercaseString]]) {
+                        ticker.position = position;
+                        break;
+                    }
+                }
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *userInfo = @{ HGTickerTypeMyIndexesKey : self.myIndexes,
+                                            HGTickerTypeMyWatchlistKey : self.myWatchlist,
+                                            HGTickerTypeMyPositionsKey : self.myPositions };
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:AllPositionsReloadedNotification
+                                                                    object:nil
+                                                                  userInfo:userInfo];
+                
+                if (completion) {
+                    completion(userInfo, nil);
+                }
+            });
+        });
+    }];
+}
+
+- (void)fetchAllPositionsMultipleRequestsWithCompletion:(HGAllPositionsCompletionBlock)completion
+{
+    [self fetchTickerType:HGTickerTypeMyPositions completion:^(NSArray *myPositions, NSError *myPositionsError) {
+        if (myPositionsError) {
+            if (completion) {
+                completion(nil, myPositionsError);
+            }
+            return;
+        }
+        
+       [self fetchTickerType:HGTickerTypeMyWatchlist completion:^(NSArray *myWatchlist, NSError *myWatchlistError) {
+           if (myWatchlistError) {
+               if (completion) {
+                   
+                   NSDictionary *userInfo = @{ HGTickerTypeMyPositionsKey : self.myPositions };
+                   
+                   [[NSNotificationCenter defaultCenter] postNotificationName:AllPositionsReloadedNotification
+                                                                       object:nil
+                                                                     userInfo:userInfo];
+                   completion(userInfo, myWatchlistError);
+               }
+               return;
+           }
+           
+           [self fetchTickerType:HGTickerTypeMyIndexes completion:^(NSArray *myIndexes, NSError *myIndexesError) {
+               if (myIndexesError) {
+                   if (completion) {
+                       
+                       NSDictionary *userInfo = @{ HGTickerTypeMyPositionsKey : self.myPositions,
+                                                   HGTickerTypeMyWatchlistKey : self.myWatchlist };
+                       
+                       [[NSNotificationCenter defaultCenter] postNotificationName:AllPositionsReloadedNotification
+                                                                           object:nil
+                                                                         userInfo:userInfo];
+                       completion(userInfo, myIndexesError);
+                   }
+                   return;
+               }
+               
+               if (completion) {
+                   NSDictionary *userInfo = @{ HGTickerTypeMyPositionsKey : self.myPositions,
+                                               HGTickerTypeMyWatchlistKey : self.myWatchlist,
+                                               HGTickerTypeMyIndexesKey : self.myIndexes };
+                   
+                   [[NSNotificationCenter defaultCenter] postNotificationName:AllPositionsReloadedNotification
+                                                                       object:nil
+                                                                     userInfo:userInfo];
+                   completion(userInfo, nil);
+               }
+           }];
+       }];
+    }];
+}
 
 - (void)setFetching:(BOOL)fetching tickerType:(HGTickerType)tickerType;
 {

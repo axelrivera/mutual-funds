@@ -218,22 +218,41 @@
         PositionDetailViewControllerSaveBlock saveBlock = ^(HGTicker *ticker) {
             if (ticker) {
                 [self.navigationController dismissViewControllerAnimated:YES completion:^{
-                    [[MercuryData sharedData] addTicker:ticker tickerType:ticker.tickerType];
-                    
-                    NSString *tickerKey = [MercuryData keyForTickerType:ticker.tickerType];
-                    NSDictionary *userInfo = @{ @"ticker_key" : tickerKey,
-                                                @"ticker" : ticker };
-
-
-                    NSString *description = IsEmpty(ticker.positionType) ? @"" : ticker.positionType;
-                    
-                    [Flurry logEvent:kAnalyticsSavePosition
-                      withParameters:@{ kAnalyticsParameterKeyType : tickerKey,
-                                        @"DESCRIPTION" : description }];
-                    
-                    [[NSNotificationCenter defaultCenter] postNotificationName:PositionSavedNotification
-                                                                        object:nil
-                                                                      userInfo:userInfo];
+                    [[MercuryData sharedData] addTicker:ticker
+                                             tickerType:ticker.tickerType
+                                             completion:^(BOOL succeded, NSError *error)
+                     {
+                         if (error && error.code == kMercuryErrorCodeMaximumPositions) {
+                             NSString *message = [NSString stringWithFormat:@"You have reached the maximum limit of positions in %@. "
+                                                  "Please remove other positions to continue.", [MercuryData titleForTickerType:ticker.tickerType]];
+                             
+                             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[MercuryData titleForTickerType:ticker.tickerType]
+                                                                                 message:message
+                                                                                delegate:nil
+                                                                       cancelButtonTitle:@"OK"
+                                                                       otherButtonTitles:nil];
+                             [alertView show];
+                         }
+                         
+                         if (!succeded) {
+                             return;
+                         }
+                         
+                         NSString *tickerKey = [MercuryData keyForTickerType:ticker.tickerType];
+                         NSDictionary *userInfo = @{ @"ticker_key" : tickerKey,
+                                                     @"ticker" : ticker };
+                         
+                         
+                         NSString *description = IsEmpty(ticker.positionType) ? @"" : ticker.positionType;
+                         
+                         [Flurry logEvent:kAnalyticsSavePosition
+                           withParameters:@{ kAnalyticsParameterKeyType : tickerKey,
+                                             @"DESCRIPTION" : description }];
+                         
+                         [[NSNotificationCenter defaultCenter] postNotificationName:PositionSavedNotification
+                                                                             object:nil
+                                                                           userInfo:userInfo];
+                     }];
                 }];
             }
         };
