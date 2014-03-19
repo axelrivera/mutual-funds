@@ -48,6 +48,7 @@
     
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
     self.searchBar.tintColor = [UIColor hg_highlightColor];
+    
     self.searchBar.prompt = @"Select Existing / Enter New Name or Symbol";
     
     self.searchController = [[UISearchDisplayController alloc]
@@ -61,7 +62,6 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                           target:self
                                                                                           action:@selector(cancelAction:)];
-    
     [self updateDataSource];
 }
 
@@ -211,6 +211,10 @@
             return;
         }
         
+        PositionDetailViewControllerHideBlock hideBlock = ^{
+            self.navigationController.navigationBar.topItem.prompt = @"Select Existing / Enter New Name or Symbol";
+        };
+        
         PositionDetailViewControllerSaveBlock saveBlock = ^(HGTicker *ticker) {
             if (ticker) {
                 [self.navigationController dismissViewControllerAnimated:YES completion:^{
@@ -243,11 +247,13 @@
         PositionDetailViewController *controller = [[PositionDetailViewController alloc] initWithTicker:ticker
                                                                                               allowSave:YES];
         controller.saveBlock = saveBlock;
+        controller.hideBlock = hideBlock;
         
         [Flurry logEvent:kAnalyticsPositionDetailSelected
           withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:self.tickerType],
                             @"SEARCH" : @"YES" }];
         
+        self.navigationController.navigationBar.topItem.prompt = nil;
         [self.navigationController pushViewController:controller animated:YES];
     }];
 }

@@ -110,8 +110,6 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
 
         [self.navigationItem setRightBarButtonItems:@[ self.nextItem, self.prevItem ] animated:NO];
     }
-    
-    self.chartBottom = -(ContainerHeight);
 
     [self setupChartContainerView];
 }
@@ -136,10 +134,18 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-
+        
     if (!self.allowSave) {
         self.currentIndex = [[MercuryData sharedData] indexOfTicker:self.ticker];
         [self updatePreviousNext];
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    if (self.hideBlock) {
+        self.hideBlock();
     }
 }
 
@@ -389,15 +395,6 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
             return;
         }
         
-        DLog(@"History: %@", history);
-        DLog(@"History: Count: %d", [history count]);
-        
-        DLog(@"SMA 1: %@", SMA1);
-        DLog(@"SMA 1 Count: %d", [SMA1 count]);
-        
-        DLog(@"SMA 2: %@", SMA2);
-        DLog(@"SMA 2 Count: %d", [SMA2 count]);
-        
         NSTimeInterval minX = [[(HGHistory *)history.lastObject date] timeIntervalSince1970];
         NSTimeInterval maxX = [[(HGHistory *)history.firstObject date] timeIntervalSince1970];
         
@@ -513,6 +510,7 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
                      [UIView animateWithDuration:0.3 animations:^{
                          [self updateDataSourceWithSignals:YES reloadTable:YES animated:YES];
                          
+                         self.chartContainerView.alpha = 1.0;
                          self.chartBottom = 0.0;
                          
                          self.chartConstraint.constant = self.chartBottom;
@@ -536,6 +534,7 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     self.chartContainerView = [[UIView alloc] initWithFrame:CGRectZero];
     self.chartContainerView.translatesAutoresizingMaskIntoConstraints = NO;
     self.chartContainerView.backgroundColor = [UIColor whiteColor];
+    self.chartContainerView.alpha = 0.0;
     
     [self.chartContainerView autoSetDimension:ALDimensionHeight toSize:ContainerHeight];
     
@@ -619,6 +618,8 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     
     [self.view addSubview:self.chartContainerView];
     
+    self.chartBottom = -(ContainerHeight);
+    
     self.chartConstraint = [self.chartContainerView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:self.chartBottom];
     [self.chartContainerView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0.0];
     [self.chartContainerView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0.0];
@@ -665,7 +666,8 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
 
 - (void)saveAction:(id)sender
 {
-    if ([[self.ticker.positionType uppercaseString] isEqualToString:@"FUND"] ||
+    if (IsEmpty(self.ticker.positionType) ||
+        [[self.ticker.positionType uppercaseString] isEqualToString:@"FUND"] ||
         [[self.ticker.positionType uppercaseString] isEqualToString:@"ETF"] ||
         [[self.ticker.positionType uppercaseString] isEqualToString:@"INDEX"])
     {
