@@ -290,7 +290,70 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
             [sections addObject:@{ @"title" : @"Recent Signals", @"rows" : rows }];
         }
     }
-
+    
+    rows = [@[] mutableCopy];
+    
+    if (!IsEmpty(self.ticker.positionType)) {
+        dictionary = @{ @"text" : @"Type",
+                        @"detail" : IsEmpty(self.ticker.positionType) ? @"N/A" : self.ticker.positionType,
+                        @"type" : @"value1" };
+        
+        [rows addObject:dictionary];
+    }
+    
+    dictionary = @{ @"text" : @"Exchange",
+                    @"detail" : self.ticker.position.stockExchange,
+                    @"type" : @"value1" };
+    
+    [rows addObject:dictionary];
+    
+    dictionary = @{ @"text" : @"Previous Close",
+                    @"detail" : [self.ticker.position formattedPreviousClose],
+                    @"type" : @"value1" };
+    
+    [rows addObject:dictionary];
+    
+    if ([[self.ticker.positionType uppercaseString] isEqualToString:@"ETF"] ||
+        [[self.ticker.positionType uppercaseString] isEqualToString:@"INDEX"] ||
+        [[self.ticker.positionType uppercaseString] isEqualToString:@"EQUITY"])
+    {
+        dictionary = @{ @"text" : @"Today's Open",
+                        @"detail" : [self.ticker.position formattedOpen],
+                        @"type" : @"value1" };
+        
+        [rows addObject:dictionary];
+        
+        dictionary = @{ @"text" : @"Day's Range",
+                        @"detail" : [self.ticker.position formattedDayRange],
+                        @"type" : @"value1" };
+        
+        [rows addObject:dictionary];
+        
+        dictionary = @{ @"text" : @"52 Week Range",
+                        @"detail" : [self.ticker.position formattedYearRange],
+                        @"type" : @"value1" };
+        
+        [rows addObject:dictionary];
+    }
+    
+    if ([[self.ticker.positionType uppercaseString] isEqualToString:@"ETF"] ||
+        [[self.ticker.positionType uppercaseString] isEqualToString:@"EQUITY"])
+    {
+        dictionary = @{ @"text" : @"Volume",
+                        @"detail" : [self.ticker.position formattedVolume],
+                        @"type" : @"value1" };
+        
+        [rows addObject:dictionary];
+        
+        dictionary = @{ @"text" : @"Avg. Daily Volume",
+                        @"detail" : [self.ticker.position formattedAvgDailyVolume],
+                        @"type" : @"value1" };
+        
+        [rows addObject:dictionary];
+    }
+    
+    [sections addObject:@{ @"title" : @"Additional Information", @"rows" : rows }];
+    
     if (!self.allowSave) {
         NSArray *myPositions = [[MercuryData sharedData] arrayForTickerType:HGTickerTypeMyPositions];
         NSArray *myWatchlist = [[MercuryData sharedData] arrayForTickerType:HGTickerTypeMyWatchlist];
@@ -736,6 +799,7 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     static NSString *CurrentSignalIdentifier = @"CurrentSignalCell";
     static NSString *SignalIdentifier = @"SignalCell";
     static NSString *ButtonIdentifier = @"ButtonCell";
+    static NSString *Value1Identifier = @"Value1Cell";
     
     NSDictionary *dictionary = self.dataSource[indexPath.section][@"rows"][indexPath.row];
     NSString *rowType = dictionary[@"type"];
@@ -754,6 +818,23 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         cell.selectionStyle = enabled ? UITableViewCellSelectionStyleDefault : UITableViewCellSelectionStyleNone;
         cell.accessoryType = UITableViewCellAccessoryNone;
 
+        return cell;
+    }
+    
+    if ([rowType isEqualToString:@"value1"]) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:Value1Identifier];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:Value1Identifier];
+            cell.textLabel.font = [UIFont systemFontOfSize:14.0];
+            cell.detailTextLabel.font = [UIFont systemFontOfSize:14.0];
+        }
+        
+        cell.textLabel.text = dictionary[@"text"];
+        cell.detailTextLabel.text = dictionary[@"detail"];
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        
         return cell;
     }
 

@@ -27,8 +27,10 @@
         _bidSize = [dictionary[@"bid_size"] copy];
         _ask = [dictionary[@"ask"] copy];
         _askSize = [dictionary[@"ask_size"] copy];
-        _daysRange = [dictionary[@"days_range"] copy];
-        _yearRange = [dictionary[@"weeks_range_52"] copy];
+        _low = [dictionary[@"low"] copy];
+        _high = [dictionary[@"high"] copy];
+        _yearLow = [dictionary[@"low_52_week"] copy];
+        _yearHigh = [dictionary[@"high_52_week"] copy];
         _volume = [dictionary[@"volume"] copy];
         _avgDailyVolume = [dictionary[@"avg_daily_volume"] copy];
         _history = nil;
@@ -53,8 +55,10 @@
         _bidSize = [[coder decodeObjectForKey:@"HGPositionBidSize"] copy];
         _ask = [[coder decodeObjectForKey:@"HGPositionAsk"] copy];
         _askSize = [[coder decodeObjectForKey:@"HGPositionAskSize"] copy];
-        _daysRange = [[coder decodeObjectForKey:@"HGPositionDaysRange"] copy];
-        _yearRange = [[coder decodeObjectForKey:@"HGPositionYearRange"] copy];
+        _low = [[coder decodeObjectForKey:@"HGPositionLow"] copy];
+        _high = [[coder decodeObjectForKey:@"HGPositionHigh"] copy];
+        _yearLow = [[coder decodeObjectForKey:@"HGPositionYearLow"] copy];
+        _yearHigh = [[coder decodeObjectForKey:@"HGPositionYearHigh"] copy];
         _volume = [[coder decodeObjectForKey:@"HGPositionVolume"] copy];
         _avgDailyVolume = [[coder decodeObjectForKey:@"HGPositionAvgDailyVolume"] copy];
         _history = [[coder decodeObjectForKey:@"HGPositionHistory"] copy];
@@ -77,8 +81,10 @@
     [coder encodeObject:self.bidSize forKey:@"HGPositionBidSize"];
     [coder encodeObject:self.ask forKey:@"HGPositionAsk"];
     [coder encodeObject:self.askSize forKey:@"HGPositionAskSize"];
-    [coder encodeObject:self.daysRange forKey:@"HGPositionDaysRange"];
-    [coder encodeObject:self.yearRange forKey:@"HGPositionYearRange"];
+    [coder encodeObject:self.low forKey:@"HGPositionLow"];
+    [coder encodeObject:self.high forKey:@"HGPositionHigh"];
+    [coder encodeObject:self.yearLow forKey:@"HGPositionYearLow"];
+    [coder encodeObject:self.yearHigh forKey:@"HGPositionYearHigh"];    
     [coder encodeObject:self.volume forKey:@"HGPositionVolume"];
     [coder encodeObject:self.avgDailyVolume forKey:@"HGPositionAvgDailyVolume"];
     [coder encodeObject:self.history forKey:@"HGPositionHistory"];
@@ -108,10 +114,107 @@
     return [NSString stringWithFormat:@"%@ (%@)", self.change, self.percentageChange];
 }
 
+- (NSString *)formattedOpen
+{
+    NSDecimalNumber *number = [NSDecimalNumber decimalNumberWithString:self.open];
+    NSString *str = nil;
+    if ([number isEqualToDecimalNumber:[NSDecimalNumber notANumber]]) {
+        str = @"N/A";
+    } else {
+        str = [[NSNumberFormatter hg_numberFormatter] stringFromNumber:number];
+    }
+    
+    return str;
+}
+
 - (NSString *)formattedClose
 {
-    NSNumber *number = [[NSNumberFormatter hg_closeFormatter] numberFromString:self.close];
-    return [[NSNumberFormatter hg_closeFormatter] stringFromNumber:number];
+    NSDecimalNumber *number = [NSDecimalNumber decimalNumberWithString:self.close];
+    NSString *str = nil;
+    if ([number isEqualToDecimalNumber:[NSDecimalNumber notANumber]]) {
+        str = @"N/A";
+    } else {
+        str = [[NSNumberFormatter hg_numberFormatter] stringFromNumber:number];
+    }
+    
+    return str;
+}
+
+- (NSString *)formattedPreviousClose
+{
+    NSDecimalNumber *number = [NSDecimalNumber decimalNumberWithString:self.previousClose];
+    NSString *str = nil;
+    if ([number isEqualToDecimalNumber:[NSDecimalNumber notANumber]]) {
+        str = @"N/A";
+    } else {
+        str = [[NSNumberFormatter hg_numberFormatter] stringFromNumber:number];
+    }
+    
+    return str;
+}
+
+- (NSString *)formattedDayRange
+{
+    NSDecimalNumber *low = [NSDecimalNumber decimalNumberWithString:self.low];
+    NSDecimalNumber *high = [NSDecimalNumber decimalNumberWithString:self.high];
+    
+    NSString *lowStr = nil;
+    NSString *highStr = nil;
+    
+    if ([low isEqualToDecimalNumber:[NSDecimalNumber notANumber]] || [high isEqualToDecimalNumber:[NSDecimalNumber notANumber]]) {
+        lowStr = @"N/A";
+        highStr = @"N/A";
+    } else {
+        lowStr = [[NSNumberFormatter hg_numberFormatter] stringFromNumber:low];
+        highStr = [[NSNumberFormatter hg_numberFormatter] stringFromNumber:high];
+    }
+    
+    return [NSString stringWithFormat:@"%@ - %@", lowStr, highStr];
+}
+
+- (NSString *)formattedYearRange
+{
+    NSDecimalNumber *low = [NSDecimalNumber decimalNumberWithString:self.yearLow];
+    NSDecimalNumber *high = [NSDecimalNumber decimalNumberWithString:self.yearHigh];
+    
+    NSString *lowStr = nil;
+    NSString *highStr = nil;
+    
+    if ([low isEqualToDecimalNumber:[NSDecimalNumber notANumber]] || [high isEqualToDecimalNumber:[NSDecimalNumber notANumber]]) {
+        lowStr = @"N/A";
+        highStr = @"N/A";
+    } else {
+        lowStr = [[NSNumberFormatter hg_numberFormatter] stringFromNumber:low];
+        highStr = [[NSNumberFormatter hg_numberFormatter] stringFromNumber:high];
+    }
+    
+    return [NSString stringWithFormat:@"%@ - %@", lowStr, highStr];
+}
+
+- (NSString *)formattedVolume
+{
+    NSDecimalNumber *number = [NSDecimalNumber decimalNumberWithString:self.volume];
+    NSString *str = nil;
+    if ([number isEqualToDecimalNumber:[NSDecimalNumber notANumber]]) {
+        str = @"N/A";
+    } else {
+        str = [[NSNumberFormatter hg_integerFormatter] stringFromNumber:number];
+    }
+    
+    return str;
+}
+
+- (NSString *)formattedAvgDailyVolume
+{
+    NSDecimalNumber *number = [NSDecimalNumber decimalNumberWithString:self.avgDailyVolume];
+    NSString *str = nil;
+    if ([number isEqualToDecimalNumber:[NSDecimalNumber notANumber]]) {
+        str = @"N/A";
+    } else {
+        str = [[NSNumberFormatter hg_integerFormatter] stringFromNumber:number];
+    }
+    
+    return str;
 }
 
 - (NSDate *)lastTradeDate

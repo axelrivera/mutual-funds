@@ -32,8 +32,10 @@ typedef void(^HGPositionHistoryBlock)(NSArray *history, NSArray *SMA1, NSArray *
 @property (copy, nonatomic) NSString *bidSize;
 @property (copy, nonatomic) NSString *ask;
 @property (copy, nonatomic) NSString *askSize;
-@property (copy, nonatomic) NSString *daysRange;
-@property (copy, nonatomic) NSString *yearRange;
+@property (copy, nonatomic) NSString *low;
+@property (copy, nonatomic) NSString *high;
+@property (copy, nonatomic) NSString *yearLow;
+@property (copy, nonatomic) NSString *yearHigh;
 @property (copy, nonatomic) NSString *volume;
 @property (copy, nonatomic) NSString *avgDailyVolume;
 
@@ -42,7 +44,13 @@ typedef void(^HGPositionHistoryBlock)(NSArray *history, NSArray *SMA1, NSArray *
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 
 - (NSString *)priceAndPercentageChange;
+- (NSString *)formattedOpen;
 - (NSString *)formattedClose;
+- (NSString *)formattedPreviousClose;
+- (NSString *)formattedDayRange;
+- (NSString *)formattedYearRange;
+- (NSString *)formattedVolume;
+- (NSString *)formattedAvgDailyVolume;
 - (NSDate *)lastTradeDate;
 - (HGPositionChangeType)changeType;
 - (UIColor *)colorForChangeType;

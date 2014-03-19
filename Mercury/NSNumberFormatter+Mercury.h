@@ -11,6 +11,7 @@
 @interface NSNumberFormatter (Mercury)
 
 + (NSNumberFormatter *)hg_changeFormatter;
-+ (NSNumberFormatter *)hg_closeFormatter;
++ (NSNumberFormatter *)hg_numberFormatter;
++ (NSNumberFormatter *)hg_integerFormatter;
 
 @end

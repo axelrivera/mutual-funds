@@ -36,7 +36,7 @@
         DLog(@"Fetch Positions Response:\n");
         NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         
-        //DLog(@"\n%@", responseString);
+        DLog(@"\n%@", responseString);
         
         if (completion) {
             completion(responseString, nil);

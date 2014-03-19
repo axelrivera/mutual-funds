@@ -9,7 +9,8 @@
 #import "NSNumberFormatter+Mercury.h"
 
 NSNumberFormatter *_changeFormatter;
-NSNumberFormatter *_closeFormatter;
+NSNumberFormatter *_numberFormatter;
+NSNumberFormatter *_integerFormatter;
 
 @implementation NSNumberFormatter (Mercury)
 
@@ -24,14 +25,24 @@ NSNumberFormatter *_closeFormatter;
     return _changeFormatter;
 }
 
-+ (NSNumberFormatter *)hg_closeFormatter
++ (NSNumberFormatter *)hg_numberFormatter
 {
-    if (_closeFormatter == nil) {
-        _closeFormatter = [[NSNumberFormatter alloc] init];
-        [_closeFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-        [_closeFormatter setMaximumFractionDigits:2];
+    if (_numberFormatter == nil) {
+        _numberFormatter = [[NSNumberFormatter alloc] init];
+        [_numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        [_numberFormatter setMaximumFractionDigits:2];
     }
-    return _closeFormatter;
+    return _numberFormatter;
+}
+
++ (NSNumberFormatter *)hg_integerFormatter
+{
+    if (_integerFormatter == nil) {
+        _integerFormatter = [[NSNumberFormatter alloc] init];
+        [_integerFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        [_integerFormatter setMaximumFractionDigits:0];
+    }
+    return _integerFormatter;
 }
 
 @end

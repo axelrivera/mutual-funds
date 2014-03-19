@@ -10,7 +10,7 @@
 
 #import <CHCSVParser.h>
 
-#define kHGNumberOfQuoteColumns 18
+#define kHGNumberOfQuoteColumns 20
 #define kHGNumberOfHistorialColumns 7
 
 /*
@@ -56,7 +56,7 @@
 
 + (NSString *)hg_quoteColumnsString
 {
-    return @"snl1c1p2d1t1xpobb6aa5mwva2";
+    return @"snl1c1p2d1t1xpobb6aa5ghjkva2";
 }
 
 - (NSString *)hg_strip
@@ -86,10 +86,12 @@
                                           @"bid_size" : [row[11] hg_strip],
                                           @"ask" : [row[12] hg_strip],
                                           @"ask_size" : [row[13] hg_strip],
-                                          @"days_range" : [row[14] hg_strip],
-                                          @"weeks_range_52" : [row[15] hg_strip],
-                                          @"volume" : [row[16] hg_strip],
-                                          @"avg_daily_volume" : [row[17] hg_strip] };
+                                          @"low" : [row[14] hg_strip],
+                                          @"high" : [row[15] hg_strip],
+                                          @"low_52_week" : [row[16] hg_strip],
+                                          @"high_52_week" : [row[17] hg_strip],
+                                          @"volume" : [row[18] hg_strip],
+                                          @"avg_daily_volume" : [row[19] hg_strip] };
             [array addObject:dictionary];
         }
     }
