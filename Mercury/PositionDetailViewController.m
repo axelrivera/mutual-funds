@@ -155,20 +155,24 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     
     if ([self isMovingToParentViewController]) {
         self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:animated];
-        self.hud.labelText = @"Fetching Data";
+        self.hud.labelText = @"Loading Data";
         [self.hud removeFromSuperViewOnHide];
         
-        [[MercuryData sharedData] fetchHistoricalDataForTicker:self.ticker
-                                                    completion:^(NSArray *history, NSError *error)
-         {
-             if (error) {
-                 [self.hud hide:YES];
-                 [Flurry logError:kAnalyticsPositionHistoryFetchError message:nil error:error];
-                 return;
-             }
-             self.ticker.position.history = history;
-             [self reloadChart];
-         }];
+        if (IsEmpty(self.ticker.position.history)) {
+            [[MercuryData sharedData] fetchHistoricalDataForTicker:self.ticker
+                                                        completion:^(NSArray *history, NSError *error)
+             {
+                 if (error) {
+                     [self.hud hide:YES];
+                     [Flurry logError:kAnalyticsPositionHistoryFetchError message:nil error:error];
+                     return;
+                 }
+                 self.ticker.position.history = history;
+                 [self reloadChart];
+             }];
+        } else {
+            [self reloadChart];
+        }
     }
 }
 
@@ -553,8 +557,6 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         self.chartView.ySteps = [NSArray hg_yStepsForDetailChartIncluding:history SMA1:SMA1 SMA2:SMA2];
         self.chartView.xSteps = [NSArray hg_xStepsInMonthsForHistory:history];
         self.chartView.data = chartData;
-        
-        self.hud.labelText = @"Loading Signals";
         
         dispatch_queue_t backgroundQueue = dispatch_queue_create(kMercuryDispatchQueue, NULL);
         dispatch_async(backgroundQueue, ^{
