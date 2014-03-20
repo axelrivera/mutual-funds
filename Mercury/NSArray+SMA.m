@@ -78,6 +78,14 @@
                 signal = @"hold";
             }
         }
+        
+        NSDate *recentStartDate = [NSDate chartStartDateForInterval:HGChartThreeMonthInterval];
+        NSArray *recentSMA2 = [SMA2 hg_subarrayWithStartDate:recentStartDate];
+        NSDecimalNumber *momentum = [[self class] SMA_momentumForSMA:recentSMA2];
+        
+        if ([momentum isNegativeDecimalNumber]) {
+            signal = @"avoid_downtrend";
+        }
 
         if ([signal isEqualToString:@"buy"] || [signal isEqualToString:@"hold"]) {
             NSDate *startDate = [NSDate chartStartDateForInterval:HGChartThreeMonthInterval];
@@ -158,6 +166,20 @@
     if (block) {
         block(YES, tmpHistory, tmpSMA1, tmpSMA2, signals);
     }
+}
+
++ (NSDecimalNumber *)SMA_momentumForSMA:(NSArray *)SMA
+{
+    if ([SMA count] < 2) {
+        return [NSDecimalNumber notANumber];
+    }
+    
+    HGSMAValue *first = [SMA firstObject];
+    HGSMAValue *last = [SMA lastObject];
+    
+    NSDecimalNumber *top = [first.SMA decimalNumberBySubtracting:last.SMA];
+    
+    return [top decimalNumberByDividingBy:last.SMA];
 }
 
 @end

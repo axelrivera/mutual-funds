@@ -16,4 +16,7 @@
 - (BOOL)isGreaterThanOrEqualToDecimalNumber:(NSDecimalNumber *)number;
 - (BOOL)isLessThanOrEqualToDecimalNumber:(NSDecimalNumber *)number;
 
+- (BOOL)isNegativeDecimalNumber;
+- (BOOL)isPositiveDecimalNumber;
+
 @end

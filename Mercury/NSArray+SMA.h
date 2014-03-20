@@ -17,5 +17,6 @@ typedef void(^HGSignalsBlock)(BOOL succeded, NSArray *history, NSArray *SMA1, NS
 
 + (void)SMA_currentSignalForHistory:(NSArray *)history SMA1:(NSArray *)SMA1 SMA2:(NSArray *)SMA2 block:(HGCurrentSignalBlock)block;
 + (void)SMA_signalsForHistory:(NSArray *)history SMA1:(NSArray *)SMA1 SMA2:(NSArray *)SMA2 block:(HGSignalsBlock)block;
++ (NSDecimalNumber *)SMA_momentumForSMA:(NSArray *)SMA;
 
 @end

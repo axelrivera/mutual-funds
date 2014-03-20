@@ -241,27 +241,31 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
             
             if ([signal isEqualToString:@"hold"]) {
                 title = @"Hold";
-                description = @"Looking good! The 50 day SMA is moving above the 200 day SMA.";
+                description = @"Looking good! The 50-day SMA is moving above the 200-day SMA.";
                 color = HexColor(0x73d216);
             } else if ([signal isEqualToString:@"hold_sideways"]) {
                 title = @"Hold (Sideways)";
-                description = @"Warning! This position has had a sell signal within the past three months. The 200 day SMA is probably going sideways.";
+                description = @"Warning! This position has had a sell signal within the past three months. The 200-day SMA is probably going sideways.";
                 color = HexColor(0xedd400);
             } else if ([signal isEqualToString:@"buy"]) {
                 title = @"Buy";
-                description = @"Great news! We are detecting a buy signal. The 50 day SMA just moved above the 200 day SMA.";
+                description = @"Great news! We are detecting a buy signal. The 50-day SMA just moved above the 200-day SMA.";
                 color = HexColor(0x4e9a06);
             } else if ([signal isEqualToString:@"buy_sideways"]) {
                 title = @"Buy (Sideways)";
-                description = @"Warning! This position has had a sell signal within the past three months. The 200 day SMA is probably going sideways.";
+                description = @"Warning! This position has had a sell signal within the past three months. The 200-day SMA is probably going sideways.";
                 color = HexColor(0xedd400);
             } else if ([signal isEqualToString:@"sell"]) {
                 title = @"Sell";
-                description = @"Warning! We are detecting a sell signal. The 50 day SMA just moved below the 200 day SMA.";
+                description = @"Warning! We are detecting a sell signal. The 50-day SMA just moved below the 200-day SMA.";
                 color = HexColor(0xef2929);
             } else if ([signal isEqualToString:@"avoid"]) {
                 title = @"Avoid";
-                description = @"Avoid this position! The 50 day SMA is moving below the 200 day SMA.";
+                description = @"Avoid this position! The 50-day SMA is moving below the 200-day SMA.";
+                color = HexColor(0xa40000);
+            } else if ([signal isEqualToString:@"avoid_downtrend"]) {
+                title = @"Avoid (Downtrend)";
+                description = @"Avoid this position! The 200-day SMA is in a downtrend.";
                 color = HexColor(0xa40000);
             } else {
                 title = @"Not Available";

@@ -35,4 +35,14 @@
 	return ([self isLessThanDecimalNumber:number] || [self isEqualToDecimalNumber:number]) ? YES : NO;
 }
 
+- (BOOL)isNegativeDecimalNumber
+{
+    return [self isLessThanDecimalNumber:[NSDecimalNumber zero]];
+}
+
+- (BOOL)isPositiveDecimalNumber
+{
+    return [self isGreaterThanDecimalNumber:[NSDecimalNumber zero]];
+}
+
 @end
