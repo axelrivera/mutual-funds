@@ -10,5 +10,6 @@
 @interface UIViewController (Layout)
 
 - (CGFloat)topOrigin;
+- (CGFloat)bottomOrigin;
 
 @end

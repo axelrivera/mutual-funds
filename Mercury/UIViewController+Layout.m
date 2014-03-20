@@ -18,4 +18,13 @@
     return top;
 }
 
+- (CGFloat)bottomOrigin
+{
+    CGFloat bottom = 0.0;
+    if ([self respondsToSelector:@selector(bottomLayoutGuide)]) {
+        bottom = self.bottomLayoutGuide.length;
+    }
+    return bottom;
+}
+
 @end

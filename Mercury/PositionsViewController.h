@@ -17,4 +17,6 @@
 
 - (instancetype)initWithTickerType:(HGTickerType)tickerType;
 
+- (void)updateLayout;
+
 @end

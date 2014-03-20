@@ -10,6 +10,8 @@
 
 #import "IntroViewController.h"
 
+#import "BannerViewManager.h"
+
 @interface SettingsViewController ()
 
 @end
@@ -74,6 +76,9 @@
     } else {
         self.fullscreenChartSegmentedControl.selectedSegmentIndex = 2;
     }
+    
+    [[HGSettings defaultSettings] setAdvertisingEnabled:NO];
+    [[BannerViewManager sharedInstance] hideBanner];
 }
 
 - (BOOL)shouldAutorotate

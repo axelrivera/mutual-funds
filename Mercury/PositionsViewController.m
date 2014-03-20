@@ -9,10 +9,12 @@
 #import "PositionsViewController.h"
 
 #import <UIView+AutoLayout.h>
+#import "UIViewController+Layout.h"
 #import "SearchViewController.h"
 #import "PositionDetailViewController.h"
 #import "PositionDisplayCell.h"
 #import "IntroViewController.h"
+#import "BannerViewManager.h"
 
 @interface PositionsViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate>
 
@@ -37,6 +39,8 @@
 {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
+        [[BannerViewManager sharedInstance] addBannerViewController:self];
+        
         _tickerType = tickerType;
         
         self.title = [MercuryData titleForTickerType:tickerType];
@@ -142,12 +146,50 @@
 {
     [self.tableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
     
+    UIEdgeInsets insets = self.tableView.contentInset;
+    
+    CGRect contentRect = self.view.bounds;
+    
+    ADBannerView *bannerView = [BannerViewManager sharedInstance].bannerView;
+    
+    if (bannerView) {
+        // We only want to modify the banner view itself if this view controller is actually visible to the user.
+        // This prevents us from modifying it while it is being displayed elsewhere.
+        if (self.isViewLoaded && (self.view.window != nil)) {
+            CGRect bannerRect = CGRectZero;
+            
+            // If configured to support iOS >= 6.0 only, then we want to avoid currentContentSizeIdentifier as it is deprecated.
+            // Fortunately all we need to do is ask the banner for a size that fits into the layout area we are using.
+            // At this point in this method contentFrame=self.view.bounds, so we'll use that size for the layout.
+            bannerRect.size = [[BannerViewManager sharedInstance].bannerView sizeThatFits:contentRect.size];
+            
+            if (!bannerView.hidden && bannerView.bannerLoaded) {
+                bannerRect.origin.y = contentRect.size.height - (bannerRect.size.height + self.bottomOrigin);
+                insets.bottom = self.bottomOrigin + bannerRect.size.height;
+            } else {
+                bannerRect.origin.y = contentRect.size.height;
+                insets.bottom = self.bottomOrigin;
+            }
+            
+            [self.view addSubview:bannerView];
+            bannerView.frame = bannerRect;
+        } else {
+            insets.bottom = self.bottomOrigin;
+        }
+    } else {
+        insets.bottom = self.bottomOrigin;
+    }
+    
+    self.tableView.contentInset = insets;
+    self.tableView.scrollIndicatorInsets = insets;
+    
     [self.view layoutSubviews];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self.view addSubview:[BannerViewManager sharedInstance].bannerView];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -179,6 +221,7 @@
 
 - (void)dealloc
 {
+    [[BannerViewManager sharedInstance] removeBannerViewController:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:AllPositionsReloadedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:PositionSavedNotification object:nil];
 }
@@ -199,6 +242,21 @@
         [self.navigationItem setLeftBarButtonItem:self.editButton animated:YES];
         [self.navigationItem setRightBarButtonItem:self.addButton animated:YES];
     }
+}
+
+- (void)updateLayout
+{
+    [UIView animateWithDuration:0.25 animations:^{
+        // -viewDidLayoutSubviews will handle positioning the banner such that it is either visible
+        // or hidden depending upon whether its bannerLoaded property is YES or NO.  We just need our view
+        // to (re)lay itself out so -viewDidLayoutSubviews will be called.
+        // You must not call [self.view layoutSubviews] directly.  However, you can flag the view
+        // as requiring layout...
+        [self.view setNeedsLayout];
+        // ...then ask it to lay itself out immediately if it is flagged as requiring layout...
+        [self.view layoutIfNeeded];
+        // ...which has the same effect.
+    }];
 }
 
 #pragma mark - Private Methods

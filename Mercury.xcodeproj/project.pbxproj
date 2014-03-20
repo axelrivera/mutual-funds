@@ -51,12 +51,13 @@
 		16A53C1218C6B72E009E795E /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16A53C1118C6B72E009E795E /* SearchViewController.m */; };
 		16A5C69418C37EFC0078EA01 /* HGSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 16A5C69318C37EFC0078EA01 /* HGSettings.m */; };
 		16AE022918C27DBE00D8E3C8 /* UIViewController+Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = 16AE022818C27DBE00D8E3C8 /* UIViewController+Layout.m */; };
+		16B1568818DA8A1A009C7C72 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B1568718DA8A1A009C7C72 /* iAd.framework */; };
+		16B1568B18DA8AF0009C7C72 /* BannerViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B1568A18DA8AF0009C7C72 /* BannerViewManager.m */; };
 		16B27B0618C38CF900A355FF /* SelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B27B0518C38CF900A355FF /* SelectViewController.m */; };
 		16B27B0C18C40B4100A355FF /* SignalStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B27B0B18C40B4100A355FF /* SignalStatusCell.m */; };
 		16B98FAF18BEBC6300A55122 /* NSNumberFormatter+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B98FAE18BEBC6300A55122 /* NSNumberFormatter+Mercury.m */; };
 		16B98FB218BED58900A55122 /* NSString+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B98FB118BED58900A55122 /* NSString+Mercury.m */; };
 		16E7471418CEC47E00A74152 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16E7471318CEC47E00A74152 /* SystemConfiguration.framework */; };
-		16E7471618CEC48C00A74152 /* libFlurry_4.3.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16E7471518CEC48C00A74152 /* libFlurry_4.3.2.a */; };
 		16F0797218BA835F00497607 /* HGTicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 16F0797118BA835F00497607 /* HGTicker.m */; };
 		62F5EDAA2D6B47D7AB50AF79 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 290F2EA80FAD4BA6878CC57A /* libPods.a */; };
 		C6736770D1B24F91851CF9C7 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 290F2EA80FAD4BA6878CC57A /* libPods.a */; };
@@ -153,6 +154,9 @@
 		16A5C69318C37EFC0078EA01 /* HGSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HGSettings.m; sourceTree = "<group>"; };
 		16AE022718C27DBE00D8E3C8 /* UIViewController+Layout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Layout.h"; sourceTree = "<group>"; };
 		16AE022818C27DBE00D8E3C8 /* UIViewController+Layout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Layout.m"; sourceTree = "<group>"; };
+		16B1568718DA8A1A009C7C72 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
+		16B1568918DA8AF0009C7C72 /* BannerViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BannerViewManager.h; sourceTree = "<group>"; };
+		16B1568A18DA8AF0009C7C72 /* BannerViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BannerViewManager.m; sourceTree = "<group>"; };
 		16B27B0418C38CF900A355FF /* SelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectViewController.h; sourceTree = "<group>"; };
 		16B27B0518C38CF900A355FF /* SelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectViewController.m; sourceTree = "<group>"; };
 		16B27B0A18C40B4100A355FF /* SignalStatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignalStatusCell.h; sourceTree = "<group>"; };
@@ -175,7 +179,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16E7471618CEC48C00A74152 /* libFlurry_4.3.2.a in Frameworks */,
+				16B1568818DA8A1A009C7C72 /* iAd.framework in Frameworks */,
 				16E7471418CEC47E00A74152 /* SystemConfiguration.framework in Frameworks */,
 				169A0DA118B82ABD00E42D1A /* CoreGraphics.framework in Frameworks */,
 				169A0DA318B82ABD00E42D1A /* UIKit.framework in Frameworks */,
@@ -271,6 +275,8 @@
 				1605411F18B92D0A00C200C6 /* MercuryData.m */,
 				16A5C69218C37EFC0078EA01 /* HGSettings.h */,
 				16A5C69318C37EFC0078EA01 /* HGSettings.m */,
+				16B1568918DA8AF0009C7C72 /* BannerViewManager.h */,
+				16B1568A18DA8AF0009C7C72 /* BannerViewManager.m */,
 			);
 			name = Singletons;
 			sourceTree = "<group>";
@@ -364,6 +370,7 @@
 		169A0D9D18B82ABD00E42D1A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				16B1568718DA8A1A009C7C72 /* iAd.framework */,
 				16E7471518CEC48C00A74152 /* libFlurry_4.3.2.a */,
 				16E7471318CEC47E00A74152 /* SystemConfiguration.framework */,
 				169A0D9E18B82ABD00E42D1A /* Foundation.framework */,
@@ -604,6 +611,7 @@
 				1605411618B8FFF700C200C6 /* UIColor+Mercury.m in Sources */,
 				169A0DAF18B82ABE00E42D1A /* AppDelegate.m in Sources */,
 				1605413818B99CAB00C200C6 /* UINavigationController+AutoRotation.m in Sources */,
+				16B1568B18DA8AF0009C7C72 /* BannerViewManager.m in Sources */,
 				160B3BC918BC1CF30075CC14 /* NSString+Yahoo.m in Sources */,
 				1605411318B8FD5700C200C6 /* SettingsViewController.m in Sources */,
 				1605411A18B91DE900C200C6 /* PositionSummaryCell.m in Sources */,
