@@ -5,6 +5,6 @@ link_with [ "Mercury", "MercuryTests" ]
 
 pod "AFNetworking", "~> 2.0"
 pod "UIView+AutoLayout"
-pod 'ios-linechart', :path => '../ios-linechart'
+pod 'ios-linechart', :git => 'https://github.com/riveralabs/ios-linechart.git', :tag => '1.2.1a'
 pod 'CHCSVParser', '~> 2.0.7'
 pod 'MBProgressHUD', '~> 0.8'
