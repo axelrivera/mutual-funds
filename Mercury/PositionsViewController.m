@@ -14,7 +14,6 @@
 #import "PositionDetailViewController.h"
 #import "PositionDisplayCell.h"
 #import "IntroViewController.h"
-#import "BannerViewManager.h"
 
 @interface PositionsViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate>
 

@@ -7,11 +7,6 @@
 
 #import <Foundation/Foundation.h>
 
-// Global Settings
-
-#define kHGSettingsAdvertisingEnabled @"HGSettingsAdvertisingEnabled"
-#define kHGSettingsAdvertisingEnabledDefault @YES
-
 // Local Settings
 
 #define kHGSettingsDisclaimerShown @"HGSettingsDisclaimerShown"
@@ -29,9 +24,6 @@ FOUNDATION_EXPORT NSString * const HGChartRangeOneYearDaily;
 FOUNDATION_EXPORT NSString * const HGChartRangeTenYearWeekly;
 
 @interface HGSettings : NSObject
-
-- (BOOL)advertisingEnabled;
-- (void)setAdvertisingEnabled:(BOOL)enabled;
 
 - (NSString *)detailChartRange;
 - (void)setDetailChartRange:(NSString *)chartRange;

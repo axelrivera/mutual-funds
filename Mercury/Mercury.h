@@ -30,5 +30,7 @@ typedef void(^HGCompletionBlock)(void);
 #import "HGPosition.h"
 #import "YahooAPIClient.h"
 #import "MercuryData.h"
+#import "BannerViewManager.h"
+#import "MercuryStoreManager.h"
 
 #endif

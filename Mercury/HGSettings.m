@@ -24,21 +24,6 @@ NSString * const HGChartRangeTenYearWeekly = @"HGChartRangeTenYearWeekly";
 
 #pragma mark - Singleton Methods
 
-- (BOOL)advertisingEnabled
-{
-    NSNumber *enabled = [[NSUserDefaults standardUserDefaults] objectForKey:kHGSettingsAdvertisingEnabled];
-    if (IsEmpty(enabled)) {
-        enabled = kHGSettingsAdvertisingEnabledDefault;
-    }
-    return [enabled boolValue];
-}
-
-- (void)setAdvertisingEnabled:(BOOL)enabled
-{
-    [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:kHGSettingsAdvertisingEnabled];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
 - (NSString *)detailChartRange
 {
     NSString *period = [[NSUserDefaults standardUserDefaults] objectForKey:kHGSettingsDetailChartRange];

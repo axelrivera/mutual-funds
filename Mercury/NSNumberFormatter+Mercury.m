@@ -11,6 +11,7 @@
 NSNumberFormatter *_changeFormatter;
 NSNumberFormatter *_numberFormatter;
 NSNumberFormatter *_integerFormatter;
+NSNumberFormatter *_storePriceFormatter;
 
 @implementation NSNumberFormatter (Mercury)
 
@@ -43,6 +44,18 @@ NSNumberFormatter *_integerFormatter;
         [_integerFormatter setMaximumFractionDigits:0];
     }
     return _integerFormatter;
+}
+
++ (NSNumberFormatter *)hg_storePriceFormatterWithLocale:(NSLocale *)locale
+{
+    if (_storePriceFormatter == nil) {
+        _storePriceFormatter = [[NSNumberFormatter alloc] init];
+        [_storePriceFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+        [_storePriceFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+        [_storePriceFormatter setLocale:locale];
+    }
+    
+    return _storePriceFormatter;
 }
 
 @end

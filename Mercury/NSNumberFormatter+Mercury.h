@@ -13,5 +13,6 @@
 + (NSNumberFormatter *)hg_changeFormatter;
 + (NSNumberFormatter *)hg_numberFormatter;
 + (NSNumberFormatter *)hg_integerFormatter;
++ (NSNumberFormatter *)hg_storePriceFormatterWithLocale:(NSLocale *)locale;
 
 @end

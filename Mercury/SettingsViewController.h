@@ -13,6 +13,7 @@
 @property (strong, nonatomic) UISegmentedControl *detailChartSegmentedControl;
 @property (strong, nonatomic) UISegmentedControl *fullscreenChartSegmentedControl;
 
+@property (strong, nonatomic) NSArray *products;
 @property (strong, nonatomic) NSArray *dataSource;
 @property (strong, nonatomic) NSString *currentDetailChartRange;
 @property (strong, nonatomic) NSString *currentFullscreenChartRange;

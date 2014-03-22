@@ -36,7 +36,7 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
 {
     self = [super init];
     if (self) {
-        if ([[HGSettings defaultSettings] advertisingEnabled]) {
+        if (![[MercuryStoreManager sharedInstance] purchasedAdRemoval]) {
             DLog(@"Initializing Banner View!!");
             _bannerView = [[ADBannerView alloc] initWithAdType:ADAdTypeBanner];
             _bannerView.delegate = self;
@@ -69,7 +69,7 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
 
 - (void)bannerViewDidLoadAd:(ADBannerView *)banner
 {
-    if ([[HGSettings defaultSettings] advertisingEnabled]) {
+    if (![[MercuryStoreManager sharedInstance] purchasedAdRemoval]) {
         for (id bvc in self.bannerViewControllers) {
             [bvc updateLayout];
         }
@@ -78,7 +78,7 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
 
 - (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
 {
-    if ([[HGSettings defaultSettings] advertisingEnabled]) {
+    if (![[MercuryStoreManager sharedInstance] purchasedAdRemoval]) {
         for (id bvc in self.bannerViewControllers) {
             [bvc updateLayout];
         }

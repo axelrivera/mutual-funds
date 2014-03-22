@@ -25,6 +25,9 @@
 		160B3BCC18BC4EAA0075CC14 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 160B3BCA18BC4EAA0075CC14 /* iTunesArtwork */; };
 		160B3BCD18BC4EAA0075CC14 /* iTunesArtwork@2x in Resources */ = {isa = PBXBuildFile; fileRef = 160B3BCB18BC4EAA0075CC14 /* iTunesArtwork@2x */; };
 		1629AE8718CD590A00D92DBA /* SearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1629AE8618CD590A00D92DBA /* SearchCell.m */; };
+		1644B3F618DBCE0900CCC314 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1644B3F518DBCE0900CCC314 /* StoreKit.framework */; };
+		1644B3F918DBCE4F00CCC314 /* StoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1644B3F818DBCE4F00CCC314 /* StoreManager.m */; };
+		1644B3FC18DBD13900CCC314 /* MercuryStoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1644B3FB18DBD13900CCC314 /* MercuryStoreManager.m */; };
 		1654ACCC18CB8CEB00D4D295 /* NSArray+HGPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 1654ACCB18CB8CEB00D4D295 /* NSArray+HGPosition.m */; };
 		1654ACCF18CBA42400D4D295 /* HGSMAValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1654ACCE18CBA42400D4D295 /* HGSMAValue.m */; };
 		16558B1D18CFEDB10094CB9C /* IntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16558B1C18CFEDB10094CB9C /* IntroViewController.m */; };
@@ -109,6 +112,11 @@
 		160B3BCB18BC4EAA0075CC14 /* iTunesArtwork@2x */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iTunesArtwork@2x"; sourceTree = "<group>"; };
 		1629AE8518CD590A00D92DBA /* SearchCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchCell.h; sourceTree = "<group>"; };
 		1629AE8618CD590A00D92DBA /* SearchCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCell.m; sourceTree = "<group>"; };
+		1644B3F518DBCE0900CCC314 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		1644B3F718DBCE4F00CCC314 /* StoreManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreManager.h; sourceTree = "<group>"; };
+		1644B3F818DBCE4F00CCC314 /* StoreManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreManager.m; sourceTree = "<group>"; };
+		1644B3FA18DBD13900CCC314 /* MercuryStoreManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MercuryStoreManager.h; sourceTree = "<group>"; };
+		1644B3FB18DBD13900CCC314 /* MercuryStoreManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MercuryStoreManager.m; sourceTree = "<group>"; };
 		1654ACCA18CB8CEB00D4D295 /* NSArray+HGPosition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+HGPosition.h"; sourceTree = "<group>"; };
 		1654ACCB18CB8CEB00D4D295 /* NSArray+HGPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+HGPosition.m"; sourceTree = "<group>"; };
 		1654ACCD18CBA42400D4D295 /* HGSMAValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HGSMAValue.h; sourceTree = "<group>"; };
@@ -179,6 +187,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1644B3F618DBCE0900CCC314 /* StoreKit.framework in Frameworks */,
 				16B1568818DA8A1A009C7C72 /* iAd.framework in Frameworks */,
 				16E7471418CEC47E00A74152 /* SystemConfiguration.framework in Frameworks */,
 				169A0DA118B82ABD00E42D1A /* CoreGraphics.framework in Frameworks */,
@@ -277,6 +286,10 @@
 				16A5C69318C37EFC0078EA01 /* HGSettings.m */,
 				16B1568918DA8AF0009C7C72 /* BannerViewManager.h */,
 				16B1568A18DA8AF0009C7C72 /* BannerViewManager.m */,
+				1644B3F718DBCE4F00CCC314 /* StoreManager.h */,
+				1644B3F818DBCE4F00CCC314 /* StoreManager.m */,
+				1644B3FA18DBD13900CCC314 /* MercuryStoreManager.h */,
+				1644B3FB18DBD13900CCC314 /* MercuryStoreManager.m */,
 			);
 			name = Singletons;
 			sourceTree = "<group>";
@@ -370,6 +383,7 @@
 		169A0D9D18B82ABD00E42D1A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1644B3F518DBCE0900CCC314 /* StoreKit.framework */,
 				16B1568718DA8A1A009C7C72 /* iAd.framework */,
 				16E7471518CEC48C00A74152 /* libFlurry_4.3.2.a */,
 				16E7471318CEC47E00A74152 /* SystemConfiguration.framework */,
@@ -596,6 +610,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1629AE8718CD590A00D92DBA /* SearchCell.m in Sources */,
+				1644B3F918DBCE4F00CCC314 /* StoreManager.m in Sources */,
+				1644B3FC18DBD13900CCC314 /* MercuryStoreManager.m in Sources */,
 				16B27B0618C38CF900A355FF /* SelectViewController.m in Sources */,
 				16A5C69418C37EFC0078EA01 /* HGSettings.m in Sources */,
 				167749A518C00B6F00C1647D /* NSDate+Mercury.m in Sources */,

@@ -23,6 +23,8 @@
     [Flurry startSession:FLURRY_API_KEY];
 
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+
+    [MercuryStoreManager sharedInstance];
     [[MercuryData sharedData] loadData];
     
     [[UINavigationBar appearance] setBarTintColor:[UIColor hg_barBackgroundColor]];

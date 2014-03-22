@@ -10,8 +10,8 @@
 
 #import <iAd/iAd.h>
 
-extern NSString * const BannerViewActionWillBegin;
-extern NSString * const BannerViewActionDidFinish;
+FOUNDATION_EXPORT NSString * const BannerViewActionWillBegin;
+FOUNDATION_EXPORT NSString * const BannerViewActionDidFinish;
 
 @interface BannerViewManager : NSObject <ADBannerViewDelegate>
 
