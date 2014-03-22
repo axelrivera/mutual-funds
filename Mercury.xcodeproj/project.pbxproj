@@ -55,7 +55,7 @@
 		16A5C69418C37EFC0078EA01 /* HGSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 16A5C69318C37EFC0078EA01 /* HGSettings.m */; };
 		16AE022918C27DBE00D8E3C8 /* UIViewController+Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = 16AE022818C27DBE00D8E3C8 /* UIViewController+Layout.m */; };
 		16B1568818DA8A1A009C7C72 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B1568718DA8A1A009C7C72 /* iAd.framework */; };
-		16B1568B18DA8AF0009C7C72 /* BannerViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B1568A18DA8AF0009C7C72 /* BannerViewManager.m */; };
+		16B1568B18DA8AF0009C7C72 /* MercuryBannerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B1568A18DA8AF0009C7C72 /* MercuryBannerManager.m */; };
 		16B27B0618C38CF900A355FF /* SelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B27B0518C38CF900A355FF /* SelectViewController.m */; };
 		16B27B0C18C40B4100A355FF /* SignalStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B27B0B18C40B4100A355FF /* SignalStatusCell.m */; };
 		16B98FAF18BEBC6300A55122 /* NSNumberFormatter+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 16B98FAE18BEBC6300A55122 /* NSNumberFormatter+Mercury.m */; };
@@ -163,8 +163,8 @@
 		16AE022718C27DBE00D8E3C8 /* UIViewController+Layout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Layout.h"; sourceTree = "<group>"; };
 		16AE022818C27DBE00D8E3C8 /* UIViewController+Layout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Layout.m"; sourceTree = "<group>"; };
 		16B1568718DA8A1A009C7C72 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
-		16B1568918DA8AF0009C7C72 /* BannerViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BannerViewManager.h; sourceTree = "<group>"; };
-		16B1568A18DA8AF0009C7C72 /* BannerViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BannerViewManager.m; sourceTree = "<group>"; };
+		16B1568918DA8AF0009C7C72 /* MercuryBannerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MercuryBannerManager.h; sourceTree = "<group>"; };
+		16B1568A18DA8AF0009C7C72 /* MercuryBannerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MercuryBannerManager.m; sourceTree = "<group>"; };
 		16B27B0418C38CF900A355FF /* SelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectViewController.h; sourceTree = "<group>"; };
 		16B27B0518C38CF900A355FF /* SelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectViewController.m; sourceTree = "<group>"; };
 		16B27B0A18C40B4100A355FF /* SignalStatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignalStatusCell.h; sourceTree = "<group>"; };
@@ -284,8 +284,8 @@
 				1605411F18B92D0A00C200C6 /* MercuryData.m */,
 				16A5C69218C37EFC0078EA01 /* HGSettings.h */,
 				16A5C69318C37EFC0078EA01 /* HGSettings.m */,
-				16B1568918DA8AF0009C7C72 /* BannerViewManager.h */,
-				16B1568A18DA8AF0009C7C72 /* BannerViewManager.m */,
+				16B1568918DA8AF0009C7C72 /* MercuryBannerManager.h */,
+				16B1568A18DA8AF0009C7C72 /* MercuryBannerManager.m */,
 				1644B3F718DBCE4F00CCC314 /* StoreManager.h */,
 				1644B3F818DBCE4F00CCC314 /* StoreManager.m */,
 				1644B3FA18DBD13900CCC314 /* MercuryStoreManager.h */,
@@ -627,7 +627,7 @@
 				1605411618B8FFF700C200C6 /* UIColor+Mercury.m in Sources */,
 				169A0DAF18B82ABE00E42D1A /* AppDelegate.m in Sources */,
 				1605413818B99CAB00C200C6 /* UINavigationController+AutoRotation.m in Sources */,
-				16B1568B18DA8AF0009C7C72 /* BannerViewManager.m in Sources */,
+				16B1568B18DA8AF0009C7C72 /* MercuryBannerManager.m in Sources */,
 				160B3BC918BC1CF30075CC14 /* NSString+Yahoo.m in Sources */,
 				1605411318B8FD5700C200C6 /* SettingsViewController.m in Sources */,
 				1605411A18B91DE900C200C6 /* PositionSummaryCell.m in Sources */,

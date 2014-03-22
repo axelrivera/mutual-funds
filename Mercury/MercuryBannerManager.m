@@ -1,30 +1,30 @@
 //
-//  BannerViewManager.m
+//  MercuryBannerManager.m
 //  Mercury
 //
 //  Created by Axel Rivera on 3/19/14.
 //  Copyright (c) 2014 Axel Rivera. All rights reserved.
 //
 
-#import "BannerViewManager.h"
+#import "MercuryBannerManager.h"
 
 #import "PositionsViewController.h"
 
-NSString * const BannerViewActionWillBegin = @"BannerViewActionWillBegin";
-NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
+NSString * const HGBannerActionWillBegin = @"HGBannerActionWillBegin";
+NSString * const HGBannerActionDidFinish = @"HGBannerActionDidFinish";
 
-@interface BannerViewManager ()
+@interface MercuryBannerManager ()
 
 @property (strong, nonatomic, readwrite) ADBannerView *bannerView;
 @property (strong, nonatomic) NSMutableSet *bannerViewControllers;
 
 @end
 
-@implementation BannerViewManager
+@implementation MercuryBannerManager
 
-+ (BannerViewManager *)sharedInstance
++ (MercuryBannerManager *)sharedInstance
 {
-    static BannerViewManager *sharedInstance = nil;
+    static MercuryBannerManager *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[[self class] alloc] init];
@@ -87,13 +87,13 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
 
 - (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:BannerViewActionWillBegin object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:HGBannerActionWillBegin object:self];
     return YES;
 }
 
 - (void)bannerViewActionDidFinish:(ADBannerView *)banner
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:BannerViewActionDidFinish object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:HGBannerActionDidFinish object:self];
 }
 
 @end

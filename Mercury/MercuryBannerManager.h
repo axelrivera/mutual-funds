@@ -1,5 +1,5 @@
 //
-//  BannerViewManager.h
+//  MercuryBannerManager.h
 //  Mercury
 //
 //  Created by Axel Rivera on 3/19/14.
@@ -10,14 +10,14 @@
 
 #import <iAd/iAd.h>
 
-FOUNDATION_EXPORT NSString * const BannerViewActionWillBegin;
-FOUNDATION_EXPORT NSString * const BannerViewActionDidFinish;
+FOUNDATION_EXPORT NSString * const HGBannerActionWillBegin;
+FOUNDATION_EXPORT NSString * const HGBannerActionDidFinish;
 
-@interface BannerViewManager : NSObject <ADBannerViewDelegate>
+@interface MercuryBannerManager : NSObject <ADBannerViewDelegate>
 
 @property (strong, nonatomic, readonly) ADBannerView *bannerView;
 
-+ (BannerViewManager *)sharedInstance;
++ (MercuryBannerManager *)sharedInstance;
 
 - (void)addBannerViewController:(id)controller;
 - (void)removeBannerViewController:(id)controller;

@@ -38,7 +38,7 @@
 {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
-        [[BannerViewManager sharedInstance] addBannerViewController:self];
+        [[MercuryBannerManager sharedInstance] addBannerViewController:self];
         
         _tickerType = tickerType;
         
@@ -149,7 +149,7 @@
     
     CGRect contentRect = self.view.bounds;
     
-    ADBannerView *bannerView = [BannerViewManager sharedInstance].bannerView;
+    ADBannerView *bannerView = [MercuryBannerManager sharedInstance].bannerView;
     
     if (bannerView) {
         // We only want to modify the banner view itself if this view controller is actually visible to the user.
@@ -160,7 +160,7 @@
             // If configured to support iOS >= 6.0 only, then we want to avoid currentContentSizeIdentifier as it is deprecated.
             // Fortunately all we need to do is ask the banner for a size that fits into the layout area we are using.
             // At this point in this method contentFrame=self.view.bounds, so we'll use that size for the layout.
-            bannerRect.size = [[BannerViewManager sharedInstance].bannerView sizeThatFits:contentRect.size];
+            bannerRect.size = [[MercuryBannerManager sharedInstance].bannerView sizeThatFits:contentRect.size];
             
             if (!bannerView.hidden && bannerView.bannerLoaded) {
                 bannerRect.origin.y = contentRect.size.height - (bannerRect.size.height + self.bottomOrigin);
@@ -188,7 +188,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.view addSubview:[BannerViewManager sharedInstance].bannerView];
+    [self.view addSubview:[MercuryBannerManager sharedInstance].bannerView];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -220,7 +220,7 @@
 
 - (void)dealloc
 {
-    [[BannerViewManager sharedInstance] removeBannerViewController:self];
+    [[MercuryBannerManager sharedInstance] removeBannerViewController:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:AllPositionsReloadedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:PositionSavedNotification object:nil];
 }
