@@ -22,6 +22,6 @@ FOUNDATION_EXPORT NSString * const HGBannerActionDidFinish;
 - (void)addBannerViewController:(id)controller;
 - (void)removeBannerViewController:(id)controller;
 
-- (void)hideBanner;
+- (void)destroyBanner;
 
 @end

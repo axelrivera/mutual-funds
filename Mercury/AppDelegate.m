@@ -35,16 +35,20 @@
     self.window.tintColor = [UIColor hg_highlightColor];
     
     PositionsViewController *positionsController = [[PositionsViewController alloc] initWithTickerType:HGTickerTypeMyPositions];
-    UINavigationController *positionsNavController = [[UINavigationController alloc] initWithRootViewController:positionsController];
+    UINavigationController *positionsNavController = [[UINavigationController alloc]
+                                                      initWithRootViewController:positionsController];
     
     PositionsViewController *watchlistController = [[PositionsViewController alloc] initWithTickerType:HGTickerTypeMyWatchlist];
-    UINavigationController *watchlistNavController = [[UINavigationController alloc] initWithRootViewController:watchlistController];
+    UINavigationController *watchlistNavController = [[UINavigationController alloc]
+                                                      initWithRootViewController:watchlistController];
     
     PositionsViewController *indexController = [[PositionsViewController alloc] initWithTickerType:HGTickerTypeMyIndexes];
-    UINavigationController *indexNavController = [[UINavigationController alloc] initWithRootViewController:indexController];
+    UINavigationController *indexNavController = [[UINavigationController alloc
+                                                   ] initWithRootViewController:indexController];
     
     SettingsViewController *settingsController = [[SettingsViewController alloc] init];
-    UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsController];
+    UINavigationController *settingsNavController = [[UINavigationController alloc]
+                                                     initWithRootViewController:settingsController];
     
     NSArray *viewControllers = @[ positionsNavController, watchlistNavController, indexNavController, settingsNavController ];
     

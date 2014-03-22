@@ -59,9 +59,10 @@ NSString * const HGBannerActionDidFinish = @"HGBannerActionDidFinish";
     [self.bannerViewControllers removeObject:controller];
 }
 
-- (void)hideBanner
+- (void)destroyBanner
 {
-    self.bannerView.hidden = YES;
+    self.bannerView.delegate = nil;
+    self.bannerView = nil;
     for (id bvc in self.bannerViewControllers) {
         [bvc updateLayout];
     }

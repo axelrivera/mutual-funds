@@ -247,7 +247,7 @@
     DLog(@"Product Purchased Notification: %@", productIdentifier);
 
     if ([[MercuryStoreManager sharedInstance] purchasedAdRemoval]) {
-        [[MercuryBannerManager sharedInstance] hideBanner];
+        [[MercuryBannerManager sharedInstance] destroyBanner];
     }
 
     [self.products enumerateObjectsUsingBlock:^(SKProduct * product, NSUInteger index, BOOL *stop) {

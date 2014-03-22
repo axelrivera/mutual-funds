@@ -162,7 +162,7 @@
             // At this point in this method contentFrame=self.view.bounds, so we'll use that size for the layout.
             bannerRect.size = [[MercuryBannerManager sharedInstance].bannerView sizeThatFits:contentRect.size];
             
-            if (!bannerView.hidden && bannerView.bannerLoaded) {
+            if (bannerView && bannerView.bannerLoaded) {
                 bannerRect.origin.y = contentRect.size.height - (bannerRect.size.height + self.bottomOrigin);
                 insets.bottom = self.bottomOrigin + bannerRect.size.height;
             } else {

@@ -278,8 +278,14 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
                 
                 dictionary = @{ @"text" : title, @"detail" : description, @"text_color" : color, @"type" : @"current_signal" };
                 [rows addObject:dictionary];
-                
-                [sections addObject:@{ @"title" : @"Latest Signal", @"rows" : rows }];
+
+                NSMutableDictionary *signalSection = [@{@"title" : @"Latest Signal", @"rows" : rows } mutableCopy ];
+                if (self.currentSignalDate) {
+                    NSString *dateStr = [[NSDateFormatter hg_signalDateFormatter] stringFromDate:self.currentSignalDate];
+                    signalSection[@"footer"] = [NSString stringWithFormat:@"Signal for %@", dateStr];
+                }
+
+                [sections addObject:signalSection];
             }
         }
         
@@ -294,8 +300,17 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
                                 @"type" : @"signal" };
                 [rows addObject:dictionary];
             }
+
+            NSMutableDictionary *signalSection = [@{ @"title" : @"Recent Signals", @"rows" : rows } mutableCopy];
+
+            if (self.chartSignalStartDate && self.chartSignalEndDate) {
+                NSString *startStr = [[NSDateFormatter hg_signalDateFormatter] stringFromDate:self.chartSignalStartDate];
+                NSString *endStr = [[NSDateFormatter hg_signalDateFormatter] stringFromDate:self.chartSignalEndDate];
+
+                signalSection[@"footer"] = [NSString stringWithFormat:@"Signals from %@ to %@", startStr, endStr];
+            }
             
-            [sections addObject:@{ @"title" : @"Recent Signals", @"rows" : rows }];
+            [sections addObject:signalSection];
         }
     }
     
@@ -561,6 +576,10 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         self.chartView.ySteps = [NSArray hg_yStepsForDetailChartIncluding:history SMA1:SMA1 SMA2:SMA2];
         self.chartView.xSteps = [NSArray hg_xStepsInMonthsForHistory:history];
         self.chartView.data = chartData;
+
+        self.currentSignalDate = nil;
+        self.chartSignalStartDate = nil;
+        self.chartSignalEndDate = nil;
         
         dispatch_queue_t backgroundQueue = dispatch_queue_create(kMercuryDispatchQueue, NULL);
         dispatch_async(backgroundQueue, ^{
@@ -571,7 +590,10 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
                      [self.hud hide:YES];
                      
                      if (available) {
+                         self.currentSignalDate = [history.firstObject date];
                          self.currentSignal = signal;
+                         self.chartSignalStartDate = [history.lastObject date];
+                         self.chartSignalEndDate = [history.firstObject date];
                          self.chartSignals = pastSignals;
                      }
                      
@@ -981,10 +1003,16 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     NSString *title = nil;
-    
     NSDictionary *dictionary = self.dataSource[section];
     title = dictionary[@"title"];
-    
+    return title;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
+{
+    NSString *title = nil;
+    NSDictionary *dictionary = self.dataSource[section];
+    title = dictionary[@"footer"];
     return title;
 }
 
