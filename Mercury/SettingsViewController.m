@@ -238,6 +238,9 @@
     UIButton *button = (UIButton *)sender;
     SKProduct *product = self.products[button.tag];
 
+    [Flurry logEvent:kAnalyticsStoreBuyProdctAttempt
+      withParameters:@{ kAnalyticsParameterKeyType : product.productIdentifier }];
+
     DLog(@"Buying %@...", product.productIdentifier);
     [[MercuryStoreManager sharedInstance] buyProduct:product];
 }
@@ -247,6 +250,8 @@
     NSString *productIdentifier = notification.object;
 
     DLog(@"Product Purchased Notification: %@", productIdentifier);
+
+    [Flurry logEvent:kAnalyticsStoreBuyProduct withParameters:@{ kAnalyticsParameterKeyType : productIdentifier }];
 
     if ([[MercuryStoreManager sharedInstance] purchasedAdRemoval]) {
         [[MercuryBannerManager sharedInstance] destroyBanner];
@@ -380,6 +385,8 @@
         
         [self.navigationController presentViewController:navController animated:YES completion:nil];
     } else if ([key isEqualToString:@"restore_purchase"]) {
+        [Flurry logEvent:kAnalyticsStoreRestorePurchases];
+
         [[MercuryStoreManager sharedInstance] restoreCompletedTransactions];
     }
 }

@@ -18,6 +18,11 @@
 #define kAnalyticsSettingsSelectFullChartRange @"SETTINGS_SELECT_FULL_CHART_RANGE"
 #define kAnalyticsFullChartLoaded @"FULL_CHART_LOADED"
 #define kAnalyticsPositionDetailSelected @"POSITION_DETAIL_SELECTED"
+#define kAnalyticsPositionDetailNextPage @"POSITION_DETAIL_NEXT_PAGE"
+#define kAnalyticsPositionDetailPrevPage @"POSITION_DETAIL_PREV_PAGE"
+#define kAnalyticsStoreBuyProdctAttempt @"STORE_BUY_PRODUCT_ATTEMPT"
+#define kAnalyticsStoreBuyProduct @"STORE_BUY_PRODUCT"
+#define kAnalyticsStoreRestorePurchases @"STORE_RESTORE_PURCHASES"
 
 // Errors
 

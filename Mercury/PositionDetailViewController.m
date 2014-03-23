@@ -791,6 +791,9 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
         return;
     }
 
+    [Flurry logEvent:kAnalyticsPositionDetailNextPage
+      withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:self.ticker.tickerType] }];
+
     self.currentIndex++;
     [self updateViewControllers];
 }
@@ -804,6 +807,9 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
     if (self.currentIndex == 0) {
         return;
     }
+
+    [Flurry logEvent:kAnalyticsPositionDetailPrevPage
+      withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:self.ticker.tickerType] }];
 
     self.currentIndex--;
     [self updateViewControllers];
