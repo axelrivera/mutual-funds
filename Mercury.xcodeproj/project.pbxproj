@@ -779,6 +779,11 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Axel Rivera (C2Q5BUZ3MX)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mercury/Mercury-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"ADHOC=1",
+				);
 				INFOPLIST_FILE = "Mercury/Mercury-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

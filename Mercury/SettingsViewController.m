@@ -76,7 +76,8 @@
     } else {
         self.fullscreenChartSegmentedControl.selectedSegmentIndex = 2;
     }
-    
+
+#ifndef ADHOC
     if (IsEmpty(self.products)) {
         [[MercuryStoreManager sharedInstance] requestProductsWithCompletion:^(BOOL success, NSArray *products) {
             if (success) {
@@ -100,6 +101,7 @@
             }
         }];
     }
+#endif
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(productPurchased:)

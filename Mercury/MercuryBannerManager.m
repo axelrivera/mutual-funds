@@ -37,9 +37,11 @@ NSString * const HGBannerActionDidFinish = @"HGBannerActionDidFinish";
     self = [super init];
     if (self) {
         if (![[MercuryStoreManager sharedInstance] purchasedAdRemoval]) {
+#ifndef ADHOC
             DLog(@"Initializing Banner View!!");
             _bannerView = [[ADBannerView alloc] initWithAdType:ADAdTypeBanner];
             _bannerView.delegate = self;
+#endif
         } else {
             DLog(@"Advertising Disabled!!");
         }
