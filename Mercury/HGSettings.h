@@ -9,7 +9,7 @@
 
 // Local Settings
 
-#define kHGSettingsDisclaimerShown @"HGSettingsDisclaimerShown"
+#define kHGSettingsGuideShown @"HGSettingsGuideShown"
 #define kHGSettingsDetailChartRange @"HGSettingsDetailChartRange"
 #define kHGSettingsFullscreenChartRange @"HGSettingsFullscreenChartRange"
 
@@ -36,8 +36,8 @@ FOUNDATION_EXPORT NSString * const HGChartRangeTenYearWeekly;
 - (NSUInteger)SMA1PeriodForChartRange:(NSString *)chartRange;
 - (NSUInteger)SMA2PeriodForChartRange:(NSString *)chartRange;
 
-- (BOOL)disclaimerShown;
-- (void)setDisclaimershown:(BOOL)shown;
+- (BOOL)guideShown;
+- (void)setGuideShown:(BOOL)shown;
 
 + (HGSettings *)defaultSettings;
 

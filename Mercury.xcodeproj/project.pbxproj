@@ -22,8 +22,6 @@
 		1605413518B99C5500C200C6 /* UITabBarController+AutoRotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605413418B99C5500C200C6 /* UITabBarController+AutoRotation.m */; };
 		1605413818B99CAB00C200C6 /* UINavigationController+AutoRotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605413718B99CAB00C200C6 /* UINavigationController+AutoRotation.m */; };
 		160B3BC918BC1CF30075CC14 /* NSString+Yahoo.m in Sources */ = {isa = PBXBuildFile; fileRef = 160B3BC818BC1CF30075CC14 /* NSString+Yahoo.m */; };
-		160B3BCC18BC4EAA0075CC14 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 160B3BCA18BC4EAA0075CC14 /* iTunesArtwork */; };
-		160B3BCD18BC4EAA0075CC14 /* iTunesArtwork@2x in Resources */ = {isa = PBXBuildFile; fileRef = 160B3BCB18BC4EAA0075CC14 /* iTunesArtwork@2x */; };
 		160F4D6C18DE0FFB008F4BE0 /* GuideContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 160F4D6B18DE0FFB008F4BE0 /* GuideContentView.m */; };
 		160F4D6F18DE1017008F4BE0 /* GuideViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 160F4D6E18DE1017008F4BE0 /* GuideViewCell.m */; };
 		160F4D7218DE1A51008F4BE0 /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 160F4D7118DE1A51008F4BE0 /* UIImage+Tint.m */; };
@@ -59,6 +57,8 @@
 		169DA8CD18DF537C00EB1059 /* BuyGuideView.m in Sources */ = {isa = PBXBuildFile; fileRef = 169DA8CC18DF537C00EB1059 /* BuyGuideView.m */; };
 		169DA8D018DF539200EB1059 /* SellGuideView.m in Sources */ = {isa = PBXBuildFile; fileRef = 169DA8CF18DF539200EB1059 /* SellGuideView.m */; };
 		169DA8D318DF53AE00EB1059 /* FalseGuideView.m in Sources */ = {isa = PBXBuildFile; fileRef = 169DA8D218DF53AE00EB1059 /* FalseGuideView.m */; };
+		169DA8DA18DF9DBA00EB1059 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 169DA8D818DF9DBA00EB1059 /* iTunesArtwork */; };
+		169DA8DB18DF9DBA00EB1059 /* iTunesArtwork@2x in Resources */ = {isa = PBXBuildFile; fileRef = 169DA8D918DF9DBA00EB1059 /* iTunesArtwork@2x */; };
 		16A53C1218C6B72E009E795E /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16A53C1118C6B72E009E795E /* SearchViewController.m */; };
 		16A5C69418C37EFC0078EA01 /* HGSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 16A5C69318C37EFC0078EA01 /* HGSettings.m */; };
 		16AE022918C27DBE00D8E3C8 /* UIViewController+Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = 16AE022818C27DBE00D8E3C8 /* UIViewController+Layout.m */; };
@@ -116,8 +116,6 @@
 		1605413718B99CAB00C200C6 /* UINavigationController+AutoRotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+AutoRotation.m"; sourceTree = "<group>"; };
 		160B3BC718BC1CF30075CC14 /* NSString+Yahoo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Yahoo.h"; sourceTree = "<group>"; };
 		160B3BC818BC1CF30075CC14 /* NSString+Yahoo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Yahoo.m"; sourceTree = "<group>"; };
-		160B3BCA18BC4EAA0075CC14 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
-		160B3BCB18BC4EAA0075CC14 /* iTunesArtwork@2x */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iTunesArtwork@2x"; sourceTree = "<group>"; };
 		160F4D6A18DE0FFB008F4BE0 /* GuideContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideContentView.h; sourceTree = "<group>"; };
 		160F4D6B18DE0FFB008F4BE0 /* GuideContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideContentView.m; sourceTree = "<group>"; };
 		160F4D6D18DE1017008F4BE0 /* GuideViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideViewCell.h; sourceTree = "<group>"; };
@@ -180,6 +178,8 @@
 		169DA8CF18DF539200EB1059 /* SellGuideView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SellGuideView.m; sourceTree = "<group>"; };
 		169DA8D118DF53AE00EB1059 /* FalseGuideView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FalseGuideView.h; sourceTree = "<group>"; };
 		169DA8D218DF53AE00EB1059 /* FalseGuideView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FalseGuideView.m; sourceTree = "<group>"; };
+		169DA8D818DF9DBA00EB1059 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
+		169DA8D918DF9DBA00EB1059 /* iTunesArtwork@2x */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iTunesArtwork@2x"; sourceTree = "<group>"; };
 		16A53C1018C6B72E009E795E /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		16A53C1118C6B72E009E795E /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		16A5C69218C37EFC0078EA01 /* HGSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HGSettings.h; sourceTree = "<group>"; };
@@ -454,8 +454,8 @@
 		169A0DA518B82ABE00E42D1A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				160B3BCA18BC4EAA0075CC14 /* iTunesArtwork */,
-				160B3BCB18BC4EAA0075CC14 /* iTunesArtwork@2x */,
+				169DA8D818DF9DBA00EB1059 /* iTunesArtwork */,
+				169DA8D918DF9DBA00EB1059 /* iTunesArtwork@2x */,
 				169A0DA618B82ABE00E42D1A /* Mercury-Info.plist */,
 				169A0DA718B82ABE00E42D1A /* InfoPlist.strings */,
 				169A0DAA18B82ABE00E42D1A /* main.m */,
@@ -564,9 +564,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				160B3BCD18BC4EAA0075CC14 /* iTunesArtwork@2x in Resources */,
+				169DA8DB18DF9DBA00EB1059 /* iTunesArtwork@2x in Resources */,
 				169A0DA918B82ABE00E42D1A /* InfoPlist.strings in Resources */,
-				160B3BCC18BC4EAA0075CC14 /* iTunesArtwork in Resources */,
+				169DA8DA18DF9DBA00EB1059 /* iTunesArtwork in Resources */,
 				169A0DB118B82ABE00E42D1A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

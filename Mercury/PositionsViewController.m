@@ -131,7 +131,7 @@
     
     self.dataSource = [NSMutableArray arrayWithArray:[[MercuryData sharedData] arrayForTickerType:self.tickerType]];
     
-    if (![[HGSettings defaultSettings] disclaimerShown]) {
+    if (![[HGSettings defaultSettings] guideShown]) {
         GuideViewController *guideController = [GuideViewController defaultGuideViewController];
 
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:guideController];

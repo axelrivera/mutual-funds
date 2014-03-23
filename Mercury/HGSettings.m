@@ -93,18 +93,18 @@ NSString * const HGChartRangeTenYearWeekly = @"HGChartRangeTenYearWeekly";
     return sma;
 }
 
-- (BOOL)disclaimerShown
+- (BOOL)guideShown
 {
-    NSNumber *shown = [[NSUserDefaults standardUserDefaults] objectForKey:kHGSettingsDisclaimerShown];
+    NSNumber *shown = [[NSUserDefaults standardUserDefaults] objectForKey:kHGSettingsGuideShown];
     if (IsEmpty(shown)) {
         shown = @(NO);
     }
     return [shown boolValue];
 }
 
-- (void)setDisclaimershown:(BOOL)shown
+- (void)setGuideShown:(BOOL)shown
 {
-    [[NSUserDefaults standardUserDefaults] setBool:shown forKey:kHGSettingsDisclaimerShown];
+    [[NSUserDefaults standardUserDefaults] setBool:shown forKey:kHGSettingsGuideShown];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

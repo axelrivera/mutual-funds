@@ -79,6 +79,7 @@
     __weak GuideViewController *weakSelf = self;
 
     self.guideView.completionBlock = ^{
+        [[HGSettings defaultSettings] setGuideShown:YES];
         [weakSelf.navigationController dismissViewControllerAnimated:YES completion:nil];
     };
 
