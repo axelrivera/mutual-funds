@@ -155,7 +155,7 @@
     
     if ([dates count] > 2) {
         [dates removeObjectAtIndex:0];
-        [dates removeLastObject];
+        //[dates removeLastObject];
     }
     
     NSMutableArray *cleanDates = [@[] mutableCopy];

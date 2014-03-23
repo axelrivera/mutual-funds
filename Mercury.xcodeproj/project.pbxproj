@@ -24,16 +24,17 @@
 		160B3BC918BC1CF30075CC14 /* NSString+Yahoo.m in Sources */ = {isa = PBXBuildFile; fileRef = 160B3BC818BC1CF30075CC14 /* NSString+Yahoo.m */; };
 		160B3BCC18BC4EAA0075CC14 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 160B3BCA18BC4EAA0075CC14 /* iTunesArtwork */; };
 		160B3BCD18BC4EAA0075CC14 /* iTunesArtwork@2x in Resources */ = {isa = PBXBuildFile; fileRef = 160B3BCB18BC4EAA0075CC14 /* iTunesArtwork@2x */; };
+		160F4D6C18DE0FFB008F4BE0 /* GuideContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 160F4D6B18DE0FFB008F4BE0 /* GuideContentView.m */; };
+		160F4D6F18DE1017008F4BE0 /* GuideViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 160F4D6E18DE1017008F4BE0 /* GuideViewCell.m */; };
+		160F4D7218DE1A51008F4BE0 /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 160F4D7118DE1A51008F4BE0 /* UIImage+Tint.m */; };
+		160F4D7518DE2088008F4BE0 /* GuideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 160F4D7418DE2088008F4BE0 /* GuideViewController.m */; };
 		1629AE8718CD590A00D92DBA /* SearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1629AE8618CD590A00D92DBA /* SearchCell.m */; };
 		1644B3F618DBCE0900CCC314 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1644B3F518DBCE0900CCC314 /* StoreKit.framework */; };
 		1644B3F918DBCE4F00CCC314 /* StoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1644B3F818DBCE4F00CCC314 /* StoreManager.m */; };
 		1644B3FC18DBD13900CCC314 /* MercuryStoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1644B3FB18DBD13900CCC314 /* MercuryStoreManager.m */; };
 		1654ACCC18CB8CEB00D4D295 /* NSArray+HGPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 1654ACCB18CB8CEB00D4D295 /* NSArray+HGPosition.m */; };
 		1654ACCF18CBA42400D4D295 /* HGSMAValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1654ACCE18CBA42400D4D295 /* HGSMAValue.m */; };
-		16558B1D18CFEDB10094CB9C /* IntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16558B1C18CFEDB10094CB9C /* IntroViewController.m */; };
 		16558B2718D002130094CB9C /* libFlurry_4.3.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16558B2118D002130094CB9C /* libFlurry_4.3.2.a */; };
-		16558B2818D002130094CB9C /* GHWalkThroughPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 16558B2418D002130094CB9C /* GHWalkThroughPageCell.m */; };
-		16558B2918D002130094CB9C /* GHWalkThroughView.m in Sources */ = {isa = PBXBuildFile; fileRef = 16558B2618D002130094CB9C /* GHWalkThroughView.m */; };
 		167749A518C00B6F00C1647D /* NSDate+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749A418C00B6F00C1647D /* NSDate+Mercury.m */; };
 		167749A818C029EF00C1647D /* NSArray+SMA.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749A718C029EF00C1647D /* NSArray+SMA.m */; };
 		167749AB18C02B1D00C1647D /* NSDecimalNumber+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749AA18C02B1D00C1647D /* NSDecimalNumber+Mercury.m */; };
@@ -51,6 +52,13 @@
 		169A0DC218B82ABE00E42D1A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 169A0DC018B82ABE00E42D1A /* InfoPlist.strings */; };
 		169A0DC418B82ABE00E42D1A /* MercuryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 169A0DC318B82ABE00E42D1A /* MercuryTests.m */; };
 		169A0DCF18B82DBA00E42D1A /* PositionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 169A0DCE18B82DBA00E42D1A /* PositionsViewController.m */; };
+		169DA8BE18DE786300EB1059 /* GuideView.m in Sources */ = {isa = PBXBuildFile; fileRef = 169DA8BD18DE786300EB1059 /* GuideView.m */; };
+		169DA8C118DE7F0400EB1059 /* IntroGuideView.m in Sources */ = {isa = PBXBuildFile; fileRef = 169DA8C018DE7F0400EB1059 /* IntroGuideView.m */; };
+		169DA8C718DF533700EB1059 /* BullGuideView.m in Sources */ = {isa = PBXBuildFile; fileRef = 169DA8C618DF533700EB1059 /* BullGuideView.m */; };
+		169DA8CA18DF535200EB1059 /* BearGuideView.m in Sources */ = {isa = PBXBuildFile; fileRef = 169DA8C918DF535200EB1059 /* BearGuideView.m */; };
+		169DA8CD18DF537C00EB1059 /* BuyGuideView.m in Sources */ = {isa = PBXBuildFile; fileRef = 169DA8CC18DF537C00EB1059 /* BuyGuideView.m */; };
+		169DA8D018DF539200EB1059 /* SellGuideView.m in Sources */ = {isa = PBXBuildFile; fileRef = 169DA8CF18DF539200EB1059 /* SellGuideView.m */; };
+		169DA8D318DF53AE00EB1059 /* FalseGuideView.m in Sources */ = {isa = PBXBuildFile; fileRef = 169DA8D218DF53AE00EB1059 /* FalseGuideView.m */; };
 		16A53C1218C6B72E009E795E /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16A53C1118C6B72E009E795E /* SearchViewController.m */; };
 		16A5C69418C37EFC0078EA01 /* HGSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 16A5C69318C37EFC0078EA01 /* HGSettings.m */; };
 		16AE022918C27DBE00D8E3C8 /* UIViewController+Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = 16AE022818C27DBE00D8E3C8 /* UIViewController+Layout.m */; };
@@ -110,6 +118,14 @@
 		160B3BC818BC1CF30075CC14 /* NSString+Yahoo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Yahoo.m"; sourceTree = "<group>"; };
 		160B3BCA18BC4EAA0075CC14 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		160B3BCB18BC4EAA0075CC14 /* iTunesArtwork@2x */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iTunesArtwork@2x"; sourceTree = "<group>"; };
+		160F4D6A18DE0FFB008F4BE0 /* GuideContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideContentView.h; sourceTree = "<group>"; };
+		160F4D6B18DE0FFB008F4BE0 /* GuideContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideContentView.m; sourceTree = "<group>"; };
+		160F4D6D18DE1017008F4BE0 /* GuideViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideViewCell.h; sourceTree = "<group>"; };
+		160F4D6E18DE1017008F4BE0 /* GuideViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideViewCell.m; sourceTree = "<group>"; };
+		160F4D7018DE1A51008F4BE0 /* UIImage+Tint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Tint.h"; sourceTree = "<group>"; };
+		160F4D7118DE1A51008F4BE0 /* UIImage+Tint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Tint.m"; sourceTree = "<group>"; };
+		160F4D7318DE2088008F4BE0 /* GuideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideViewController.h; sourceTree = "<group>"; };
+		160F4D7418DE2088008F4BE0 /* GuideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideViewController.m; sourceTree = "<group>"; };
 		1629AE8518CD590A00D92DBA /* SearchCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchCell.h; sourceTree = "<group>"; };
 		1629AE8618CD590A00D92DBA /* SearchCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCell.m; sourceTree = "<group>"; };
 		1644B3F518DBCE0900CCC314 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -121,14 +137,8 @@
 		1654ACCB18CB8CEB00D4D295 /* NSArray+HGPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+HGPosition.m"; sourceTree = "<group>"; };
 		1654ACCD18CBA42400D4D295 /* HGSMAValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HGSMAValue.h; sourceTree = "<group>"; };
 		1654ACCE18CBA42400D4D295 /* HGSMAValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HGSMAValue.m; sourceTree = "<group>"; };
-		16558B1B18CFEDB10094CB9C /* IntroViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntroViewController.h; sourceTree = "<group>"; };
-		16558B1C18CFEDB10094CB9C /* IntroViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntroViewController.m; sourceTree = "<group>"; };
 		16558B2018D002130094CB9C /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
 		16558B2118D002130094CB9C /* libFlurry_4.3.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_4.3.2.a; sourceTree = "<group>"; };
-		16558B2318D002130094CB9C /* GHWalkThroughPageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GHWalkThroughPageCell.h; sourceTree = "<group>"; };
-		16558B2418D002130094CB9C /* GHWalkThroughPageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHWalkThroughPageCell.m; sourceTree = "<group>"; };
-		16558B2518D002130094CB9C /* GHWalkThroughView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GHWalkThroughView.h; sourceTree = "<group>"; };
-		16558B2618D002130094CB9C /* GHWalkThroughView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHWalkThroughView.m; sourceTree = "<group>"; };
 		167749A318C00B6F00C1647D /* NSDate+Mercury.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Mercury.h"; sourceTree = "<group>"; };
 		167749A418C00B6F00C1647D /* NSDate+Mercury.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Mercury.m"; sourceTree = "<group>"; };
 		167749A618C029EF00C1647D /* NSArray+SMA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+SMA.h"; sourceTree = "<group>"; };
@@ -156,6 +166,20 @@
 		169A0DCD18B82DBA00E42D1A /* PositionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PositionsViewController.h; sourceTree = "<group>"; };
 		169A0DCE18B82DBA00E42D1A /* PositionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PositionsViewController.m; sourceTree = "<group>"; };
 		169A0DD018B82E9A00E42D1A /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		169DA8BC18DE786300EB1059 /* GuideView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuideView.h; sourceTree = "<group>"; };
+		169DA8BD18DE786300EB1059 /* GuideView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuideView.m; sourceTree = "<group>"; };
+		169DA8BF18DE7F0400EB1059 /* IntroGuideView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntroGuideView.h; sourceTree = "<group>"; };
+		169DA8C018DE7F0400EB1059 /* IntroGuideView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntroGuideView.m; sourceTree = "<group>"; };
+		169DA8C518DF533700EB1059 /* BullGuideView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BullGuideView.h; sourceTree = "<group>"; };
+		169DA8C618DF533700EB1059 /* BullGuideView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BullGuideView.m; sourceTree = "<group>"; };
+		169DA8C818DF535200EB1059 /* BearGuideView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BearGuideView.h; sourceTree = "<group>"; };
+		169DA8C918DF535200EB1059 /* BearGuideView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BearGuideView.m; sourceTree = "<group>"; };
+		169DA8CB18DF537C00EB1059 /* BuyGuideView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BuyGuideView.h; sourceTree = "<group>"; };
+		169DA8CC18DF537C00EB1059 /* BuyGuideView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BuyGuideView.m; sourceTree = "<group>"; };
+		169DA8CE18DF539200EB1059 /* SellGuideView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SellGuideView.h; sourceTree = "<group>"; };
+		169DA8CF18DF539200EB1059 /* SellGuideView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SellGuideView.m; sourceTree = "<group>"; };
+		169DA8D118DF53AE00EB1059 /* FalseGuideView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FalseGuideView.h; sourceTree = "<group>"; };
+		169DA8D218DF53AE00EB1059 /* FalseGuideView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FalseGuideView.m; sourceTree = "<group>"; };
 		16A53C1018C6B72E009E795E /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		16A53C1118C6B72E009E795E /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		16A5C69218C37EFC0078EA01 /* HGSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HGSettings.h; sourceTree = "<group>"; };
@@ -230,6 +254,7 @@
 		1605410318B8432D00C200C6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				160F4D6918DE0EA8008F4BE0 /* Guide */,
 				160540FF18B83A4800C200C6 /* PositionDisplayCell.h */,
 				1605410018B83A4800C200C6 /* PositionDisplayCell.m */,
 				1605411818B91DE900C200C6 /* PositionSummaryCell.h */,
@@ -257,8 +282,8 @@
 				16B27B0518C38CF900A355FF /* SelectViewController.m */,
 				16A53C1018C6B72E009E795E /* SearchViewController.h */,
 				16A53C1118C6B72E009E795E /* SearchViewController.m */,
-				16558B1B18CFEDB10094CB9C /* IntroViewController.h */,
-				16558B1C18CFEDB10094CB9C /* IntroViewController.m */,
+				160F4D7318DE2088008F4BE0 /* GuideViewController.h */,
+				160F4D7418DE2088008F4BE0 /* GuideViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -297,6 +322,8 @@
 		1605411718B9000000C200C6 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				160F4D7018DE1A51008F4BE0 /* UIImage+Tint.h */,
+				160F4D7118DE1A51008F4BE0 /* UIImage+Tint.m */,
 				16AE022718C27DBE00D8E3C8 /* UIViewController+Layout.h */,
 				16AE022818C27DBE00D8E3C8 /* UIViewController+Layout.m */,
 				167AC77E18BD810C006BF9E6 /* FileHelpers.h */,
@@ -329,11 +356,35 @@
 			name = Helpers;
 			sourceTree = "<group>";
 		};
+		160F4D6918DE0EA8008F4BE0 /* Guide */ = {
+			isa = PBXGroup;
+			children = (
+				160F4D6A18DE0FFB008F4BE0 /* GuideContentView.h */,
+				160F4D6B18DE0FFB008F4BE0 /* GuideContentView.m */,
+				160F4D6D18DE1017008F4BE0 /* GuideViewCell.h */,
+				160F4D6E18DE1017008F4BE0 /* GuideViewCell.m */,
+				169DA8BC18DE786300EB1059 /* GuideView.h */,
+				169DA8BD18DE786300EB1059 /* GuideView.m */,
+				169DA8BF18DE7F0400EB1059 /* IntroGuideView.h */,
+				169DA8C018DE7F0400EB1059 /* IntroGuideView.m */,
+				169DA8C518DF533700EB1059 /* BullGuideView.h */,
+				169DA8C618DF533700EB1059 /* BullGuideView.m */,
+				169DA8C818DF535200EB1059 /* BearGuideView.h */,
+				169DA8C918DF535200EB1059 /* BearGuideView.m */,
+				169DA8CB18DF537C00EB1059 /* BuyGuideView.h */,
+				169DA8CC18DF537C00EB1059 /* BuyGuideView.m */,
+				169DA8CE18DF539200EB1059 /* SellGuideView.h */,
+				169DA8CF18DF539200EB1059 /* SellGuideView.m */,
+				169DA8D118DF53AE00EB1059 /* FalseGuideView.h */,
+				169DA8D218DF53AE00EB1059 /* FalseGuideView.m */,
+			);
+			name = Guide;
+			sourceTree = "<group>";
+		};
 		16558B1E18D002130094CB9C /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
 				16558B1F18D002130094CB9C /* Flurry */,
-				16558B2218D002130094CB9C /* GHWalkThrough */,
 			);
 			name = Vendor;
 			path = Mercury/Vendor;
@@ -346,17 +397,6 @@
 				16558B2118D002130094CB9C /* libFlurry_4.3.2.a */,
 			);
 			path = Flurry;
-			sourceTree = "<group>";
-		};
-		16558B2218D002130094CB9C /* GHWalkThrough */ = {
-			isa = PBXGroup;
-			children = (
-				16558B2318D002130094CB9C /* GHWalkThroughPageCell.h */,
-				16558B2418D002130094CB9C /* GHWalkThroughPageCell.m */,
-				16558B2518D002130094CB9C /* GHWalkThroughView.h */,
-				16558B2618D002130094CB9C /* GHWalkThroughView.m */,
-			);
-			path = GHWalkThrough;
 			sourceTree = "<group>";
 		};
 		169A0D9218B82ABD00E42D1A = {
@@ -609,7 +649,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				169DA8C118DE7F0400EB1059 /* IntroGuideView.m in Sources */,
 				1629AE8718CD590A00D92DBA /* SearchCell.m in Sources */,
+				169DA8CD18DF537C00EB1059 /* BuyGuideView.m in Sources */,
 				1644B3F918DBCE4F00CCC314 /* StoreManager.m in Sources */,
 				1644B3FC18DBD13900CCC314 /* MercuryStoreManager.m in Sources */,
 				16B27B0618C38CF900A355FF /* SelectViewController.m in Sources */,
@@ -625,29 +667,35 @@
 				16AE022918C27DBE00D8E3C8 /* UIViewController+Layout.m in Sources */,
 				16B98FAF18BEBC6300A55122 /* NSNumberFormatter+Mercury.m in Sources */,
 				1605411618B8FFF700C200C6 /* UIColor+Mercury.m in Sources */,
+				160F4D6F18DE1017008F4BE0 /* GuideViewCell.m in Sources */,
+				169DA8CA18DF535200EB1059 /* BearGuideView.m in Sources */,
 				169A0DAF18B82ABE00E42D1A /* AppDelegate.m in Sources */,
 				1605413818B99CAB00C200C6 /* UINavigationController+AutoRotation.m in Sources */,
+				169DA8BE18DE786300EB1059 /* GuideView.m in Sources */,
+				169DA8D018DF539200EB1059 /* SellGuideView.m in Sources */,
 				16B1568B18DA8AF0009C7C72 /* MercuryBannerManager.m in Sources */,
 				160B3BC918BC1CF30075CC14 /* NSString+Yahoo.m in Sources */,
 				1605411318B8FD5700C200C6 /* SettingsViewController.m in Sources */,
 				1605411A18B91DE900C200C6 /* PositionSummaryCell.m in Sources */,
+				160F4D7518DE2088008F4BE0 /* GuideViewController.m in Sources */,
+				169DA8D318DF53AE00EB1059 /* FalseGuideView.m in Sources */,
 				167749A818C029EF00C1647D /* NSArray+SMA.m in Sources */,
 				1605412918B96A6000C200C6 /* HGHistory.m in Sources */,
 				1654ACCF18CBA42400D4D295 /* HGSMAValue.m in Sources */,
 				1605412018B92D0A00C200C6 /* MercuryData.m in Sources */,
-				16558B2818D002130094CB9C /* GHWalkThroughPageCell.m in Sources */,
-				16558B1D18CFEDB10094CB9C /* IntroViewController.m in Sources */,
 				16B98FB218BED58900A55122 /* NSString+Mercury.m in Sources */,
 				1605412F18B981DD00C200C6 /* NSArray+Mercury.m in Sources */,
 				16A53C1218C6B72E009E795E /* SearchViewController.m in Sources */,
-				16558B2918D002130094CB9C /* GHWalkThroughView.m in Sources */,
 				1605411D18B922C100C200C6 /* YahooAPIClient.m in Sources */,
+				169DA8C718DF533700EB1059 /* BullGuideView.m in Sources */,
 				16F0797218BA835F00497607 /* HGTicker.m in Sources */,
 				1605413518B99C5500C200C6 /* UITabBarController+AutoRotation.m in Sources */,
+				160F4D7218DE1A51008F4BE0 /* UIImage+Tint.m in Sources */,
 				169A0DCF18B82DBA00E42D1A /* PositionsViewController.m in Sources */,
 				1605412318B93D9A00C200C6 /* PositionDetailViewController.m in Sources */,
 				1605410118B83A4800C200C6 /* PositionDisplayCell.m in Sources */,
 				169A0DAB18B82ABE00E42D1A /* main.m in Sources */,
+				160F4D6C18DE0FFB008F4BE0 /* GuideContentView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -25,6 +25,11 @@
     return HexColor(0xEDD400);
 }
 
++ (UIColor *)hg_lightYellowColor
+{
+    return HexColor(0xFCE94F);
+}
+
 + (UIColor *)hg_textColor
 {
     return HexColor(0x2E3436);

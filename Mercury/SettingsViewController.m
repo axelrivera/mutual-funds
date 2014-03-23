@@ -8,7 +8,7 @@
 
 #import "SettingsViewController.h"
 
-#import "IntroViewController.h"
+#import "GuideViewController.h"
 
 @interface SettingsViewController ()
 
@@ -182,8 +182,8 @@
     
     rows = [@[] mutableCopy];
     
-    dictionary = @{ @"text" : @"Disclaimer And Guide",
-                    @"key" : @"disclaimer",
+    dictionary = @{ @"text" : @"Show Guide",
+                    @"key" : @"guide",
                     @"type" : @"button" };
     
     [rows addObject:dictionary];
@@ -369,13 +369,14 @@
     NSDictionary *dictionary = self.dataSource[indexPath.section][@"rows"][indexPath.row];
     NSString *key = dictionary[@"key"];
     
-    if ([key isEqualToString:@"disclaimer"]) {
-        IntroViewController *introViewController = [[IntroViewController alloc] init];
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:introViewController];
+    if ([key isEqualToString:@"guide"]) {
+        GuideViewController *guideController = [GuideViewController skipGuideViewController];
+
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:guideController];
         navController.navigationBarHidden = YES;
         navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         
-        [self.navigationController presentViewController:navController animated:NO completion:nil];
+        [self.navigationController presentViewController:navController animated:YES completion:nil];
     } else if ([key isEqualToString:@"restore_purchase"]) {
         [[MercuryStoreManager sharedInstance] restoreCompletedTransactions];
     }

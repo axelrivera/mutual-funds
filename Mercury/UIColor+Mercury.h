@@ -13,6 +13,7 @@
 + (UIColor *)hg_greenColor;
 + (UIColor *)hg_redColor;
 + (UIColor *)hg_yellowColor;
++ (UIColor *)hg_lightYellowColor;
 
 + (UIColor *)hg_textColor;
 + (UIColor *)hg_highlightColor;

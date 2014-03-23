@@ -13,7 +13,7 @@
 #import "SearchViewController.h"
 #import "PositionDetailViewController.h"
 #import "PositionDisplayCell.h"
-#import "IntroViewController.h"
+#import "GuideViewController.h"
 
 @interface PositionsViewController () <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate>
 
@@ -132,8 +132,9 @@
     self.dataSource = [NSMutableArray arrayWithArray:[[MercuryData sharedData] arrayForTickerType:self.tickerType]];
     
     if (![[HGSettings defaultSettings] disclaimerShown]) {
-        IntroViewController *introViewController = [[IntroViewController alloc] init];
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:introViewController];
+        GuideViewController *guideController = [GuideViewController defaultGuideViewController];
+
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:guideController];
         navController.navigationBarHidden = YES;
         navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         
