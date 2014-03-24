@@ -6,7 +6,13 @@
 //  Copyright (c) 2014 Axel Rivera. All rights reserved.
 //
 
-#define FLURRY_API_KEY @"6D2RMYWBGPSMR7JJNHRR"
+#ifdef RELEASE
+    // Production Flurry API Key
+    #define FLURRY_API_KEY @"PQY9W98G6DK8HSQJJKFN"
+#else
+    // Development Flurry API Key
+    #define FLURRY_API_KEY @"6D2RMYWBGPSMR7JJNHRR"
+#endif
 
 #define kYahooQuotesURL @"http://download.finance.yahoo.com/d/quotes.csv"
 //#define kYahooQuotesURL @"http://localhost:4000/quotes.csv"
