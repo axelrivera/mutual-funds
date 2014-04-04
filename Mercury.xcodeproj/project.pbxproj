@@ -37,6 +37,9 @@
 		167749A818C029EF00C1647D /* NSArray+SMA.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749A718C029EF00C1647D /* NSArray+SMA.m */; };
 		167749AB18C02B1D00C1647D /* NSDecimalNumber+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749AA18C02B1D00C1647D /* NSDecimalNumber+Mercury.m */; };
 		167AC78018BD810C006BF9E6 /* FileHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 167AC77F18BD810C006BF9E6 /* FileHelpers.m */; };
+		1699BE1018EE60D300E6DF7A /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1699BE0F18EE60D300E6DF7A /* Social.framework */; };
+		1699BE1318EE6B5800E6DF7A /* MailComposerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1699BE1218EE6B5800E6DF7A /* MailComposerManager.m */; };
+		1699BE1518EE6B9000E6DF7A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1699BE1418EE6B9000E6DF7A /* MessageUI.framework */; };
 		169A0D9F18B82ABD00E42D1A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169A0D9E18B82ABD00E42D1A /* Foundation.framework */; };
 		169A0DA118B82ABD00E42D1A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169A0DA018B82ABD00E42D1A /* CoreGraphics.framework */; };
 		169A0DA318B82ABD00E42D1A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 169A0DA218B82ABD00E42D1A /* UIKit.framework */; };
@@ -145,6 +148,10 @@
 		167749AA18C02B1D00C1647D /* NSDecimalNumber+Mercury.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDecimalNumber+Mercury.m"; sourceTree = "<group>"; };
 		167AC77E18BD810C006BF9E6 /* FileHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileHelpers.h; sourceTree = "<group>"; };
 		167AC77F18BD810C006BF9E6 /* FileHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileHelpers.m; sourceTree = "<group>"; };
+		1699BE0F18EE60D300E6DF7A /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		1699BE1118EE6B5800E6DF7A /* MailComposerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailComposerManager.h; sourceTree = "<group>"; };
+		1699BE1218EE6B5800E6DF7A /* MailComposerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MailComposerManager.m; sourceTree = "<group>"; };
+		1699BE1418EE6B9000E6DF7A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		169A0D9B18B82ABD00E42D1A /* Mutual Funds.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Mutual Funds.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		169A0D9E18B82ABD00E42D1A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		169A0DA018B82ABD00E42D1A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -211,6 +218,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1699BE1518EE6B9000E6DF7A /* MessageUI.framework in Frameworks */,
+				1699BE1018EE60D300E6DF7A /* Social.framework in Frameworks */,
 				1644B3F618DBCE0900CCC314 /* StoreKit.framework in Frameworks */,
 				16B1568818DA8A1A009C7C72 /* iAd.framework in Frameworks */,
 				16E7471418CEC47E00A74152 /* SystemConfiguration.framework in Frameworks */,
@@ -322,6 +331,8 @@
 		1605411718B9000000C200C6 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				1699BE1118EE6B5800E6DF7A /* MailComposerManager.h */,
+				1699BE1218EE6B5800E6DF7A /* MailComposerManager.m */,
 				160F4D7018DE1A51008F4BE0 /* UIImage+Tint.h */,
 				160F4D7118DE1A51008F4BE0 /* UIImage+Tint.m */,
 				16AE022718C27DBE00D8E3C8 /* UIViewController+Layout.h */,
@@ -423,6 +434,8 @@
 		169A0D9D18B82ABD00E42D1A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1699BE1418EE6B9000E6DF7A /* MessageUI.framework */,
+				1699BE0F18EE60D300E6DF7A /* Social.framework */,
 				1644B3F518DBCE0900CCC314 /* StoreKit.framework */,
 				16B1568718DA8A1A009C7C72 /* iAd.framework */,
 				16E7471518CEC48C00A74152 /* libFlurry_4.3.2.a */,
@@ -685,6 +698,7 @@
 				1605412018B92D0A00C200C6 /* MercuryData.m in Sources */,
 				16B98FB218BED58900A55122 /* NSString+Mercury.m in Sources */,
 				1605412F18B981DD00C200C6 /* NSArray+Mercury.m in Sources */,
+				1699BE1318EE6B5800E6DF7A /* MailComposerManager.m in Sources */,
 				16A53C1218C6B72E009E795E /* SearchViewController.m in Sources */,
 				1605411D18B922C100C200C6 /* YahooAPIClient.m in Sources */,
 				169DA8C718DF533700EB1059 /* BullGuideView.m in Sources */,

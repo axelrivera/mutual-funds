@@ -14,6 +14,9 @@
     #define FLURRY_API_KEY @"6D2RMYWBGPSMR7JJNHRR"
 #endif
 
+#define MERCURY_APPSTORE_LINK @"http://appstore.com/mutualfundsignals"
+#define MERCURY_SUPPORT_EMAIL @"support@getmutualfundsignals.com"
+
 #define kYahooQuotesURL @"http://download.finance.yahoo.com/d/quotes.csv"
 //#define kYahooQuotesURL @"http://localhost:4000/quotes.csv"
 //#define kYahooQuotesURL @"https://mercury-sharingan.fwd.wf/quotes.csv"

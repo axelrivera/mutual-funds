@@ -8,9 +8,13 @@
 
 #import "SettingsViewController.h"
 
+#import <Social/Social.h>
 #import "GuideViewController.h"
+#import "MailComposerManager.h"
 
-@interface SettingsViewController ()
+@interface SettingsViewController () <MailComposerManagerDelegate>
+
+@property (strong, nonatomic) MailComposerManager *mailManager;
 
 @end
 
@@ -35,6 +39,9 @@
     [super viewDidLoad];
 
     self.tableView.backgroundColor = [UIColor hg_mainBackgroundColor];
+    
+    self.mailManager = [[MailComposerManager alloc] init];
+    self.mailManager.delegate = self;
     
     self.detailChartSegmentedControl = [[UISegmentedControl alloc] initWithItems:@[ @"3M", @"1Y" ]];
     [self.detailChartSegmentedControl setWidth:50.0 forSegmentAtIndex:0];
@@ -184,6 +191,33 @@
     
     rows = [@[] mutableCopy];
     
+    dictionary = @{ @"text" : @"Send Feedback", @"type" : @"button", @"key" : @"support_feedback" };
+    [rows addObject:dictionary];
+    
+    dictionary = @{ @"text" : @"Report a Problem", @"type" : @"button", @"key" : @"support_problem" };
+    [rows addObject:dictionary];
+    
+    [sections addObject:@{ @"title" : @"Feedback", @"rows" : rows }];
+    
+    rows = [@[] mutableCopy];
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
+        dictionary = @{ @"text" : @"Facebook", @"type" : @"button", @"key" : @"share_facebook" };
+        [rows addObject:dictionary];
+    }
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
+        dictionary = @{ @"text" : @"Twitter", @"type" : @"button", @"key" : @"share_twitter" };
+        [rows addObject:dictionary];
+    }
+    
+    dictionary = @{ @"text" : @"E-mail", @"type" : @"button", @"key" : @"share_email" };
+    [rows addObject:dictionary];
+    
+    [sections addObject:@{ @"title" : @"Share", @"rows" : rows }];
+    
+    rows = [@[] mutableCopy];
+    
     dictionary = @{ @"text" : @"Show Guide",
                     @"key" : @"guide",
                     @"type" : @"button" };
@@ -194,7 +228,7 @@
     NSString *versionStr = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     
     [sections addObject:@{ @"rows" : rows,
-                           @"footer" : [NSString stringWithFormat:@"Mutual Fund Signals (%@)", versionStr] }];
+                           @"footer" : [NSString stringWithFormat:@"Copyright © 2014 Axel Rivera. Mutual Fund Signals (%@)", versionStr] }];
     
     self.dataSource = sections;
 }
@@ -264,6 +298,13 @@
             *stop = YES;
         }
     }];
+}
+
+#pragma mark - MailComposerManagerDelegate Methods
+
+- (void)mailComposerManagerDelegateWillFinish:(MailComposerManager *)manager
+{
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Table view data source
@@ -347,6 +388,7 @@
         }
         
         cell.textLabel.text = dictionary[@"text"];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         return cell;
     }
@@ -360,6 +402,7 @@
         }
         
         cell.textLabel.text = dictionary[@"text"];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         return cell;
     }
@@ -376,6 +419,12 @@
     NSDictionary *dictionary = self.dataSource[indexPath.section][@"rows"][indexPath.row];
     NSString *key = dictionary[@"key"];
     
+    NSString *versionStr = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSString *osVersionStr = [UIDevice currentDevice].systemVersion;
+    
+    NSString *shareText = @"Check out the App Mutual Fund Signals to find out if you should Sell or Hold your Mutual Fund positions. #ios";
+    NSString *supportText = [NSString stringWithFormat:@"\n\n\n----------\nApp Version: %@\niOS: %@", versionStr, osVersionStr];
+    
     if ([key isEqualToString:@"guide"]) {
         GuideViewController *guideController = [GuideViewController skipGuideViewController];
 
@@ -388,6 +437,39 @@
         [Flurry logEvent:kAnalyticsStoreRestorePurchases];
 
         [[MercuryStoreManager sharedInstance] restoreCompletedTransactions];
+    } else if ([key isEqualToString:@"share_facebook"]) {
+        SLComposeViewController *fbSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+        
+        [fbSheet setInitialText:shareText];
+        [fbSheet addURL:[NSURL URLWithString:MERCURY_APPSTORE_LINK]];
+        [self presentViewController:fbSheet animated:YES completion:nil];
+    } else if ([key isEqualToString:@"share_twitter"]) {
+        SLComposeViewController *twitterSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+        [twitterSheet setInitialText:shareText];
+        [twitterSheet addURL:[NSURL URLWithString:MERCURY_APPSTORE_LINK]];
+        
+        [self presentViewController:twitterSheet animated:YES completion:nil];
+    } else if ([key isEqualToString:@"share_email"]) {
+        NSString *emailText = [NSString stringWithFormat:@"Hi,\n\nCheck out this App called Mutual Fund Signals to find out "
+                               "if you should Sell or Buy your current Mutual Fund positions.\n\nDownload it from the App Store.\n%@", MERCURY_APPSTORE_LINK];
+        
+        [self.mailManager displayComposerSheetTo:nil
+                                         subject:@"Mutual Fund Signals for iPhone"
+                                            body:emailText
+                                          isHTML:NO
+                                          target:self];
+    } else if ([key isEqualToString:@"support_feedback"]) {
+        [self.mailManager displayComposerSheetTo:@[ MERCURY_SUPPORT_EMAIL ]
+                                         subject:@"Feedback: Mutual Fund Signals"
+                                            body:supportText
+                                          isHTML:NO
+                                          target:self];
+    } else if ([key isEqualToString:@"support_problem"]) {
+        [self.mailManager displayComposerSheetTo:@[ MERCURY_SUPPORT_EMAIL ]
+                                         subject:@"Problem: Mutual Fund Signals"
+                                            body:supportText
+                                          isHTML:NO
+                                          target:self];
     }
 }
 
