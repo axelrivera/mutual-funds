@@ -12,6 +12,7 @@
 
 @property (strong, nonatomic) UISegmentedControl *detailChartSegmentedControl;
 @property (strong, nonatomic) UISegmentedControl *fullscreenChartSegmentedControl;
+@property (strong, nonatomic) UISwitch *equityWarningSwitch;
 
 @property (strong, nonatomic) NSArray *products;
 @property (strong, nonatomic) NSArray *dataSource;

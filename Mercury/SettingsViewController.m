@@ -59,6 +59,10 @@
     [self.fullscreenChartSegmentedControl addTarget:self
                                              action:@selector(fullscreenChartSegmentedControlChanged:)
                                    forControlEvents:UIControlEventValueChanged];
+
+    self.equityWarningSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+    self.equityWarningSwitch.on = [[HGSettings defaultSettings] showEquityWarning];
+    [self.equityWarningSwitch addTarget:self action:@selector(equityWarningChanged:) forControlEvents:UIControlEventValueChanged];
     
     [self updateDataSource];
 }
@@ -188,6 +192,16 @@
     [rows addObject:dictionary];
     
     [sections addObject:@{ @"title" : @"Fullscreen Chart" , @"rows" : rows }];
+
+    rows = [@[] mutableCopy];
+
+    dictionary = @{ @"text" : @"Show equity warning when adding\na position.",
+                    @"key" : @"equity_warning",
+                    @"height" : @(54.0) };
+
+    [rows addObject:dictionary];
+
+    [sections addObject:@{ @"title" : @"Other", @"rows" : rows }];
     
     rows = [@[] mutableCopy];
     
@@ -267,6 +281,11 @@
     [[HGSettings defaultSettings] setFullscreenChartRange:self.currentFullscreenChartRange];
 }
 
+- (void)equityWarningChanged:(UISwitch *)mySwitch
+{
+    [[HGSettings defaultSettings] setShowEquityWarning:mySwitch.on];
+}
+
 - (void)purchaseAction:(id)sender
 {
     UIButton *button = (UIButton *)sender;
@@ -323,6 +342,7 @@
 {
     static NSString *ChartDetaiIdentifier = @"ChartDetailCell";
     static NSString *FullscreenChartIdentifier = @"FullscreenChartcell";
+    static NSString *EquityWarningIdentifier = @"EquityWarningCell";
     static NSString *ButtonIdentifier = @"ButtonCell";
     static NSString *ProductIdentifier = @"ProductCell";
     
@@ -404,6 +424,21 @@
         cell.textLabel.text = dictionary[@"text"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
+        return cell;
+    }
+
+    if ([key isEqualToString:@"equity_warning"]) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:EquityWarningIdentifier];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:EquityWarningIdentifier];
+            cell.textLabel.font = [UIFont systemFontOfSize:14.0];
+            cell.textLabel.numberOfLines = 2;
+            cell.accessoryView = self.equityWarningSwitch;
+        }
+
+        cell.textLabel.text = dictionary[@"text"];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
         return cell;
     }
     

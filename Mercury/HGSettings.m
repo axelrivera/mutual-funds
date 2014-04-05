@@ -93,6 +93,21 @@ NSString * const HGChartRangeTenYearWeekly = @"HGChartRangeTenYearWeekly";
     return sma;
 }
 
+- (BOOL)showEquityWarning
+{
+    NSNumber *equityWarning = [[NSUserDefaults standardUserDefaults] objectForKey:kHGSettingsEquityWarning];
+    if (IsEmpty(equityWarning)) {
+        equityWarning = @(YES);
+    }
+    return [equityWarning boolValue];
+}
+
+- (void)setShowEquityWarning:(BOOL)equityWarning
+{
+    [[NSUserDefaults standardUserDefaults] setBool:equityWarning forKey:kHGSettingsEquityWarning];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (BOOL)guideShown
 {
     NSNumber *shown = [[NSUserDefaults standardUserDefaults] objectForKey:kHGSettingsGuideShown];

@@ -12,6 +12,7 @@
 #define kHGSettingsGuideShown @"HGSettingsGuideShown"
 #define kHGSettingsDetailChartRange @"HGSettingsDetailChartRange"
 #define kHGSettingsFullscreenChartRange @"HGSettingsFullscreenChartRange"
+#define kHGSettingsEquityWarning @"HGSettingsEquityWarning"
 
 FOUNDATION_EXPORT NSUInteger const HGChartHistoricalStartInterval;
 
@@ -35,6 +36,9 @@ FOUNDATION_EXPORT NSString * const HGChartRangeTenYearWeekly;
 
 - (NSUInteger)SMA1PeriodForChartRange:(NSString *)chartRange;
 - (NSUInteger)SMA2PeriodForChartRange:(NSString *)chartRange;
+
+- (BOOL)showEquityWarning;
+- (void)setShowEquityWarning:(BOOL)equityWarning;
 
 - (BOOL)guideShown;
 - (void)setGuideShown:(BOOL)shown;

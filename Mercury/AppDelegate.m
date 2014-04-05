@@ -30,6 +30,8 @@
     [[UINavigationBar appearance] setBarTintColor:[UIColor hg_barBackgroundColor]];
     [[UINavigationBar appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor hg_textColor] }];
     [[UIToolbar appearance] setBarTintColor:[UIColor hg_barBackgroundColor]];
+    [[UISwitch appearance] setTintColor:[UIColor hg_highlightColor]];
+    [[UISwitch appearance] setOnTintColor:[UIColor hg_highlightColor]];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.tintColor = [UIColor hg_highlightColor];

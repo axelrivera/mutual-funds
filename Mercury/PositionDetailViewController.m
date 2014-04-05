@@ -763,16 +763,23 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
             self.saveBlock(self.ticker);
         }
     } else {
-        NSString *message = [NSString stringWithFormat:@"You are about to save a position of type \"%@\" "
-                             "but our signals are only recommended for Mutual Funds, ETFs and Indexes. "
-                             "Are you sure you want to do this?", self.ticker.positionType];
+        if ([[HGSettings defaultSettings] showEquityWarning]) {
+            NSString *message = [NSString stringWithFormat:@"You are about to save a position of type \"%@\" "
+                                 "but our signals are only recommended for Mutual Funds, ETFs and Indexes. "
+                                 "Are you sure you want to do this?", self.ticker.positionType];
 
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Warning"
-                                                            message:message
-                                                           delegate:self
-                                                  cancelButtonTitle:@"Cancel"
-                                                  otherButtonTitles:@"Save", nil];
-        [alertView show];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Warning"
+                                                                message:message
+                                                               delegate:self
+                                                      cancelButtonTitle:@"Cancel"
+                                                      otherButtonTitles:@"Save", nil];
+            [alertView show];
+            return;
+        }
+
+        if (self.saveBlock) {
+            self.saveBlock(self.ticker);
+        }
     }
 }
 
