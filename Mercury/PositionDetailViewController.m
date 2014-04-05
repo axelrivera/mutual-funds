@@ -144,9 +144,6 @@ static const CGFloat ContainerHeight = (ContainerChartPaddingTop +
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    if (self.hideBlock) {
-        self.hideBlock();
-    }
 }
 
 - (void)viewDidAppear:(BOOL)animated

@@ -11,7 +11,6 @@
 @class LCLineChartView;
 
 typedef void(^PositionDetailViewControllerSaveBlock)(HGTicker *ticker);
-typedef void(^PositionDetailViewControllerHideBlock)();
 
 @interface PositionDetailViewController : UIViewController
 
@@ -27,7 +26,6 @@ typedef void(^PositionDetailViewControllerHideBlock)();
 @property (strong, nonatomic) NSDate *currentSignalDate;
 @property (assign, nonatomic) BOOL allowSave;
 @property (copy, nonatomic) PositionDetailViewControllerSaveBlock saveBlock;
-@property (copy, nonatomic) PositionDetailViewControllerHideBlock hideBlock;
 @property (strong, nonatomic) NSString *chartRange;
 
 @property (assign, nonatomic) NSInteger currentIndex;

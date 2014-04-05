@@ -14,7 +14,6 @@
 
 @property (assign, nonatomic) HGTickerType tickerType;
 @property (strong, nonatomic) NSArray *searchDataSource;
-@property (strong, nonatomic) NSArray *dataSource;
 
 - (instancetype)initWithTickerType:(HGTickerType)tickerType;
 

@@ -18,8 +18,6 @@
 @property (strong, nonatomic) UISearchDisplayController *searchController;
 @property (strong, nonatomic) UISearchBar *searchBar;
 
-- (void)updateDataSource;
-
 @end
 
 @implementation SearchViewController
@@ -48,9 +46,8 @@
     
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
     self.searchBar.tintColor = [UIColor hg_highlightColor];
-    
-    self.searchBar.prompt = @"Select Existing / Enter New Name or Symbol";
-    
+    self.searchBar.placeholder = @"Name or Symbol";
+
     self.searchController = [[UISearchDisplayController alloc]
                         initWithSearchBar:self.searchBar contentsController:self];
     
@@ -62,7 +59,12 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                           target:self
                                                                                           action:@selector(cancelAction:)];
-    [self updateDataSource];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self.searchBar becomeFirstResponder];
 }
 
 - (BOOL)shouldAutorotate
@@ -83,39 +85,6 @@
 
 #pragma mark - Private Methods
 
-- (void)updateDataSource
-{
-    NSMutableArray *sections = [@[] mutableCopy];
-    NSArray *myPositions = nil;
-    NSArray *myWatchlist = nil;
-    NSArray *myIndexes = nil;
-    
-    if (self.tickerType == HGTickerTypeMyPositions) {
-        myWatchlist = [[MercuryData sharedData] arrayForTickerType:HGTickerTypeMyWatchlist];
-        myIndexes = [[MercuryData sharedData] arrayForTickerType:HGTickerTypeMyIndexes];
-    } else if (self.tickerType == HGTickerTypeMyWatchlist) {
-        myPositions = [[MercuryData sharedData] arrayForTickerType:HGTickerTypeMyPositions];
-        myIndexes = [[MercuryData sharedData] arrayForTickerType:HGTickerTypeMyIndexes];
-    } else if (self.tickerType == HGTickerTypeMyIndexes) {
-        myPositions = [[MercuryData sharedData] arrayForTickerType:HGTickerTypeMyPositions];
-        myWatchlist = [[MercuryData sharedData] arrayForTickerType:HGTickerTypeMyWatchlist];
-    }
-    
-    if (!IsEmpty(myPositions)) {
-        [sections addObject:@{ @"title" : @"My Positions", @"rows" : [NSArray arrayWithArray:myPositions] }];
-    }
-    
-    if (!IsEmpty(myWatchlist)) {
-        [sections addObject:@{ @"title" : @"Watchlist", @"rows" : [NSArray arrayWithArray:myWatchlist] }];
-    }
-    
-    if (!IsEmpty(myIndexes)) {
-        [sections addObject:@{ @"title" : @"Indexes", @"rows" : [NSArray arrayWithArray:myIndexes] }];
-    }
-    
-    self.dataSource = sections;
-}
-
 #pragma mark - Selector Methods
 
 - (void)cancelAction:(id)sender
@@ -127,24 +96,13 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSInteger sections = 0;
-    if (tableView == self.tableView) {
-        sections = [self.dataSource count];
-    } else {
-        sections = 1;
-    }
+    NSInteger sections = 1;
     return sections;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSInteger rows = 0;
-    if (tableView == self.tableView) {
-        rows = [self.dataSource[section][@"rows"] count];
-    } else {
-        rows = [self.searchDataSource count];
-    }
-    
+    NSInteger rows = [self.searchDataSource count];
     return rows;
 }
 
@@ -157,13 +115,7 @@
         cell = [[SearchCell alloc] initWithReuseIdentifier:CellIdentifier];
     }
     
-    HGTicker *ticker = nil;
-    
-    if (tableView == self.tableView) {
-        ticker = self.dataSource[indexPath.section][@"rows"][indexPath.row];
-    } else {
-        ticker = self.searchDataSource[indexPath.row];
-    }
+    HGTicker *ticker = self.searchDataSource[indexPath.row];
     
     NSString *name = [ticker name];
     NSString *symbol = ticker.symbol;
@@ -197,23 +149,13 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    HGTicker *myTicker = nil;
-    
-    if (tableView == self.tableView) {
-        myTicker = self.dataSource[indexPath.section][@"rows"][indexPath.row];
-    } else {
-        myTicker = self.searchDataSource[indexPath.row];
-    }
+    HGTicker *myTicker = self.searchDataSource[indexPath.row];
     
     [[MercuryData sharedData] fetchPositionForSymbol:myTicker.symbol completion:^(HGPosition *position, NSError *error) {
         if (error) {
             [Flurry logError:kAnalyticsPositionSearchError message:nil error:error];
             return;
         }
-        
-        PositionDetailViewControllerHideBlock hideBlock = ^{
-            self.navigationController.navigationBar.topItem.prompt = @"Select Existing / Enter New Name or Symbol";
-        };
         
         PositionDetailViewControllerSaveBlock saveBlock = ^(HGTicker *ticker) {
             if (ticker) {
@@ -266,7 +208,6 @@
         PositionDetailViewController *controller = [[PositionDetailViewController alloc] initWithTicker:ticker
                                                                                               allowSave:YES];
         controller.saveBlock = saveBlock;
-        controller.hideBlock = hideBlock;
         
         [Flurry logEvent:kAnalyticsPositionDetailSelected
           withParameters:@{ kAnalyticsParameterKeyType : [MercuryData keyForTickerType:self.tickerType],
@@ -280,15 +221,6 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 54.0;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    NSString *title = nil;
-    if (tableView == self.tableView) {
-        title = self.dataSource[section][@"title"];
-    }
-    return title;
 }
 
 #pragma mark - UISearchDisplayDelegate
@@ -315,6 +247,5 @@
 {
     
 }
-
 
 @end
