@@ -1,0 +1,5 @@
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/AFNetworking" "${PODS_ROOT}/Headers/CHCSVParser" "${PODS_ROOT}/Headers/MBProgressHUD" "${PODS_ROOT}/Headers/UIView+AutoLayout" "${PODS_ROOT}/Headers/ios-linechart"
+OTHER_CFLAGS = $(inherited) "-isystem${PODS_ROOT}/Headers" "-isystem${PODS_ROOT}/Headers/AFNetworking" "-isystem${PODS_ROOT}/Headers/CHCSVParser" "-isystem${PODS_ROOT}/Headers/MBProgressHUD" "-isystem${PODS_ROOT}/Headers/UIView+AutoLayout" "-isystem${PODS_ROOT}/Headers/ios-linechart"
+OTHER_LDFLAGS = -ObjC -framework CoreFoundation -framework CoreGraphics -framework MobileCoreServices -framework Security -framework SystemConfiguration -framework UIKit
+PODS_ROOT = ${SRCROOT}/Pods

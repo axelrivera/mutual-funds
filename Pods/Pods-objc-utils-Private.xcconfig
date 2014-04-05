@@ -1,0 +1,5 @@
+#include "Pods-objc-utils.xcconfig"
+GCC_PREPROCESSOR_DEFINITIONS = COCOAPODS=1
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/BuildHeaders" "${PODS_ROOT}/BuildHeaders/objc-utils" "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/AFNetworking" "${PODS_ROOT}/Headers/CHCSVParser" "${PODS_ROOT}/Headers/NCICharts" "${PODS_ROOT}/Headers/UIView+AutoLayout" "${PODS_ROOT}/Headers/ios-linechart" "${PODS_ROOT}/Headers/objc-utils"
+OTHER_LDFLAGS = -ObjC ${PODS_OBJC_UTILS_OTHER_LDFLAGS}
+PODS_ROOT = ${SRCROOT}
