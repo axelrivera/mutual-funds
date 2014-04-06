@@ -25,8 +25,8 @@
         @"It is ONLY RECOMMENDED FOR LONG TERM POSITIONS because signals are generated on average once a year.";
 
         self.textLabel3.text =
-        @"The App does not recommend BUYING or SELLING of particular securities, but assists in making a decision. "
-        "ALWAYS supplement the given signals with additional research to get optimal returns.";
+        @"The App does NOT offer professional financial advice or recommends BUYING or SELLING of particular securities. "
+        "ALWAYS look for the services of a competent professional when legal, accounting or other expert advice is required.";
 
         [self setImage:[UIImage tintedImageWithName:@"going-up" tintColor:[UIColor whiteColor]]];
     }

@@ -32,7 +32,7 @@
 		1644B3FC18DBD13900CCC314 /* MercuryStoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1644B3FB18DBD13900CCC314 /* MercuryStoreManager.m */; };
 		1654ACCC18CB8CEB00D4D295 /* NSArray+HGPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 1654ACCB18CB8CEB00D4D295 /* NSArray+HGPosition.m */; };
 		1654ACCF18CBA42400D4D295 /* HGSMAValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1654ACCE18CBA42400D4D295 /* HGSMAValue.m */; };
-		16558B2718D002130094CB9C /* libFlurry_4.3.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16558B2118D002130094CB9C /* libFlurry_4.3.2.a */; };
+		16570DC818F136DE00F842D8 /* libFlurry_4.4.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16570DC718F136DE00F842D8 /* libFlurry_4.4.0.a */; };
 		167749A518C00B6F00C1647D /* NSDate+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749A418C00B6F00C1647D /* NSDate+Mercury.m */; };
 		167749A818C029EF00C1647D /* NSArray+SMA.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749A718C029EF00C1647D /* NSArray+SMA.m */; };
 		167749AB18C02B1D00C1647D /* NSDecimalNumber+Mercury.m in Sources */ = {isa = PBXBuildFile; fileRef = 167749AA18C02B1D00C1647D /* NSDecimalNumber+Mercury.m */; };
@@ -138,8 +138,8 @@
 		1654ACCB18CB8CEB00D4D295 /* NSArray+HGPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+HGPosition.m"; sourceTree = "<group>"; };
 		1654ACCD18CBA42400D4D295 /* HGSMAValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HGSMAValue.h; sourceTree = "<group>"; };
 		1654ACCE18CBA42400D4D295 /* HGSMAValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HGSMAValue.m; sourceTree = "<group>"; };
-		16558B2018D002130094CB9C /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
-		16558B2118D002130094CB9C /* libFlurry_4.3.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_4.3.2.a; sourceTree = "<group>"; };
+		16570DC618F136DE00F842D8 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
+		16570DC718F136DE00F842D8 /* libFlurry_4.4.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_4.4.0.a; sourceTree = "<group>"; };
 		167749A318C00B6F00C1647D /* NSDate+Mercury.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Mercury.h"; sourceTree = "<group>"; };
 		167749A418C00B6F00C1647D /* NSDate+Mercury.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Mercury.m"; sourceTree = "<group>"; };
 		167749A618C029EF00C1647D /* NSArray+SMA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+SMA.h"; sourceTree = "<group>"; };
@@ -205,7 +205,6 @@
 		16B98FB018BED58900A55122 /* NSString+Mercury.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Mercury.h"; sourceTree = "<group>"; };
 		16B98FB118BED58900A55122 /* NSString+Mercury.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Mercury.m"; sourceTree = "<group>"; };
 		16E7471318CEC47E00A74152 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		16E7471518CEC48C00A74152 /* libFlurry_4.3.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFlurry_4.3.2.a; path = Vendor/Flurry/libFlurry_4.3.2.a; sourceTree = "<group>"; };
 		16E7471718CEC4FB00A74152 /* AnalyticsEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalyticsEvents.h; sourceTree = "<group>"; };
 		16F0797018BA835F00497607 /* HGTicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HGTicker.h; sourceTree = "<group>"; };
 		16F0797118BA835F00497607 /* HGTicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HGTicker.m; sourceTree = "<group>"; };
@@ -218,6 +217,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16570DC818F136DE00F842D8 /* libFlurry_4.4.0.a in Frameworks */,
 				1699BE1518EE6B9000E6DF7A /* MessageUI.framework in Frameworks */,
 				1699BE1018EE60D300E6DF7A /* Social.framework in Frameworks */,
 				1644B3F618DBCE0900CCC314 /* StoreKit.framework in Frameworks */,
@@ -227,7 +227,6 @@
 				169A0DA318B82ABD00E42D1A /* UIKit.framework in Frameworks */,
 				169A0D9F18B82ABD00E42D1A /* Foundation.framework in Frameworks */,
 				C6736770D1B24F91851CF9C7 /* libPods.a in Frameworks */,
-				16558B2718D002130094CB9C /* libFlurry_4.3.2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,20 +391,19 @@
 			name = Guide;
 			sourceTree = "<group>";
 		};
-		16558B1E18D002130094CB9C /* Vendor */ = {
+		16570DC418F136DE00F842D8 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
-				16558B1F18D002130094CB9C /* Flurry */,
+				16570DC518F136DE00F842D8 /* Flurry */,
 			);
-			name = Vendor;
-			path = Mercury/Vendor;
+			path = Vendor;
 			sourceTree = "<group>";
 		};
-		16558B1F18D002130094CB9C /* Flurry */ = {
+		16570DC518F136DE00F842D8 /* Flurry */ = {
 			isa = PBXGroup;
 			children = (
-				16558B2018D002130094CB9C /* Flurry.h */,
-				16558B2118D002130094CB9C /* libFlurry_4.3.2.a */,
+				16570DC618F136DE00F842D8 /* Flurry.h */,
+				16570DC718F136DE00F842D8 /* libFlurry_4.4.0.a */,
 			);
 			path = Flurry;
 			sourceTree = "<group>";
@@ -414,8 +412,8 @@
 			isa = PBXGroup;
 			children = (
 				169A0DA418B82ABE00E42D1A /* Mercury */,
-				16558B1E18D002130094CB9C /* Vendor */,
 				169A0DBD18B82ABE00E42D1A /* MercuryTests */,
+				16570DC418F136DE00F842D8 /* Vendor */,
 				169A0D9D18B82ABD00E42D1A /* Frameworks */,
 				169A0D9C18B82ABD00E42D1A /* Products */,
 				9CDE19C2F9074FD4B20E637F /* Pods.xcconfig */,
@@ -438,7 +436,6 @@
 				1699BE0F18EE60D300E6DF7A /* Social.framework */,
 				1644B3F518DBCE0900CCC314 /* StoreKit.framework */,
 				16B1568718DA8A1A009C7C72 /* iAd.framework */,
-				16E7471518CEC48C00A74152 /* libFlurry_4.3.2.a */,
 				16E7471318CEC47E00A74152 /* SystemConfiguration.framework */,
 				169A0D9E18B82ABD00E42D1A /* Foundation.framework */,
 				169A0DA018B82ABD00E42D1A /* CoreGraphics.framework */,
@@ -801,8 +798,7 @@
 				INFOPLIST_FILE = "Mercury/Mercury-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/arn/Dropbox/Projects/iOS/Mercury/Vendor/Flurry,
-					"$(PROJECT_DIR)/Mercury/Vendor/Flurry",
+					"$(PROJECT_DIR)/Vendor/Flurry",
 				);
 				PRODUCT_NAME = "Mutual Funds";
 				PROVISIONING_PROFILE = "178C157E-4003-4B43-B3D3-E25C455BF3AC";
@@ -913,8 +909,7 @@
 				INFOPLIST_FILE = "Mercury/Mercury-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/arn/Dropbox/Projects/iOS/Mercury/Vendor/Flurry,
-					"$(PROJECT_DIR)/Mercury/Vendor/Flurry",
+					"$(PROJECT_DIR)/Vendor/Flurry",
 				);
 				PRODUCT_NAME = "Mutual Funds";
 				WRAPPER_EXTENSION = app;
@@ -938,8 +933,7 @@
 				INFOPLIST_FILE = "Mercury/Mercury-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/arn/Dropbox/Projects/iOS/Mercury/Vendor/Flurry,
-					"$(PROJECT_DIR)/Mercury/Vendor/Flurry",
+					"$(PROJECT_DIR)/Vendor/Flurry",
 				);
 				PRODUCT_NAME = "Mutual Funds";
 				WRAPPER_EXTENSION = app;

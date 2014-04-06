@@ -23,6 +23,11 @@
 #define kAnalyticsStoreBuyProdctAttempt @"STORE_BUY_PRODUCT_ATTEMPT"
 #define kAnalyticsStoreBuyProduct @"STORE_BUY_PRODUCT"
 #define kAnalyticsStoreRestorePurchases @"STORE_RESTORE_PURCHASES"
+#define kAnalyticsShareFacebook @"SHARE_FACEBOOK"
+#define kAnalyticsShareTwitter @"SHARE_TWITTER"
+#define kAnalyticsShareEmail @"SHARE_EMAIL"
+#define kAnalyticsSupportFeedback @"SUPPORT_FEEDBACK"
+#define kAnalyticsSupportProblem @"SUPPORT_PROBLEM"
 
 // Errors
 

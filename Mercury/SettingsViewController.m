@@ -473,18 +473,22 @@
 
         [[MercuryStoreManager sharedInstance] restoreCompletedTransactions];
     } else if ([key isEqualToString:@"share_facebook"]) {
+        [Flurry logEvent:kAnalyticsShareFacebook];
+
         SLComposeViewController *fbSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
-        
         [fbSheet setInitialText:shareText];
         [fbSheet addURL:[NSURL URLWithString:MERCURY_APPSTORE_LINK]];
         [self presentViewController:fbSheet animated:YES completion:nil];
     } else if ([key isEqualToString:@"share_twitter"]) {
+        [Flurry logEvent:kAnalyticsShareTwitter];
+
         SLComposeViewController *twitterSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
         [twitterSheet setInitialText:shareText];
         [twitterSheet addURL:[NSURL URLWithString:MERCURY_APPSTORE_LINK]];
-        
         [self presentViewController:twitterSheet animated:YES completion:nil];
     } else if ([key isEqualToString:@"share_email"]) {
+        [Flurry logEvent:kAnalyticsShareEmail];
+
         NSString *emailText = [NSString stringWithFormat:@"Hi,\n\nCheck out this App called Mutual Fund Signals to find out "
                                "if you should Sell or Buy your current Mutual Fund positions.\n\nDownload it from the App Store.\n%@", MERCURY_APPSTORE_LINK];
         
@@ -494,12 +498,16 @@
                                           isHTML:NO
                                           target:self];
     } else if ([key isEqualToString:@"support_feedback"]) {
+        [Flurry logEvent:kAnalyticsSupportFeedback];
+
         [self.mailManager displayComposerSheetTo:@[ MERCURY_SUPPORT_EMAIL ]
                                          subject:@"Feedback: Mutual Fund Signals"
                                             body:supportText
                                           isHTML:NO
                                           target:self];
     } else if ([key isEqualToString:@"support_problem"]) {
+        [Flurry logEvent:kAnalyticsSupportProblem];
+
         [self.mailManager displayComposerSheetTo:@[ MERCURY_SUPPORT_EMAIL ]
                                          subject:@"Problem: Mutual Fund Signals"
                                             body:supportText
