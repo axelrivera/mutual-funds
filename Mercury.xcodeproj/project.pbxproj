@@ -787,7 +787,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Axel Rivera (C2Q5BUZ3MX)";
+				CODE_SIGN_IDENTITY = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mercury/Mercury-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -801,7 +801,7 @@
 					"$(PROJECT_DIR)/Vendor/Flurry",
 				);
 				PRODUCT_NAME = "Mutual Funds";
-				PROVISIONING_PROFILE = "178C157E-4003-4B43-B3D3-E25C455BF3AC";
+				PROVISIONING_PROFILE = "62D4CE28-2DBC-416D-BF40-D7446BADBC7E";
 				WRAPPER_EXTENSION = app;
 			};
 			name = AdHoc;
@@ -912,6 +912,7 @@
 					"$(PROJECT_DIR)/Vendor/Flurry",
 				);
 				PRODUCT_NAME = "Mutual Funds";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -922,7 +923,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mercury/Mercury-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -936,6 +937,7 @@
 					"$(PROJECT_DIR)/Vendor/Flurry",
 				);
 				PRODUCT_NAME = "Mutual Funds";
+				PROVISIONING_PROFILE = "C3967611-4AC8-43CF-8C7F-D9512039943D";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

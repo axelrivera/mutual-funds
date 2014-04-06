@@ -6,12 +6,12 @@
 //  Copyright (c) 2014 Axel Rivera. All rights reserved.
 //
 
-#ifdef RELEASE
-    // Production Flurry API Key
-    #define FLURRY_API_KEY @"PQY9W98G6DK8HSQJJKFN"
-#else
+#ifdef DEBUG
     // Development Flurry API Key
     #define FLURRY_API_KEY @"6D2RMYWBGPSMR7JJNHRR"
+#else
+    // Production Flurry API Key
+    #define FLURRY_API_KEY @"PQY9W98G6DK8HSQJJKFN"
 #endif
 
 #define MERCURY_APPSTORE_LINK @"http://appstore.com/mutualfundsignals"
