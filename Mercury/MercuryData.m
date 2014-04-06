@@ -570,10 +570,9 @@ NSString * const HGTickerTypeMyIndexesKey = @"MY_INDEXES";
 {
     NSMutableArray *array = [@[] mutableCopy];
     
-    [array addObject:[HGTicker fundTickerWithType:HGTickerTypeMyPositions symbol:@"JSVAX"]];
-    [array addObject:[HGTicker fundTickerWithType:HGTickerTypeMyPositions symbol:@"SWLSX"]];
-    [array addObject:[HGTicker ETFTickerWithType:HGTickerTypeMyPositions symbol:@"PBW"]];
-    
+    [array addObject:[HGTicker ETFTickerWithType:HGTickerTypeMyPositions symbol:@"SPY"]];
+    [array addObject:[HGTicker ETFTickerWithType:HGTickerTypeMyPositions symbol:@"QQQ"]];
+
     return array;
 }
 
@@ -581,8 +580,6 @@ NSString * const HGTickerTypeMyIndexesKey = @"MY_INDEXES";
 {
     NSMutableArray *array = [@[] mutableCopy];
 
-    [array addObject:[HGTicker ETFTickerWithType:HGTickerTypeMyWatchlist symbol:@"SPY"]];
-    [array addObject:[HGTicker fundTickerWithType:HGTickerTypeMyWatchlist symbol:@"OBEGX"]];
     [array addObject:[HGTicker fundTickerWithType:HGTickerTypeMyWatchlist symbol:@"SWANX"]];
     [array addObject:[HGTicker fundTickerWithType:HGTickerTypeMyWatchlist symbol:@"RYURX"]];
     
